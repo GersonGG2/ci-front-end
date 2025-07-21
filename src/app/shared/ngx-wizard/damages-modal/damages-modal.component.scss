@@ -1,0 +1,16 @@
+// This file contains styles for the damages modal component
+.btn-AgregarActividad{
+ color: white;
+ background-color: #30ae1a;
+ &:hover {
+   background-color: #3ac920;
+ }
+}
+
+.btn-Eliminar{
+ color: white;
+ background-color: #5d5d5d;
+ &:hover {
+   background-color: #767676;
+ }
+}

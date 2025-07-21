@@ -1,0 +1,270 @@
+<div class="row card-body">
+  <!-- Primera columna con el formulario -->
+  <div class="card col-lg-8">
+    <div>
+      <h4 class="card-title">TRA - Trasera</h4>
+    </div>
+  </div>
+  <!--div class="card col-lg-4">
+    <div class="d-flex justify-content-end pl-0">
+      <button type="button" class="btn btn-danger btn-raised" (click)="savePlugins()">Guardar</button>
+    </div>
+  </div-->
+
+  <!-- imagen -->
+  <div class="col-lg-8">
+    <div class="card border">
+      <div class="card-body d-flex justify-content-center position-relative" (click)="addDamage($event)">
+        <div id="image-picture">
+          <div class="position-relative" id="truck-container">
+
+            <app-img-retry (success)="loadDamage()"
+              [fallback]="'assets/images/inspection/unit/inspection/caja/' + image.toLowerCase() + '.png'"
+              [src]="itemCode ? 'assets/images/inspection/unit/inspection/' + itemCode.toLowerCase() + '/' + image.toLowerCase() + '.png' : ''"
+              [id]="'img-container'" class="img-fluid" alt="Imagen de ejemplo" style="max-width: 100%;" />
+
+            <div class="grid-overlay"></div>
+            <div *ngFor="let circle of circles" class="circle"
+              [ngStyle]="{ top: circle.y + 'px', left: circle.x + 'px', 'background-color': circle.recordExist ? 'yellow' : 'white' }"
+              (click)="openDamagesModal(circle, $event)" (dblclick)="openDamagesModal(circle, $event, true)">
+              {{ circle.dano_type }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Danios y Resumen -->
+    <div class="card border">
+      <div class="card-body d-flex justify-content-between">
+        <div class="text-start">
+          <div class="d-flex justify-content-start align-items-center mb-3">
+            <h4 class="card-title mb-0">DAÑOS</h4>
+            <span class="badge bg-warning ms-2">{{ damageStatus }}</span>
+          </div>
+          <div class="card">
+            <div ngbNav #nav3="ngbNav" [(activeId)]="active2" class="nav-pills custom-nav2" orientation="horizontal">
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('CORTADA')">C</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('DOBLADO')">D</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('HOYO')">H</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('RASPADO')">R</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('OTRO')">O</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('PARCHE')">P</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+              <ng-container ngbNavItem="">
+                <button ngbNavLink (click)="updateDamageStatus('SECCIONADO')">Z</button>
+                <ng-template ngbNavContent></ng-template>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="damageCount > 0">
+          <h4 class="card-title">RESUMEN</h4>
+          <div class="d-flex justify-content-end pl-0">
+            <button type="button" class="btn btn-danger btn-raised">
+              <span>{{ damageCount }}</span>
+              <br />
+              <span>DAÑOS</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segunda columna con el formulario -->
+  <div class="col-lg-4">
+    <form [formGroup]="pluginsForm">
+      <div class="card border">
+        <div class="card-body">
+          <h4 class="card-title">COMPLEMENTOS</h4>
+        </div>
+        <div class="card-body" *ngIf="itemCode != 'TDA'">
+          <h4 class="card-title">Tipo de puerta</h4>
+          <ng-select formControlName="doorType" (change)="changeDoorType()"
+            [ngClass]="{ 'is-valid': getClearField('doorType'), 'is-invalid': !getClearField('doorType') }"
+            [fixedPlaceholder]="true" [placeholder]="'Tipo de puerta'" id="doorType" [items]="doorTypeList"
+            bindLabel="label" bindValue="value">
+          </ng-select>
+
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Placa Circulación</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="circulationPlate" name="circulationPlate" formControlName="circulationPlate"
+              value="Y" class="form-check-input" />
+            <label class="form-check-label" for="circulationPlate">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="circulationPlate" name="circulationPlate" formControlName="circulationPlate"
+              value="N" class="form-check-input" />
+            <label class="form-check-label" for="circulationPlate">No</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Placa</h4>
+          <input type="text" id="plate" class="form-control" formControlName="plate" placeholder="Placa" />
+          <div class="mb-3 mt-3">
+            <input type="file" multiple accept="image/*" (change)="addPhotos($event, 'plate')" class="d-none"
+              #plateInput />
+            <button type="button" class="btn btn-outline-danger" (click)="plateInput.click()"><i class="fa fa-plus"></i>
+              Foto placa</button>
+            <div class="row mt-3">
+              <div class="col-12 d-flex flex-wrap">
+                <div class="card me-2 mb-2 border" *ngFor="let photo of platePhotos; let j = index"
+                  style="width: 18rem; height: 18rem; margin: 0px">
+                  <app-img-retry [src]="photo.url" class="card-img-top" alt="Foto"
+                    style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhoto('plate', j)">Eliminar
+                      Foto</button>
+                  </div>
+                </div>
+
+                <div class="card me-2 mb-2 border" *ngFor="let photo of platePhotosTem; let j = index" style="width: 18rem; height: 18rem; margin: 0px">
+                  <img [src]="photo.url" class="card-img-top" alt="Foto" style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhotoTemp('plate', j)">Eliminar Foto</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <h4 class="card-title">Placa VIN</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="vinPlate" name="vinPlate" formControlName="vinPlate" value="Y"
+              class="form-check-input" />
+            <label class="form-check-label" for="vinPlate">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="vinPlate" name="vinPlate" formControlName="vinPlate" value="N"
+              class="form-check-input" />
+            <label class="form-check-label" for="vinPlate">No</label>
+          </div>
+          <div class="mb-3">
+            <input type="file" multiple accept="image/*" (change)="addPhotos($event, 'plateVin')" class="d-none"
+              #plateVinInput />
+            <button type="button" class="btn btn-outline-danger" (click)="plateVinInput.click()"
+              [disabled]="pluginsForm.value.vinPlate == 'N'"><i class="fa fa-plus"></i> Foto placa VIN</button>
+            <div class="row mt-3">
+              <div class="col-12 d-flex flex-wrap">
+                <div class="card me-2 mb-2 border" *ngFor="let photo of plateVinPhotos; let j = index"
+                  style="width: 18rem; height: 18rem; margin: 0px">
+                  <app-img-retry [src]="photo.url" class="card-img-top" alt="Foto"
+                    style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhoto('plateVin', j)">Eliminar
+                      Foto</button>
+                  </div>
+                </div>
+
+                <div class="card me-2 mb-2 border" *ngFor="let photo of plateVinPhotosTemp; let j = index" style="width: 18rem; height: 18rem; margin: 0px">
+                  <img [src]="photo.url" class="card-img-top" alt="Foto" style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhotoTemp('plateVin', j)">Eliminar Foto</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">No. Oculto</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="hiddenNumber" name="hiddenNumber" [disabled]="disableHiddenNumber"
+              formControlName="hiddenNumber" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="hiddenNumber">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="hiddenNumber" name="hiddenNumber" formControlName="hiddenNumber" value="N"
+              class="form-check-input" />
+            <label class="form-check-label" for="hiddenNumber">No</label>
+          </div>
+          <div class="mb-3">
+            <input type="file" multiple accept="image/*" (change)="addPhotos($event, 'hiddenNumber')" class="d-none"
+              #hiddenNumberInput />
+            <button type="button" class="btn btn-outline-danger" (click)="hiddenNumberInput.click()"
+              [disabled]="disableHiddenNumber || pluginsForm.value.hiddenNumber == 'N'"><i class="fa fa-plus"></i> Foto
+              No. oculto</button>
+            <div class="row mt-3">
+              <div class="col-12 d-flex flex-wrap">
+                <div class="card me-2 mb-2 border" *ngFor="let photo of hiddenNumberPhotos; let j = index"
+                  style="width: 18rem; height: 18rem; margin: 0px">
+                  <app-img-retry [src]="photo.url" class="card-img-top" alt="Foto"
+                    style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhoto('hiddenNumber', j)">Eliminar
+                      Foto</button>
+                  </div>
+                </div>
+
+                <div class="card me-2 mb-2 border" *ngFor="let photo of hiddenNumberPhotosTemp; let j = index" style="width: 18rem; height: 18rem; margin: 0px">
+                  <img [src]="photo.url" class="card-img-top" alt="Foto" style="object-fit: cover; width: 100%; height: 12rem" />
+                  <div class="card-body">
+                    <button type="button" class="btn btn-danger" (click)="removePhotoTemp('hiddenNumber', j)">Eliminar Foto</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h4 class="card-title">Comentario</h4>
+            <textarea class="form-control" formControlName="comment" rows="5"></textarea>
+          </div>
+          <div class="mb-3">
+            <input type="file" multiple accept="image/*" (change)="addPhotos($event, 'generalPhotos')" class="d-none"
+              #generalPhotoInput />
+            <button type="button" class="btn btn-outline-danger" (click)="generalPhotoInput.click()"><i
+                class="fa fa-plus"></i> Foto Generales</button>
+          </div>
+          <div class="col-12 d-flex flex-wrap">
+            <div class="card me-2 mb-2 border" *ngFor="let photo of generalPhotos; let j = index"
+              style="width: 18rem; height: 18rem; margin: 0px">
+              <app-img-retry [src]="photo.url" class="card-img-top" alt="Foto"
+                style="object-fit: cover; width: 100%; height: 12rem" />
+              <div class="card-body">
+                <button type="button" class="btn btn-danger" (click)="removePhoto('generalPhotos', j)">Eliminar
+                  Foto</button>
+              </div>
+            </div>
+
+            <div class="card me-2 mb-2 border" *ngFor="let photo of generalPhotosTemp; let j = index" style="width: 18rem; height: 18rem; margin: 0px">
+              <img [src]="photo.url" class="card-img-top" alt="Foto" style="object-fit: cover; width: 100%; height: 12rem" />
+              <div class="card-body">
+                <button type="button" class="btn btn-danger" (click)="removePhotoTemp('generalPhotos', j)">Eliminar Foto</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-damages-modal #damagesModal (damageEvent)="removeDamage($event)" (reloadEvent)="confirmDamage($event)"></app-damages-modal>

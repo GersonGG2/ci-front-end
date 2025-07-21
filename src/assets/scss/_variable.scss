@@ -1,0 +1,420 @@
+// ======================================================
+// Theme Fonts
+// ======================================================
+@import url("https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900");
+
+// ======================================================
+// Theme Global setting colors
+// ======================================================
+$themecolor: #FF2014;
+$themecolor-dark: #028ee1;
+$themecolor-alt: #26c6da;
+$theme-light: #fff;
+$theme-dark: #212529;
+
+$skin1: #2962ff;
+$skin2: #fe5419;
+$skin3: #00b0ff;
+$skin4: #6659f7;
+$skin5: #222222;
+$skin6: #fff;
+
+
+// ======================================================
+// Topbar settings
+// ======================================================
+$topbar: $theme-light;
+$topbar-height: 64px;
+$topbar-navlink-padding: 0px 15px;
+$topbar-navlink-font-size: 0.875rem;
+$topbar-navlink-height: 64px;
+$topbar-navbrand-padding: 0 10px 0 10px;
+
+// ======================================================
+// Sidebar settings
+// ======================================================
+$sidebar: $theme-light;
+$sidebar-alt: #e8eff0;
+$sidebar-text: #fff;
+$sidebar-icons: #fff;
+$sidebar-text-dark: #212529;
+$sidebar-icons-dark: #4f5467;
+$sidebar-width-full: 250px;
+$sidebar-width-iconbar: 180px;
+$sidebar-width-mini: 65px;
+
+// ======================================================
+// Layout settings
+// ======================================================
+$boxed-width: 1200px;
+$page-wrapper-max-width: 1300px;
+
+// ======================================================
+// Common settings
+// ======================================================
+$shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+$transitions: 0.2s ease-in;
+$transparent-dark-bg: rgba(0, 0, 0, 0.05);
+$lft: left;
+$rgt: right;
+$card-alt: #e4e9ef;
+
+// ======================================================
+// Mixin settings
+// ======================================================
+%square {
+  border-radius: 0px;
+}
+
+%rotate45 {
+  transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+}
+
+// ======================================================
+// Bootstrap override colors
+// ======================================================
+
+$white: #fff !default;
+$gray-100: #F2F4F5 !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #afb5c1 !default;
+$gray-600: #6c757d !default;
+$gray-700: #4f5467 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+
+$black: #000 !default;
+$blue: #137eff !default;
+$indigo: #6610f2 !default;
+$purple: #8b5edd !default;
+$pink: #e83e8c !default;
+$red: #FF2014 !default;
+$orange: #fb8c00 !default;
+$yellow: #ffbc34 !default;
+$green: #5ac146 !default;
+$teal: #20c997 !default;
+$cyan: #4fc3f7 !default;
+$primary: #FF2014 !default;
+$text-muted: $gray-500 !default;
+$megna: #01c0c8 !default;
+
+$colors: (
+  "blue": $blue,
+  "indigo": $indigo,
+  "purple": $purple,
+  "pink": $pink,
+  "red": $red,
+  "orange": $orange,
+  "yellow": $yellow,
+  "green": $green,
+  "teal": $teal,
+  "cyan": $cyan,
+  "white": $white,
+  "gray": $gray-600,
+  "gray-dark": $gray-800,
+);
+$primary: $blue !default;
+$secondary: $gray-600 !default;
+$success: $green !default;
+$info: $blue !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$light: $gray-100 !default;
+$dark: $gray-800 !default;
+$cyan: $cyan !default;
+$orange: $orange !default;
+
+$light-danger: #f9e7eb;
+$light-success: #c5f7cb;
+$light-warning: #ffedc9;
+$light-primary: #ddd8fd;
+$light-info: #cbe3ff;
+$light-inverse: #f6f6f6;
+$light-megna: #e0f2f4;
+$light-secondary: #dde1e4;
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+  (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "light": $light,
+    "dark": $dark,
+    "cyan": $cyan,
+    "orange": $orange,
+    "purple": $purple,
+    "megna": $megna,
+    "light-danger": $light-danger,
+    "light-success": $light-success,
+    "light-warning": $light-warning,
+    "light-primary": $light-primary,
+    "light-info": $light-info,
+    "light-inverse": $light-inverse,
+    "light-secondary": $light-secondary,
+    "light-megna": $light-megna,
+  ),
+  $theme-colors
+);
+
+// ======================================================
+// Dark Theme Colors Settings
+// ======================================================
+$theme-dark-bg-layout: #323743;
+$theme-dark-text-color: #b2b9bf !default;
+$theme-dark-border-color: rgba(255, 255, 255, 0.2) !default;
+$theme-dark-focus-border-color: rgba(255, 255, 255, 0.4) !default;
+$theme-dark-card-bg: #272b34;
+$theme-dark-bg-light: #3c424e;
+$main-body-bg-dark: $gray-900 !default;
+$background-alt: #2b2b2b !default;
+
+// ======================================================
+// Enable optional
+// ======================================================
+$enable-caret: true !default;
+$enable-rounded: true !default;
+$enable-shadows: false !default;
+$enable-gradients: false !default;
+$enable-transitions: true !default;
+$enable-hover-media-query: false !default;
+$enable-grid-classes: true !default;
+$enable-print-styles: false !default;
+$enable-negative-margins:     true !default;
+
+// ======================================================
+// Body
+// ======================================================
+$main-body-bg: #fff !default;
+$body-bg: #ffffff;
+$body-color: #6a7a8c !default;
+$grid-gutter-width: 20px !default;
+
+// ======================================================
+// Typography
+// ======================================================
+$font-size-base: 0.875rem;
+$font-family-sans-serif: "Rubik", sans-serif !default;
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-bold: 700 !default;
+$h1-font-size: 36px !default;
+$h2-font-size: 30px !default;
+$h3-font-size: 24px !default;
+$h4-font-size: 18px !default;
+$h5-font-size: 16px !default;
+$h6-font-size: 14px !default;
+$headings-margin-bottom: 8px !default;
+$headings-font-weight: 400 !default;
+$headings-color: inherit !default;
+
+// Font size
+$font-sizes: (
+  1: 10px,
+  2: 12px,
+  3: 14px,
+  4: 16px,
+  5: 18px,
+  6: 20px,
+  7: 22px,
+  8: 24px
+);
+
+$display-font-sizes: (
+  1: 5rem,
+  2: 4.5rem,
+  3: 4rem,
+  4: 3.5rem,
+  5: 3rem,
+  6: 2.5rem,
+  7: 2rem
+) !default;
+
+// ======================================================
+// Breadcrumb
+// ======================================================
+$breadcrumb-bg: $body-bg;
+$breadcrumb-margin-bottom: 1.5rem;
+
+// ======================================================
+// Cards
+// ======================================================
+$card-bg: $white;
+$card-border-width: 0px !default;
+$card-border-color: transparent !default;
+$card-border-radius: 0px !default;
+
+// ======================================================
+// Dropdowns
+// ======================================================
+$dropdown-bg: $white;
+$dropdown-link-hover-bg: $gray-200;
+$dropdown-item-padding-x: 1rem !default;
+$dropdown-item-padding-y: 0.65rem !default;
+$dropdown-border-color: $gray-200;
+$dropdown-divider-bg: $gray-100;
+
+// 
+// Buttons
+// 
+$btn-secondary-border: $gray-300;
+$btn-border-radius: 4px !default;
+$btn-border-radius-sm: 4px !default;
+$btn-border-radius-lg: 4px !default;
+$btn-box-shadow: none !default;
+$btn-focus-box-shadow: none !default;
+$input-btn-focus-width: 0 !default;
+$input-btn-focus-color-opacity: 0 !default;
+$input-btn-focus-color: rgba(
+  transparent,
+  $input-btn-focus-color-opacity
+) !default;
+$btn-close-focus-shadow:     none !default;
+
+
+// ======================================================
+// Progressbar
+// ======================================================
+$progress-bg: $gray-100;
+
+// ======================================================
+// Components
+// ======================================================
+$component-active-color: $white !default;
+$component-active-bg: $themecolor !default;
+
+// badge
+$badge-pill-padding-x: 0.2em !default;
+$badge-pill-padding-y: 1em !default;
+$badge-font-size: 0.75rem !default;
+$badge-font-weight: 400 !default;
+$badge-border-radius: 4px !default;
+
+// ======================================================
+// Forms
+// ======================================================
+$input-group-addon-bg: $gray-100;
+$input-border-color: $gray-200;
+$input-group-addon-border-color: $gray-200;
+$input-btn-focus-color: rgba(0, 0, 0, 0.25) !default;
+$input-focus-border-color: rgba(0, 0, 0, 0.25) !default;
+$input-btn-focus-box-shadow: transparent !default;
+$form-select-bg: transparent !default;
+$form-select-focus-box-shadow: none !default;
+$input-bg: none !default;
+$input-focus-box-shadow: none !default;
+$custom-select-focus-box-shadow: transparent !default;
+
+//
+// Checkbox
+//
+$form-check-input-bg: #ebedf3 !default;
+$form-check-input-border: 0 !default;
+$form-check-input-border-radius: 4px !default;
+$form-check-input-width: 1.25em !default;
+$form-check-input-height: 1.25em !default;
+$form-check-input-focus-box-shadow: none !default;
+$form-range-track-bg:             $gray-300 !default;
+
+
+// 
+// Border
+// 
+$border-width: 1px !default;
+$border-color: rgba(0, 0, 0, 0.1) !default;
+$border-radius: 2px !default;
+$border-radius-lg: 4px !default;
+$border-radius-sm: 1px !default;
+
+
+// ======================================================
+// Tables
+// ======================================================
+$table-bg-accent: $gray-100;
+$table-bg-hover: $gray-100;
+$table-hover-bg: $gray-100 !default;
+$table-cell-padding-y: 1rem !default;
+$table-cell-padding-x: 1rem !default;
+$table-bg-level: -10 !default;
+$table-bg-level2: 1 !default;
+$table-bg-level3: -5 !default;
+$table-border-color: $gray-200;
+$table-group-separator-color: $border-color !default;
+$table-striped-bg: $light !default;
+$table-cell-padding-y-sm: 10px !default;
+$table-cell-padding-x-sm: 15px !default;
+$table-hover-color: $gray-700 !default;
+
+// ======================================================
+// Progressbars
+// ======================================================
+$progress-height: 5px !default;
+
+// ======================================================
+// Tabs
+// ======================================================
+$nav-tabs-link-active-bg: $white !default;
+
+// ======================================================
+// Grid breakpoints
+// ======================================================
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1600px,
+) !default;
+
+// ======================================================
+// Navbar
+// ======================================================
+$navbar-dark-color: rgba($white, 0.8) !default;
+$navbar-dark-hover-color: rgba($white, 1) !default;
+
+// 
+// pagination
+// 
+$pagination-bg: $white;
+$pagination-hover-bg: $gray-200;
+$pagination-color: $red !default;
+
+// 
+// accordian
+// 
+$accordion-padding-y:                     1rem !default;
+$accordion-padding-x:                     1rem !default;
+$accordion-bg:                            transparent !default;
+$accordion-button-active-color: $info  !default;
+
+// 
+// alert
+// 
+$alert-bg-scale: 0% !default;
+$alert-border-scale: 0% !default;
+$alert-color-scale: 1% !default;
+
+// 
+// modal
+// 
+$modal-content-bg:  $white;
+
+// 
+// popover
+//
+$popover-bg: $white;
+
+// 
+// toast
+//
+$toast-background-color: $white;

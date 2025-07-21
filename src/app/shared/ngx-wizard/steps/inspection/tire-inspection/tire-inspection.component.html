@@ -1,0 +1,83 @@
+<div style="display: flex; justify-content: space-between; align-items: center">
+  <span><strong>INSPECCIÓN DE LA UNIDAD ({{ information?.insType }}) / FOLIO: {{ information?.inspectionFolio
+      }}</strong></span>
+  <span style="margin-left: auto"><strong>Eco: {{ information?.serialNumber }}</strong></span>
+</div>
+<div class="card border">
+  <div class="card-body">
+    <!-- ==================================-->
+    <!-- ======= Basic Nav ===== -->
+    <!-- ==================================-->
+    <div>
+
+      <div class="row">
+
+        <div class="col">
+          <ul ngbNav #nav="ngbNav" [activeId]="active" class="nav-tabs card-body" (navChange)="onNavChange($event)">
+            <li [ngbNavItem]="1">
+              <button ngbNavLink>LL11</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL11" [itemCode]="LL11" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+              <button ngbNavLink>LL12</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL12" [itemCode]="LL12" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="5">
+              <button ngbNavLink>LL15</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL15" [itemCode]="LL15" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="6">
+              <button ngbNavLink>LL16</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL16" [itemCode]="LL16" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="3">
+              <button ngbNavLink>LL13</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL13" [itemCode]="LL13" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="4">
+              <button ngbNavLink>LL14</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL14" [itemCode]="LL14" ></app-ll>
+              </ng-template>
+            </li>
+
+            <li [ngbNavItem]="7">
+              <button ngbNavLink>LL17</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL17" [itemCode]="LL17" ></app-ll>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="8">
+              <button ngbNavLink>LL18</button>
+              <ng-template ngbNavContent>
+                <app-ll [zoneType]="LL18" [itemCode]="LL18" ></app-ll>
+              </ng-template>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-3 mt-3">
+          <button style="float: right;" type="button" class="btn btn-outline-danger" (click)="isChangeForm()"><i
+              class="fa fa-save"></i> Guardar</button>
+        </div>
+      </div>
+
+
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+  </div>
+</div>
+<div class="form-group text-end space-20">
+  <button type="button" class="btn btn-secondary btn-raised me-2" (click)="previous()">Regresar</button>
+  <button type="button" class="btn btn-danger btn-raised" (click)="next()">Continuar</button>
+</div>

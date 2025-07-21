@@ -1,0 +1,31 @@
+<div class="mb-3 row" [formGroup]="form">
+  <label [for]="controlName" class="col-sm-4 col-form-label">{{ label }}</label>
+  <div class="col-sm-8">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        [formControlName]="controlName"
+        [id]="controlName"
+        [placeholder]="placeholder"
+        (keydown.enter)="onSearch(1, $event)"
+        (blur)="onSearch(2, $event)"
+         (focus)="onInputFocus($event)"
+      />
+      <button class="btn btn-outline-secondary btn-generic-search" type="button" 
+      (click)="openModal.emit()">
+        <i class="fa fa-search"></i>
+      </button>
+      <span
+        class="ng-clear-wrapper-search"
+        *ngIf="isValid"
+        (click)="clearField()"
+        role="button"
+        tabindex="0"
+        title="Clear all"
+      >
+        <ng-container>&times;</ng-container>
+      </span>
+    </div>
+  </div>
+</div>

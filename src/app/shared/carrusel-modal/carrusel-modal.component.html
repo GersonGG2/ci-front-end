@@ -1,0 +1,29 @@
+<ng-template #carruselModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ title }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="row">
+    <div class="col-md-12 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body border-top">
+          @if(images) {
+          <ngb-carousel #carousel class="custom-carousel">
+            @for(item of images; track item) {
+            <ng-template ngbSlide>
+              <div class="picsum-img-wrapper d-flex align-items-center justify-content-center">
+                <app-img-retry [src]="item.url" alt="Foto" class="img-fluid" style="height: 70vh; object-fit: contain;" />
+              </div>
+              <div class="carousel-caption ">
+                <h4>{{ item.imageName }}</h4>
+                <!--p>{{ item.imageName }}</p-->
+              </div>
+            </ng-template>
+            }
+          </ngb-carousel>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

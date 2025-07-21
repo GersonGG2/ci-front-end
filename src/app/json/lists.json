@@ -1,0 +1,296 @@
+{
+  "de_inspection_date_for":[
+    {"id":1, "store_value":"C", "display_value":"Creado"},
+    {"id":2, "store_value":"I", "display_value":"Inspección"},
+    {"id":3, "store_value":"T", "display_value":"Terminación"}
+  ],
+  "de_transaction_status":[
+    {"id":1, "store_value":"N", "display_value":"Pendiente"},
+    {"id":2, "store_value":"C", "display_value":"Confirmada"},
+    {"id":3, "store_value":"X", "display_value":"Cancelado"}
+  ],
+  "odt_rcpt_status_all":[
+    {"id":1, "store_value":"Nuevo", "display_value":"Nuevo"},
+    {"id":2, "store_value":"Aprobado", "display_value":"Aprobado"},
+    {"id":3, "store_value":"Rechazado", "display_value":"Rechazado"},
+    {"id":4, "store_value":"Entregado", "display_value":"Entregado"}
+  ],
+  "odt_rcpt_approve_status":[
+    {"id":1, "store_value":"Aprobado", "display_value":"Aprobado"},
+    {"id":2, "store_value":"Rechazado", "display_value":"Rechazado"}
+  ],
+  "book_status":[
+    {"id": 1, "store_value":"Entrada", "display_value":"Entrada"},
+    {"id": 2, "store_value":"Inspección", "display_value":"Inspección"},
+    {"id": 3, "store_value":"Taller", "display_value":"Taller"},
+    {"id": 4, "store_value":"Control de calidad", "display_value":"Control de calidad"},
+    {"id": 5, "store_value":"Retrabajo", "display_value":"Retrabajo"},
+    {"id": 6, "store_value":"Asignación", "display_value":"Asignación"},
+    {"id": 7, "store_value":"Reservado", "display_value":"Reservado"},
+    {"id": 8, "store_value":"Entrega", "display_value":"Entrega"},
+    {"id": 9, "store_value":"Salida", "display_value":"Salida"}
+  ],
+  "report_plate":[
+    {"id": 1, "store_value":"X", "display_value":"Pendiente"},
+    {"id": 2, "store_value":"Y", "display_value":"Reporte"},
+    {"id": 3, "store_value":"N", "display_value":"Sin Reporte"}
+  ],
+  "report_vin":[
+    {"id": 1, "store_value":"Y", "display_value":"Si"},
+    {"id": 2, "store_value":"N", "display_value":"No"}
+  ],
+  "disponible":[
+    {"id": 1, "store_value":"Y", "display_value":"Si"},
+    {"id": 2, "store_value":"N", "display_value":"No"}
+  ],
+  "de_reservation_status":[
+    {"id":1, "store_value":"Disponible", "display_value":"Disponible"},
+    {"id":2, "store_value":"Reservada", "display_value":"Reservada"},
+    {"id":2, "store_value":"Asignada", "display_value":"Asignada"}
+  ],
+  "de_delivery_status":[
+    {"id":1, "store_value":"Pendiente", "display_value":"Pendiente"},
+    {"id":2, "store_value":"Entregada", "display_value":"Entregada"},
+    {"id":3, "store_value":"In-Process", "display_value":"In-Process"}
+  ],
+  "de_delivery_client_status":[
+    {"id":1, "store_value":"Entregada", "display_value":"Entregada"},
+    {"id":2, "store_value":"In-Process", "display_value":"In-Process"}
+  ],
+  "door_type":[
+    {"id":1, "store_value":"ABATIBLE", "display_value":"ABATIBLE"},
+    {"id":2, "store_value":"CORTINA", "display_value":"CORTINA"}
+  ],
+  "odt_line_status":[
+    {"id":1, "store_value":"En aprobacion", "display_value":"En aprobacion"},
+    {"id":2, "store_value":"Aprobado", "display_value":"Aprobado"},
+    {"id":3, "store_value":"Rechazado", "display_value":"Rechazado"}
+  ],
+  "bonos":[
+    {"id": 1, "store_value":"Y", "display_value":"Si"},
+    {"id": 2, "store_value":"N", "display_value":"No"}
+  ],
+  "odt_type":[
+    {"id": 1, "store_value":"Todas", "display_value":"Todas"},
+    {"id": 2, "store_value":"Mecanica", "display_value":"Mecanica"},
+    {"id": 3, "store_value":"Llantas", "display_value":"Llantas"}
+  ],
+  "odt_movement_type":[
+    {"id": 1, "store_value":"Llantas", "display_value":"Llantas"},
+    {"id": 2, "store_value":"Mecanica", "display_value":"Mecanica"}
+  ],
+  "odt_rebill_status":[
+    {"id": 1, "store_value":"Autorizada", "display_value":"Autorizada"},
+    {"id": 2, "store_value":"Rechazado", "display_value":"Rechazado"}
+  ],
+  "odt_additional_estatus":[
+    {"id": 1, "store_value":"Pendientes", "display_value":"Pendientes"},
+    {"id": 2, "store_value":"Todos", "display_value":"Todos"}
+  ],
+  "odt_estatus":[
+    {"id": 1, "store_value":"En espera", "display_value":"En espera"},
+    {"id": 2, "store_value":"Asignada", "display_value":"Asignada"},
+    {"id": 3, "store_value":"Activada", "display_value":"Activada"},
+    {"id": 4, "store_value":"En pausa", "display_value":"En pausa"},
+    {"id": 5, "store_value":"Finalizada", "display_value":"Finalizada"},
+    {"id": 6, "store_value":"Terminado", "display_value":"Terminado"}
+  ],
+  "ins_estatus":[
+    {"id": 1, "store_value":"P", "display_value":"Por inspeccionar"},
+    {"id": 2, "store_value":"E", "display_value":"En proceso"},
+    {"id": 3, "store_value":"C", "display_value":"Concluida"}
+  ],
+  "ins_type":[
+    {"id": 1, "store_value":"HI", "display_value":"Unidad (HI)"},
+    {"id": 2, "store_value":"HILL", "display_value":"LLantas (HILL)"}
+  ],
+  "ins_trx_type":[
+    {"id": 1, "store_value":"I", "display_value":"Interno"},
+    {"id": 2, "store_value":"E", "display_value":"Externo"}
+  ],
+  "ins_movement_type":[
+    {"id": 1, "store_value":"E", "display_value":"Entrada"},
+    {"id": 2, "store_value":"S", "display_value":"Salida"}
+  ],
+  "month_list":[
+    {"id": 1, "month_id": "01","store_value": "JAN", "display_value": "Enero", "short_disp_value": "Ene"},
+    {"id": 2, "month_id": "02","store_value": "FEB", "display_value": "Febrero", "short_disp_value": "Feb"},
+    {"id": 3, "month_id": "03","store_value": "MAR", "display_value": "Marzo", "short_disp_value": "Mar"},
+    {"id": 4, "month_id": "04","store_value": "APR", "display_value": "Abril", "short_disp_value": "Abr"},
+    {"id": 5, "month_id": "05","store_value": "MAY", "display_value": "Mayo", "short_disp_value": "May"},
+    {"id": 6, "month_id": "06","store_value": "JUN", "display_value": "Junio", "short_disp_value": "Jun"},
+    {"id": 7, "month_id": "07","store_value": "JUL", "display_value": "Julio", "short_disp_value": "Jul"},
+    {"id": 8, "month_id": "08","store_value": "AUG", "display_value": "Agosto", "short_disp_value": "Ago"},
+    {"id": 9, "month_id": "09","store_value": "SEP", "display_value": "Septiembre", "short_disp_value": "Sep"},
+    {"id": 10,"month_id": "10", "store_value": "OCT", "display_value": "Octubre", "short_disp_value": "Oct"},
+    {"id": 11,"month_id": "11", "store_value": "NOV", "display_value": "Noviembre", "short_disp_value": "Nov"},
+    {"id": 12,"month_id": "12", "store_value": "DEC", "display_value": "Diciembre", "short_disp_value": "Dic"}
+  ],
+  "act_inact_status":[
+    {"id": 1, "store_value":"Y", "display_value":"Activo"},
+    {"id": 2, "store_value":"N", "display_value":"Inactivo"}
+  ],
+  "semanal_e_status":[
+    {"id": 1, "store_value":"Ausencia", "display_value":"Ausencia"},
+    {"id": 2, "store_value":"Incapacidad", "display_value":"Incapacidad"}
+  ],
+  "e_status":[
+    {"id": 1, "store_value":"Activo", "display_value":"Activo"},
+    {"id": 2, "store_value":"Ausencia", "display_value":"Ausencia"},
+    {"id": 3, "store_value":"Incapacidad", "display_value":"Incapacidad"},
+    {"id": 4, "store_value":"Baja", "display_value":"Baja"}
+  ],
+  "in_ex_type":[
+    {"id": 1, "store_value":"Interno", "display_value":"Interno"},
+    {"id": 2, "store_value":"Externo", "display_value":"Externo"}
+  ],
+  "trx_type":[
+    {"id": 1, "store_value":"E", "display_value":"ENTRADA"},
+    {"id": 2, "store_value":"S", "display_value":"SALIDA"}
+  ],
+  "item_category_type":[
+    {"id": 1, "store_value":"AUTOS", "display_value":"AUTOS"},
+    {"id": 2, "store_value":"MOTOR", "display_value":"MOTOR"},
+    {"id": 3, "store_value":"TRAILER", "display_value":"TRAILER"}
+  ],
+  "entry_movement":[
+    {"id": 1, "store_value":"Devolución", "display_value":"Devolución", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 2, "store_value":"Entrada Especial", "display_value":"Entrada Especial", "lbl_name": "Nombre del fabricante", "cond_name": "SPECIAL_ENTRY"},
+    {"id": 3, "store_value":"Movimiento de patio", "display_value":"Movimiento de patio", "lbl_name": "Origen", "cond_name": "LINE_BRANCH_ID"},
+    {"id": 4, "store_value":"Mantenimiento", "display_value":"Mantenimiento", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 5, "store_value":"Unidad nueva", "display_value":"Unidad nueva", "lbl_name": "Nombre del fabricante", "cond_name": "MANUFACTURER_NAME"},
+    {"id": 6, "store_value":"Siniestro", "display_value":"Siniestro", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 7, "store_value":"Resguardo", "display_value":"Resguardo", "lbl_name": "Origen", "cond_name": "CUSTOMER_NAME"},
+    {"id": 8, "store_value":"Motor", "display_value":"Motor", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 9, "store_value":"Taller Externo", "display_value":"Taller Externo", "lbl_name": "Nombre de Taller", "cond_name": "WORKSHOP_NAME"},
+    {"id": 10, "store_value":"Preinspeccion", "display_value":"Preinspeccion", "lbl_name": "Preinspeccion", "cond_name": "CUSTOMER_NAME"},
+    {"id": 11, "store_value":"Mantenimiento Externo", "display_value":"Mantenimiento Externo", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"}
+  ],
+  "manual_entry_movement":[
+    {"id": 4, "store_value":"Mantenimiento", "display_value":"Mantenimiento", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 10, "store_value":"Preinspeccion", "display_value":"Preinspeccion", "lbl_name": "Preinspeccion", "cond_name": "CUSTOMER_NAME"},
+    {"id": 11, "store_value":"Mantenimiento Externo", "display_value":"Mantenimiento Externo", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"}
+  ],
+  "exit_movement":[
+    {"id": 1, "store_value":"Venta", "display_value":"Venta", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 2, "store_value":"Renta", "display_value":"Renta", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 3, "store_value":"Mantenimiento", "display_value":"Mantenimiento", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 4, "store_value":"Movimiento de patio", "display_value":"Movimiento de patio", "lbl_name": "Destino", "cond_name": "LINE_BRANCH_ID"},
+    {"id": 5, "store_value":"Siniestro", "display_value":"Siniestro", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 6, "store_value":"Resguardo", "display_value":"Resguardo", "lbl_name": "Destino", "cond_name": "CUSTOMER_NAME"},
+    {"id": 7, "store_value":"Motor", "display_value":"Motor", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"},
+    {"id": 8, "store_value":"Taller Externo", "display_value":"Taller Externo", "lbl_name": "Nombre de Taller", "cond_name": "WORKSHOP_NAME"},
+    {"id": 9, "store_value":"Mantenimiento Externo", "display_value":"Mantenimiento Externo", "lbl_name": "Razón social del cliente", "cond_name": "CUSTOMER_NAME"}
+  ],
+  "transaction_type":[
+    {"id": 1, "store_value":"Devolución", "display_value":"Devolución"},
+    {"id": 2, "store_value":"Entrada Especial", "display_value":"Entrada Especial"},
+    {"id": 3, "store_value":"Movimiento de patio", "display_value":"Movimiento de patio"},
+    {"id": 4, "store_value":"Mantenimiento", "display_value":"Mantenimiento"},
+    {"id": 5, "store_value":"Unidad nueva", "display_value":"Unidad nueva"},
+    {"id": 6, "store_value":"Siniestro", "display_value":"Siniestro"},
+    {"id": 7, "store_value":"Resguardo", "display_value":"Resguardo"},
+    {"id": 8, "store_value":"Motor", "display_value":"Motor"},
+    {"id": 9, "store_value":"Taller Externo", "display_value":"Taller Externo"},
+    {"id": 10, "store_value":"Venta", "display_value":"Venta"},
+    {"id": 11, "store_value":"Renta", "display_value":"Renta"}
+  ],
+"state_codes":[
+  {"id": 1, "store_value":"Aguascalientes", "display_value":"Aguascalientes", "meaning":"AGS"},
+  {"id": 2, "store_value":"Baja California", "display_value":"Baja California", "meaning":"BCN"},
+  {"id": 3, "store_value":"Baja California Sur", "display_value":"Baja California Sur", "meaning":"BCS"},
+  {"id": 4, "store_value":"Campeche", "display_value":"Campeche", "meaning":"CAM"},
+  {"id": 5, "store_value":"Coahuila de Zaragoza", "display_value":"Coahuila de Zaragoza", "meaning":"COA"},
+  {"id": 6, "store_value":"Colima", "display_value":"Colima", "meaning":"COL"},
+  {"id": 7, "store_value":"Chiapas", "display_value":"Chiapas", "meaning":"CHS"},
+  {"id": 8, "store_value":"Chihuahua", "display_value":"Chihuahua", "meaning":"CHI"},
+  {"id": 9, "store_value":"Ciudad de México", "display_value":"Ciudad de México", "meaning":"CDMX"},
+  {"id": 10, "store_value":"Durango", "display_value":"Durango", "meaning":"DGO"},
+  {"id": 11, "store_value":"Guanajuato", "display_value":"Guanajuato", "meaning":"GTO"},
+  {"id": 12, "store_value":"Guerrero", "display_value":"Guerrero", "meaning":"GRO"},
+  {"id": 13, "store_value":"Hidalgo", "display_value":"Hidalgo", "meaning":"HGO"},
+  {"id": 14, "store_value":"Jalisco", "display_value":"Jalisco", "meaning":"JAL"},
+  {"id": 15, "store_value":"México", "display_value":"México", "meaning":"EM"},
+  {"id": 16, "store_value":"Michoacán de Ocampo", "display_value":"Michoacán de Ocampo", "meaning":"MICH"},
+  {"id": 17, "store_value":"Morelos", "display_value":"Morelos", "meaning":"MOR"},
+  {"id": 18, "store_value":"Nayarit", "display_value":"Nayarit", "meaning":"NAY"},
+  {"id": 19, "store_value":"Nuevo León", "display_value":"Nuevo León", "meaning":"NL"},
+  {"id": 20, "store_value":"Oaxaca", "display_value":"Oaxaca", "meaning":"OAX"},
+  {"id": 21, "store_value":"Puebla", "display_value":"Puebla", "meaning":"PUE"},
+  {"id": 22, "store_value":"Querétaro", "display_value":"Querétaro", "meaning":"QRO"},
+  {"id": 23, "store_value":"Quintana Roo", "display_value":"Quintana Roo", "meaning":"QR"},
+  {"id": 24, "store_value":"San Luis Potosí", "display_value":"San Luis Potosí", "meaning":"SLP"},
+  {"id": 25, "store_value":"Sinaloa", "display_value":"Sinaloa", "meaning":"SIN"},
+  {"id": 26, "store_value":"Sonora", "display_value":"Sonora", "meaning":"SON"},
+  {"id": 27, "store_value":"Tabasco", "display_value":"Tabasco", "meaning":"TAB"},
+  {"id": 28, "store_value":"Tamaulipas", "display_value":"Tamaulipas", "meaning":"TAM"},
+  {"id": 29, "store_value":"Tlaxcala", "display_value":"Tlaxcala", "meaning":"TLAX"},
+  {"id": 30, "store_value":"Veracruz de Ignacio de la Llave", "display_value":"Veracruz de Ignacio de la Llave", "meaning":"VER"},
+  {"id": 31, "store_value":"Yucatán", "display_value":"Yucatán", "meaning":"YUC"},
+  {"id": 32, "store_value":"Zacatecas", "display_value":"Zacatecas", "meaning":"ZAC"}],
+"contact_type":[
+  {"id":1, "store_value":"OWNER", "display_value":"Propietario"},
+  {"id":2, "store_value":"FAMILY", "display_value":"Miembros de la familia"},
+  {"id":3, "store_value":"TENENT", "display_value":"Inquilino"},
+  {"id":4, "store_value":"WAITER", "display_value":"Mozo"},
+  {"id":5, "store_value":"EMPLOYEE", "display_value":"Empleado"},
+  {"id":6, "store_value":"SERVENT", "display_value":"Sirviente"},
+  {"id":7, "store_value":"HANDYMAN", "display_value":"Personal de mantenimiento"},
+  {"id":8, "store_value":"BODYGUARD", "display_value":"Guardaespaldas"}
+],
+"tag_type":[
+  {"id":1, "store_value":"CREDENTIAL", "display_value":"Credencial"},
+  {"id":2, "store_value":"ACCESS", "display_value":"Acceso"},
+  {"id":3, "store_value":"OTHER", "display_value":"Otro"}
+],
+"frequency_type":[
+  {"id":1, "store_value":"ONCE", "display_value":"Una vez"},
+  {"id":2, "store_value":"MONTHLY", "display_value":"Mensual"}
+],
+"approval_status":[
+  {"id":1, "store_value":"APPROVED", "display_value":"Aprobado"},
+  {"id":2, "store_value":"REJECTED", "display_value":"Rechazado"}
+],
+"document_set_type":[
+  {"id":1, "store_value":"BS", "display_value":"Bank Statement"},
+  {"id":2, "store_value":"EN", "display_value":"Entity"},
+  {"id":3, "store_value":"RES", "display_value":"Residents"},
+  {"id":4, "store_value":"EMP", "display_value":"Employee"},
+  {"id":5, "store_value":"DEPT", "display_value":"Department"}
+],
+"resident_status":[
+  {"id":1, "store_value":"A", "display_value":"Activo"},
+  {"id":2, "store_value":"C", "display_value":"Convenio"},
+  {"id":3, "store_value":"S", "display_value":"Suspendido"},
+  {"id":4, "store_value":"I", "display_value":"Inactivo"},
+  {"id":5, "store_value":"E", "display_value":"Expulsado"}
+],
+"efecto_comprobante":[
+  {"id":1, "store_value":"Ingreso", "display_value":"Ingreso"},
+  {"id":2, "store_value":"Egreso", "display_value":"Egreso"},
+  {"id":3, "store_value":"Nómina", "display_value":"Nómina"},
+  {"id":4, "store_value":"Pago", "display_value":"Pago"}
+],
+"estado_comprobante":[
+  {"id":1, "store_value":"Vigente", "display_value":"Vigente"},
+  {"id":2, "store_value":"Cancelado", "display_value":"Cancelado"}
+] ,
+"incoming_movement": [
+    { "value": "Devolución", "description": "Devolución" },
+    { "value": "Mantenimiento", "description": "Mantenimiento" },
+    { "value": "Entrada Especial", "description": "Entrada Especial" },
+    { "value": "Movimiento de patio", "description": "Movimiento de patio" },
+    { "value": "Unidad nueva", "description": "Unidad nueva" },
+    { "value": "Siniestro", "description": "Siniestro" },
+    { "value": "Resguardo", "description": "Resguardo" },
+    { "value": "Motor", "description": "Motor" },
+    { "value": "Taller Externo", "description": "Taller Externo" },
+    { "value": "Preinspeccion", "description": "Preinspección" },
+    { "value": "Mantenimiento Móvil", "description": "Mantenimiento Móvil" }
+  ],
+  "inspectionTypeList": [
+    { "value": "HI", "label": "Unidad (HI)" },
+    { "value": "HILL", "label": "Llantas (HILL)" },
+    { "value": "HI_HILL", "label": "HI & HILL" }
+  ]
+}

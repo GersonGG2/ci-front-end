@@ -1,0 +1,76 @@
+.custom-nav2 {
+  .nav-item {
+    margin-right: 10px !important;
+  }
+
+  .nav-link {
+    border: 1px solid red !important;
+    border-radius: 4px !important;
+    color: red !important;
+  }
+
+  .nav-link.active {
+    border-color: red !important;
+    background-color: red !important;
+    color: white !important;
+  }
+
+  .nav-link:hover {
+    background-color: red !important;
+    color: white !important;
+  }
+}
+
+.nav-tabs {
+  border-bottom: none !important;
+  .nav-item {
+    margin-right: -1px !important;
+  }
+
+  .nav-link {
+    border: 1px solid red !important;
+    color: red !important;
+    border-radius: 0 !important;
+  }
+
+  .nav-item:first-child .nav-link {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+  }
+
+  .nav-item:last-child .nav-link {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+  }
+
+  .nav-link.active {
+    background-color: red !important;
+    color: white !important;
+  }
+}
+
+.img-fluid {
+  cursor: crosshair; /* Cambia la forma del cursor */
+}
+
+.circle {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px dotted black;
+}
+
+::ng-deep .modal-dialog {
+  max-width: 90%; /* Ajusta este valor según tus necesidades */
+}
+
+::ng-deep .modal-content {
+  width: 100%;
+}

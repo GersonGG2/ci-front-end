@@ -1,0 +1,268 @@
+<!-- ============================================================== -->
+<!-- toggle and nav items -->
+<!-- ============================================================== -->
+<!-- <ul class="navbar-nav float-start">
+    <li class="nav-item d-none">
+        <a (click)="toggleSidebar.emit()" class="nav-link sidebartoggler waves-effect waves-light"
+            href="javascript:void(0)">
+            <i class="mdi mdi-menu fs-8"></i>
+        </a>
+    </li>
+    ============================================================== -->
+<!-- Search -->
+<!-- ==============================================================
+    <li class="nav-item search-box">
+        <a (click)="showSearch = !showSearch" class="nav-link waves-effect waves-dark" href="javascript:void(0)">
+            <div class="d-flex align-items-center">
+                <i class="mdi mdi-magnify fs-6 me-1"></i>
+                <div class="ms-1 d-none d-sm-block">
+                    <span>Search</span>
+                </div>
+            </div>
+        </a>
+        <form class="app-search position-absolute" [ngClass]="{'show-search': showSearch}">
+            <input type="text" class="form-control" placeholder="Search &amp; enter">
+            <a class="srh-btn" (click)="showSearch = !showSearch">
+                <i class="ti-close"></i>
+            </a>
+        </form>
+    </li>
+</ul> -->
+
+<!-- Navbar Header for horizontal only -->
+<div class="navbar-header d-none d-lg-block">
+    <!-- This is for the sidebar toggle which is visible on mobile only -->
+    <a (click)="showMobileMenu = !showMobileMenu" class="nav-toggler waves-effect waves-light d-block d-lg-none"
+        href="javascript:void(0)">
+        <i [ngClass]="(showMobileMenu)?'ti-close':'ti-menu'"></i>
+    </a>
+    <!-- ============================================================== -->
+    <!-- Logo -->
+    <!-- ============================================================== -->
+    <a class="navbar-brand" href="/">
+        <!-- Logo icon -->
+        <b class="logo-icon">
+            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+            <!-- Dark Logo icon -->
+            <img src="assets/images/logo-icon-tip.svg" alt="homepage" class="dark-logo" />
+            <!-- Light Logo icon -->
+            <img src="assets/images/logo-icon-tip.svg" alt="homepage" class="light-logo" />
+        </b>
+        <!--End Logo icon -->
+        <!-- Logo text -->
+        <span class="logo-text">
+            <!-- dark Logo text -->
+            <img src="assets/images/logo-text-tip.svg" alt="homepage" class="dark-logo" />
+            <!-- Light Logo text -->
+            <img src="assets/images/logo-text-tip.svg" class="light-logo" alt="homepage" />
+        </span>
+    </a>
+    <!-- ============================================================== -->
+    <!-- End Logo -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Toggle which is visible on mobile only -->
+    <!-- ============================================================== -->
+    <a class="topbartoggler d-block d-lg-none waves-effect waves-light" href="javascript:void(0)"
+        (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent">
+        <i class="ti-more"></i>
+    </a>
+</div>
+
+<!-- ============================================================== -->
+<!-- Right side toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-md-right">
+    <!-- ============================================================== -->
+    <!-- create new -->
+    <!-- ============================================================== -->
+    <li class="nav-item dropdown hidden" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown"
+            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="flag-icon flag-icon-{{selectedLanguage.icon}}"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" ngbDropdownMenu>
+            @for(lang of languages; track lang){
+            <span class="dropdown-item" href="#" (click)="changeLanguage(lang)">
+                <i class="flag-icon flag-icon-{{lang.icon}} me-2"></i>
+                <span>{{lang.language}}
+                    @if(lang.type){
+                    <span>({{lang.type}})</span>
+                    }
+                </span>
+            </span>
+            }
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- Messages -->
+    <!-- ============================================================== -->
+    <!-- <li class="nav-item dropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)" id="2"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fs-7 mdi mdi-email-outline"></i>
+
+        </a>
+        <div class="dropdown-menu dropdown-menu-end mailbox" aria-labelledby="2" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-danger"></span>
+            </span>
+            <ul class="list-style-none">
+                <li>
+                    <div class="drop-title text-white bg-danger">
+                        <h4 class="mb-0 mt-1">5 New</h4>
+                        <span class="fw-light">Messages</span>
+                    </div>
+                </li>
+                <li>
+                    <ng-scrollbar class="message-center message-body">
+                        Message
+                        @for(mymessage of mymessages; track mymessage){
+                            <a href="javascript:void(0)" class="message-item border-bottom d-block text-decoration-none">
+                                <span class="user-img position-relative d-inline-block">
+                                    <img src="{{mymessage.useravatar}}" alt="user" class="rounded-circle">
+                                    <span class="profile-status rounded-circle d-inline-block {{mymessage.status}} float-end"></span>
+                                </span>
+                                <span class="mail-contnet d-inline-block w-75 ps-3 align-middle">
+                                    <h5 class="message-title">{{mymessage.from}}</h5>
+                                    <span class="mail-desc fs-2 d-block text-muted text-truncate">{{mymessage.subject}}</span>
+                                    <span class="time fs-2 d-block text-muted text-truncate">{{mymessage.time}}</span>
+                                </span>
+                            </a>
+                        }
+                    </ng-scrollbar>
+                </li>
+                <li>
+                    <a class="nav-link text-center link" href="javascript:void(0);">
+                        <b>See all e-Mails</b>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li> -->
+    <!-- ============================================================== -->
+    <!-- End Messages -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Comment -->
+    <!-- ============================================================== -->
+    <!-- Sección de notificaciones -->
+    <li class="nav-item dropdown" #dropdown="ngbDropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="mdi mdi-bell-outline fs-7"></i>
+            <!-- Ocultar badge si no hay notificaciones -->
+            <span *ngIf="unreadCount > 0" class="badge rounded-pill bg-info noti">{{unreadCount}}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end mailbox dropdown-notification" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-primary"></span>
+            </span>
+            <ul class="list-style-none">
+                <li>
+                    <div class="drop-title bg-primary text-white">
+                        <h4 class="mb-0 mt-1">
+                            <span *ngIf="unreadCount > 0">{{unreadCount}} Nuevas</span>
+                            <span *ngIf="unreadCount === 0">No hay nuevas</span>
+                        </h4>
+                        <span class="fw-light">Notificaciones</span>
+                    </div>
+                </li>
+                <li>
+                    <!-- Estado de carga -->
+                    <div *ngIf="loading" class="text-center my-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor simple con estilo de altura adaptable -->
+                    <div *ngIf="!loading" style="max-height: 350px; overflow-y: auto;">
+
+                        <!-- Mensaje cuando no hay notificaciones -->
+                        <div *ngIf="notifications.length === 0" class="text-center my-3">
+                            <i class="mdi mdi-bell-off-outline fs-3 text-muted"></i>
+                            <p class="mb-0 mt-2">No hay notificaciones</p>
+                        </div>
+
+                        <!-- Lista de notificaciones con botones de acción -->
+                        <div *ngFor="let notification of notifications" class="position-relative">
+                            <!-- Botón para marcar como leído - Corregido margen y padding -->
+                            <button class="btn btn-sm btn-light position-absolute end-0 me-3 mt-3"
+                                style="z-index: 5; padding: 0.25rem 0.5rem;"
+                                (click)="markAsRead(notification.id, $event)">
+                                <i class="mdi mdi-check"></i>
+                            </button>
+
+                            <!-- Notificación con padding adecuado -->
+                            <a [routerLink]="['/notifications']"
+                                class="message-item border-bottom d-block text-decoration-none px-3 py-3"
+                                (click)="dropdown.close()">
+                                <div class="d-flex">
+                                    <span class="btn btn-circle rounded-circle {{ notification.btn }} me-3">
+                                        <i class="{{notification.icon}}"></i>
+                                    </span>
+                                    <span class="mail-contnet d-inline-block w-75 ps-2 align-middle">
+                                        <h5 class="message-title mb-1">{{notification.title}}</h5>
+                                        <span
+                                            class="mail-desc fs-2 d-block text-muted text-truncate mb-1">{{notification.subject}}</span>
+                                        <span class="time fs-2 d-block text-muted">{{notification.time}}</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Enlace solo si hay notificaciones -->
+                <li *ngIf="notifications.length > 0">
+                    <a class="nav-link text-center py-2" [routerLink]="['/notifications']" (click)="dropdown.close()">
+                        <strong>Ver todas las notificaciones</strong>
+                        <i class="fa fa-angle-right" style="margin-left: 10px;"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- End Comment -->
+    <!-- ============================================================== -->
+
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+    <li class="nav-item dropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
+            href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{{ image }}" alt="user" class="rounded-circle" width="40">
+            <span class="ms-1 font-medium d-none d-sm-inline-block">{{ name }}<i
+                    class="mdi mdi-chevron-down"></i></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end user-dd" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-primary"></span>
+            </span>
+            <div class="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
+                <div class="">
+                    <img src="{{ image }}" alt="user" class="rounded-circle" width="60">
+                </div>
+                <div class="ms-2">
+                    <h4 class="mb-0">{{ name }}</h4>
+                    <p class=" mb-0">{{ email }}</p>
+                </div>
+            </div>
+
+            <a *ngIf="false" class="dropdown-item" href="javascript:void(0)" (click)="onRecover()">
+                <i class="ti-email me-1 ms-1"></i>Cambiar contraseña</a>
+            <div class="dropdown-divider"></div>
+
+            <a class="dropdown-item" href="javascript:void(0)" (click)="onLogout()">
+                <i class="fa fa-power-off me-1 ms-1"></i>Cerrar sesión</a>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+</ul>

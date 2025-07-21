@@ -1,0 +1,137 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ dialogTitle }}</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form [formGroup]="planLineForm">
+        <div class="row">
+          <div class="col-sm-6" *ngIf="inspectionType === 'HI'">
+            <div class="mb-3">
+              <label class="form-label">Sección</label>
+              <ng-select formControlName="zoneType" placeholder="Sección" [clearable]="false"
+                (change)="doChangeZoneType()" required>
+                @for (item of zoneTypes; track item) {
+                <ng-option [value]="item.zoneType">{{ item.zoneType }}</ng-option>
+                }
+              </ng-select>
+              <!--div class="text-danger" *ngIf="getControls.zoneType.errors?.required">Este campo es requerido.</div-->
+            </div>
+          </div>
+          <div class="col-sm-6" *ngIf="inspectionType === 'HI'">
+            <div class="mb-3">
+              <label class="form-label">Zona</label>
+              <ng-select formControlName="zoneName" placeholder="Zona" [clearable]="true" (change)="doChangeZoneName()"
+                required>
+                @for (item of zones; track item) {
+                <ng-option [value]="item.zoneId">{{ item.zoneName }}</ng-option>
+                }
+              </ng-select>
+              <!--div class="text-danger" *ngIf="getControls.zoneName.errors?.required">Este campo es requerido.</div-->
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12" *ngIf="inspectionType === 'HILL'">
+            <div class="mb-3">
+              <label class="form-label">Condición Daño</label>
+              <ng-select formControlName="damageCondition" placeholder="Condición Daño" [clearable]="false"
+                [disabled]="inspectionType !== 'HILL'" required>
+                @for (item of damageConditions; track item) {
+                <ng-option [value]="item.listValueId">{{ item.meaning }}</ng-option>
+                }
+              </ng-select>
+              <!--div class="text-danger" *ngIf="getControls.dano_condition.errors?.required">{{'COMMON.FIELD_IS_REQUIRED' | translate }}</div-->
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="mb-3">
+              <label for="activity">Actividad</label>
+              <div class="input-group">
+                <input type="text" id="activity" (keydown.enter)="searchActivityCode($event); openActivitiesModalPage()"
+                  (blur)="searchActivityCode($event)" class="form-control" formControlName="activity"
+                  placeholder="Ingrese la actividad" />
+                <input type="hidden" formControlName="activityAll" />
+                <button class="btn btn-outline-secondary" type="button" (click)="openActivitiesModalPage()"
+                  [disabled]="inspectionType === 'HI' && planLineForm.value.zoneType == null">
+                  <i class="fa fa-search"></i>
+                </button>
+                <button class="btn btn-outline-secondary" type="button"
+                  (click)="planLineForm.get('activity')?.setValue('')">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <label class="form-label">Falla</label>
+              <ng-select formControlName="failure" placeholder="Falla" [clearable]="false" required>
+                @for (item of failures; track item) {
+                <ng-option [value]="item.listValue">{{ item.meaning }}</ng-option>
+                }
+              </ng-select>
+
+              <!--div class="text-danger" *ngIf="getControls.falla.errors?.required">
+                {{ 'COMMON.FIELD_IS_REQUIRED' | translate }}
+              </div-->
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Cantidad</label>
+            <input required type="text" class="form-control" maxlength="5" formControlName="quantity"
+              placeholder="Cantidad" />
+
+            <!--div class="text-danger" *ngIf="getControls.cant.errors?.required">{{ 'COMMON.FIELD_IS_REQUIRED' | translate }}</div-->
+          </div>
+        </div>
+
+        <div class="row mb-3" *ngIf="isHideButton">
+          <div class="col-md-12">
+            <input hidden type="file" multiple accept=".jpg, .jpeg, .png" #fileChooser (change)="addPhotos($event)" />
+            <button type="button" class="btn btn-outline-primary btn-icon-text me-2" (click)="fileChooser.click()">
+              <i class="feather icon-plus btn-icon-prepend"></i>
+              Elegir archivo
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-icon-text me-2" (click)="deleteAllFiles()">
+              <i class="feather icon-trash btn-icon-prepend"></i>
+              Eliminar todo
+            </button>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4" *ngFor="let photo of planLineForm.value.photos; let i = index">
+            <div class="card">
+              <div class="card-body">
+                <app-img-retry [src]="!photo.url ? photo : photo.url" class="card-img-top" alt="Foto"
+                  style="object-fit: cover; width: 100%; height: 12rem" />
+                <div class="d-flex justify-content-center" *ngIf="isHideButton">
+                  <button type="button" class="btn btn-outline-primary btn-icon-text me-2" (click)="doDeleteImage(i)">
+                    <i class="feather icon-trash btn-icon-prepend"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3 form-group">
+          <label class="col-sm-3 col-form-label">Comentarios</label>
+          <div class="col-sm-9">
+            <textarea class="form-control" formControlName="comments" placeholder="Comentarios" maxlength="300"
+              rows="5"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Close')">Cerrar</button>
+    <button type="button" class="btn btn-primary" (click)="doSaveData()" *ngIf="isHideButton">Guardar</button>
+  </div>
+</ng-template>

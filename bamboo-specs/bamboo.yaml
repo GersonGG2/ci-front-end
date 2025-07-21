@@ -1,0 +1,461 @@
+---
+version: 2
+plan:
+  project-key: TIPSPA
+  key: DYAPPWEBWEB
+  name: dyappweb
+  description: dyappweb
+stages:
+  - Default Stage:
+      manual: false
+      final: false
+      jobs:
+        - Default Job
+Default Job:
+  key: JOB1
+  other:
+    clean-working-dir: true
+    all-other-apps:
+      custom:
+        auto: {}
+        buildHangingConfig.enabled: 'false'
+  tasks:
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.bamboo-variable-inject-plugin:dump
+        configuration: {}
+    - clean
+    - checkout:
+        force-clean-build: true
+        description: Checkout Default Repository
+    - checkout:
+        repository: tip-deployments-scripts
+        path: ./deploymentFiles
+        force-clean-build: false
+        description: Deployment Script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            echo "Copiando archivos a rutas de uso"
+            echo $bamboo_ocpDeploymentEnvironment
+            cp -R ./deploymentFiles/$bamboo_ocpDeploymentEnvironment/$bamboo_applicationName/* ./
+            echo leyendo variable de ambiente $bamboo_buildResultKey
+            sed 's/container.version/'"$bamboo_buildResultKey"'/g' ./app-create.yaml > ./app-create.new
+            rm ./app-create.yaml
+            mv ./app-create.new ./app-create.yaml
+        description: Copy configuration files
+    - any-task:
+        plugin-key: ch.mibex.bamboo.sonar4bamboo:sonar4bamboo.sonarscannertask
+        configuration:
+          chosenSonarConfigId: '1'
+          sonarServerSelection: fromServerConfig
+          sonarMainBranch: master
+          sonarProjectName: ${bamboo.applicationName}
+          buildJdk: JDK 11
+          sonarLanguage: js
+          sonarSources: ./src
+          brokenQualityGateOption: skip
+          sonarPullRequestAnalysis: 'true'
+          overrideSonarLoginVariable: bambooPassword
+          incrementalNoPullRequest: incrementalModeFailBuildField
+          sonarProjectVersion: ${bamboo.buildResultKey}
+          executable: SONAR SCANNER
+          illegalBranchCharsReplacement: '-'
+          sonarEditionSelection: COMMERCIAL_EDITION
+          incrementalModeNotPossible: incrementalModeRunFullAnalysis
+          additionalProperties: |
+            -Dsonar.branch.name=develop
+            -Dsonar.branch.target=develop
+            -Dsonar.qualitygate.wait=false
+            -Dsonar.projectVersion=${bamboo.sonarAppVersion}
+          autoBranch: 'true'
+          sonarProjectKey: ${bamboo.applicationName}
+          overrideSonarBuildConfig: 'true'
+        conditions:
+          - variable:
+              equals:
+                planRepository.branchName: disabled
+        description: Sonar Check
+    - any-task:
+        plugin-key: ch.mibex.bamboo.sonar4bamboo:sonar4bamboo.sonarscannertask
+        configuration:
+          chosenSonarConfigId: '1'
+          sonarServerSelection: fromServerConfig
+          sonarMainBranch: master
+          sonarProjectName: ${bamboo.applicationName}
+          buildJdk: JDK 11
+          sonarLanguage: js
+          sonarSources: ./src
+          brokenQualityGateOption: skip
+          sonarPullRequestAnalysis: 'true'
+          overrideSonarLoginVariable: bambooPassword
+          incrementalNoPullRequest: incrementalModeFailBuildField
+          sonarProjectVersion: ${bamboo.buildResultKey}
+          executable: SONAR SCANNER
+          illegalBranchCharsReplacement: '-'
+          sonarEditionSelection: COMMERCIAL_EDITION
+          incrementalModeNotPossible: incrementalModeRunFullAnalysis
+          additionalProperties: |
+            -Dsonar.branch.name=${bamboo.repository.git.branch}
+            -Dsonar.branch.name=integration
+            -Dsonar.branch.target=integration
+            -Dsonar.qualitygate.wait=false
+            -Dsonar.projectVersion=${bamboo.sonarAppVersion}
+          autoBranch: 'true'
+          sonarProjectKey: ${bamboo.applicationName}
+          overrideSonarBuildConfig: 'true'
+        conditions:
+          - variable:
+              equals:
+                planRepository.branchName: integration
+        description: Sonar Check
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.bamboo-docker-plugin:task.docker.cli
+        configuration:
+          commandOption: build
+          repository: iad.ocir.io/axovvakz7seb/tipcontainerrepository${bamboo.ocpDeploymentContainer}/${bamboo.applicationName}:${bamboo.buildResultKey}
+          dockerfileOption: existing
+          nocache: 'false'
+          save: 'false'
+          buildOptions: --build-arg bamboo_nexusRegistry=${bamboo.nexusRegistry} --build-arg bamboo_nexusUserName=${bamboo.nexusUserName} --build-arg bamboo_nexusUserPassword=${bamboo.nexusUserPassword} --build-arg bamboo_nexusUserMail=${bamboo.nexusUserMail} --build-arg bamboo_tagType=${bamboo.tagType} --build-arg bamboo_buildResultKey=${bamboo.buildResultKey} --build-arg bamboo_nexusToken=${bamboo.nexusToken} --build-arg bamboo_buildNumber=${bamboo.buildNumber} --build-arg bamboo_angularEnvironment=${bamboo.angularEnvironment}
+        description: Docker Build
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.bamboo-docker-plugin:task.docker.cli
+        configuration:
+          commandOption: push
+          pushSharedCredentialsId: '6782977'
+          pushRepository: iad.ocir.io/axovvakz7seb/tipcontainerrepository${bamboo.ocpDeploymentContainer}/${bamboo.applicationName}:${bamboo.buildResultKey}
+          registryOption: custom
+        description: Docker Push
+    - script:
+        interpreter: SHELL
+        scripts:
+          - echo "Tagging docker image for TIP Container Registry..."
+          - docker tag iad.ocir.io/axovvakz7seb/tipcontainerrepository${bamboo_ocpDeploymentContainer}/${bamboo_applicationName}:${bamboo_buildResultKey} nexus.engen.com.mx:8084/repository/tip-docker/tipcontainerrepository${bamboo.ocpDeploymentContainer}/${bamboo.applicationName}:${bamboo.buildResultKey}
+        description: Docker Tag for TIP Container Registry
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.bamboo-docker-plugin:task.docker.cli
+        configuration:
+          commandOption: push
+          pushSharedCredentialsId: '6782978'
+          pushRepository: nexus.engen.com.mx:8084/repository/tip-docker/tipcontainerrepository${bamboo.ocpDeploymentContainer}/${bamboo.applicationName}:${bamboo.buildResultKey}
+          registryOption: custom
+        description: Docker push TIP Registry
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            echo $(docker images | tail -n +2 | awk '{print $1}' | grep 'iad.ocir.io/axovvakz7seb/tipcontainerrepository'"$bamboo_ocpDeploymentContainer"'/'"$bamboo_applicationName"''):$bamboo_buildResultKey
+            docker rmi $(docker images | tail -n +2 | awk '{print $1}' | grep 'iad.ocir.io/axovvakz7seb/tipcontainerrepository'"$bamboo_ocpDeploymentContainer"'/'"$bamboo_applicationName"''):$bamboo_buildResultKey
+            echo $(docker images | tail -n +2 | awk '{print $1}' | grep 'nexus.engen.com.mx:8084/repository/tip-docker/tipcontainerrepository'"$bamboo_ocpDeploymentContainer"'/'"$bamboo_applicationName"''):$bamboo_buildResultKey
+            docker rmi $(docker images | tail -n +2 | awk '{print $1}' | grep 'nexus.engen.com.mx:8084/repository/tip-docker/tipcontainerrepository'"$bamboo_ocpDeploymentContainer"'/'"$bamboo_applicationName"''):$bamboo_buildResultKey
+        description: Remove images
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+        configuration:
+          selectedRepository: defaultRepository
+          tagName: ${bamboo.buildResultKey}
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            curl --location 'https://us-central1-engen-devops.cloudfunctions.net/webhook-bamboo-build-ingest' \
+            --header 'Content-Type: application/json' \
+            --data '{
+                "reference_id": "${bamboo.buildResultKey}",
+                "service": "${bamboo.applicationName}",
+                "componentType":"Single Page Application",
+                "environment":"${bamboo.ocpDeploymentEnvironment}",
+                "sourceUrl":"${bamboo.planRepository.1.repositoryUrl}"
+            }'
+        description: Inject initial data to Dora DB
+  artifacts:
+    - name: app-create.yaml
+      pattern: app-create.yaml
+      shared: true
+      required: true
+    - name: deployUpdate.sh
+      pattern: deployUpdate.sh
+      shared: true
+      required: true
+    - name: oke_config_dyappweb
+      pattern: oke_config_${bamboo.applicationName}
+      shared: true
+      required: true
+  requirements:
+    - CLOUD_AGENT
+  artifact-subscriptions: []
+variables:
+  applicationName: '%Vault-Engen:tip/prd/dyappweb/appName%'
+  ocpDeploymentContainer: '%Vault-Engen:tip/prd/ocpDeploymentContainer%'
+  ocpDeploymentEnvironment: '%Vault-Engen:tip/prd/ocpDeploymentEnvironment%'
+  tagType: '%Vault-Engen:tip/prd/tagType%'
+  angularEnvironment: '%Vault-Engen:tip/prd/dyappweb/angularEnvironment%'
+repositories:
+  - dyappweb:
+      scope: global
+  - tip-deployments-scripts:
+      scope: global
+triggers:
+  - bitbucket-cloud-trigger:
+      repositories:
+        - dyappweb
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications:
+  - events:
+      - plan-failed:
+          failures: 3
+    recipients:
+      - groups:
+          - bamboo-admin
+  - events:
+      - plan-completed
+    recipients:
+      - responsible
+  - events:
+      - plan-failed
+    recipients:
+      - responsible
+      - groups:
+          - TechLeads
+labels: []
+dependencies:
+  require-all-stages-passing: false
+  enabled-for-branches: true
+  block-strategy: none
+  plans: []
+other:
+  concurrent-build-plugin: system-default
+branch-overrides:
+  -
+    qa:
+      variables:
+        applicationName: '%Vault-Engen:tip/qa/dyappweb/appName%'
+        ocpDeploymentContainer: '%Vault-Engen:tip/qa/ocpDeploymentContainer%'
+        ocpDeploymentEnvironment: '%Vault-Engen:tip/qa/ocpDeploymentEnvironment%'
+        tagType: '%Vault-Engen:tip/qa/tagType%'
+        angularEnvironment: '%Vault-Engen:tip/qa/dyappweb/angularEnvironment%'
+      branch-config:
+        disable-expiry: true
+  -
+    develop:
+      variables:
+        applicationName: '%Vault-Engen:tip/dev/dyappweb/appName%'
+        ocpDeploymentContainer: '%Vault-Engen:tip/dev/ocpDeploymentContainer%'
+        ocpDeploymentEnvironment: '%Vault-Engen:tip/dev/ocpDeploymentEnvironment%'
+        tagType: '%Vault-Engen:tip/dev/tagType%'
+        angularEnvironment: '%Vault-Engen:tip/dev/dyappweb/angularEnvironment%'
+        sonarAppVersion: '%Vault-Engen:tip/global/sonarAppVersion%'
+      branch-config:
+        disable-expiry: true
+---
+version: 2
+plan:
+  key: TIPSPA-DYAPPWEBWEB
+plan-permissions:
+  - users:
+      - devops
+    permissions:
+      - view
+      - edit
+      - build
+      - clone
+      - admin
+      - view-configuration
+---
+version: 2
+deployment:
+  name: dyappweb
+  source-plan: TIPSPA-DYAPPWEBWEB
+  description: dyappweb
+release-naming:
+  next-version-name: release-1
+  applies-to-branches: false
+  auto-increment: true
+  auto-increment-variables: []
+environments:
+  - PRODUCTION
+  - QA
+  - DEVELOP
+PRODUCTION:
+  description: PRODUCTION Deployment
+  triggers:
+    - build-success
+  tasks:
+    - clean
+    - clean
+    - artifact-download:
+        artifacts:
+          - name: oke_config_dyappweb
+    - artifact-download:
+        artifacts:
+          - name: app-create.yaml
+    - artifact-download:
+        artifacts:
+          - name: deployUpdate.sh
+        description: Download release contents
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            chmod 755 deployUpdate.sh
+            ./deployUpdate.sh
+        description: Deploy Kubernates
+    - clean
+  final-tasks: []
+  variables:
+    applicationName: '%Vault-Engen:tip/prd/dyappweb/appName%'
+  requirements:
+    - CLOUD_AGENT
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - groups:
+            - TechLeads
+QA:
+  description: QA Deployment
+  triggers:
+    - build-success:
+        branch: qa
+  tasks:
+    - clean
+    - clean
+    - artifact-download:
+        artifacts:
+          - name: oke_config_dyappweb
+    - artifact-download:
+        artifacts:
+          - name: app-create.yaml
+    - artifact-download:
+        artifacts:
+          - name: deployUpdate.sh
+        description: Download release contents
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            chmod 755 deployUpdate.sh
+            ./deployUpdate.sh
+        description: Deploy Kubernates
+    - clean
+  final-tasks: []
+  variables:
+    applicationName: '%Vault-Engen:tip/qa/dyappweb/appName%'
+  requirements:
+    - CLOUD_AGENT
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - groups:
+            - TechLeads
+DEVELOP:
+  description: DEVELOP Deployment
+  triggers:
+    - build-success:
+        branch: develop
+  tasks:
+    - clean
+    - clean
+    - artifact-download:
+        artifacts:
+          - name: oke_config_dyappweb
+    - artifact-download:
+        artifacts:
+          - name: app-create.yaml
+    - artifact-download:
+        artifacts:
+          - name: deployUpdate.sh
+        description: Download release contents
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            chmod 755 deployUpdate.sh
+            ./deployUpdate.sh
+        description: Deploy Kubernates
+    - clean
+  final-tasks: []
+  variables:
+    applicationName: '%Vault-Engen:tip/dev/dyappweb/appName%'
+  requirements:
+    - CLOUD_AGENT
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - groups:
+            - TechLeads
+---
+version: 2
+deployment:
+  name: dyappweb
+deployment-permissions:
+  - groups:
+      - TechLeads
+      - Developers
+    permissions:
+      - view
+  - users:
+      - devops
+    groups:
+      - bamboo-admin
+    permissions:
+      - view
+      - edit
+      - view-configuration
+environment-permissions:
+  - PRODUCTION:
+      - groups:
+          - TechLeads
+          - Developers
+        permissions:
+          - view
+      - users:
+          - devops
+        groups:
+          - bamboo-admin
+        permissions:
+          - view
+          - edit
+          - deploy
+          - view-configuration
+  - QA:
+      - groups:
+          - TechLeads
+          - Developers
+        permissions:
+          - view
+          - deploy
+      - users:
+          - devops
+        groups:
+          - bamboo-admin
+        permissions:
+          - view
+          - edit
+          - deploy
+          - view-configuration
+  - DEVELOP:
+      - groups:
+          - TechLeads
+          - Developers
+        permissions:
+          - view
+          - deploy
+      - users:
+          - devops
+        groups:
+          - bamboo-admin
+        permissions:
+          - view
+          - edit
+          - deploy
+          - view-configuration
+...
+

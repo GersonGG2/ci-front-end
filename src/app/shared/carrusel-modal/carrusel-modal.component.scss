@@ -1,0 +1,80 @@
+.custom-carousel {
+    ::ng-deep {
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            background-color: rgba(255, 0, 0, 0.5);
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            margin: 0 -100px;
+        }
+
+        .carousel-indicators {
+            position: absolute !important;
+            top: auto !important;
+            bottom: -25px !important;
+            margin: 0 !important;
+            z-index: 15;
+
+            button {
+                background-color: rgba(128, 128, 128, 0.7);
+
+                &.active {
+                    background-color: #ff0000;
+                }
+            }
+        }
+
+        .carousel-inner {
+            margin-bottom: 15px;
+        }
+
+        .carousel-caption {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: transparent;
+            padding: 5px 0;
+            margin: 10px 0 0 0;
+            color: #333;
+
+            h4 {
+                margin: 0;
+                font-size: 1rem;
+            }
+        }
+
+        .carousel-caption::before {
+            content: none;
+        }
+
+        .picsum-img-wrapper {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+
+        .picsum-img-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            background-color: rgba(220, 53, 69, 0.9); // Color rojo semi-transparente
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0 -100px;
+        }
+    }
+}

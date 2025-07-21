@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ title }}</h5>
+  <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-12">
+      <div class="card card-body">
+        <app-generic-table
+          [rows]="rows"
+          [columns]="columns"
+          [total]="total"
+          [page]="page"
+          (filter)="onFilter($event)"
+          [parameters]="false"
+          [selector]="selector"
+          [isRender]="isRender"
+          (selected)="onSelect($event)"
+          [isDoubleClick]="true"
+          (dbclick)="doubleClick($event)"
+          [local]="local"
+          [initSearch]="initSearch"
+          [clearIconClass]="clearIconClass"
+          [btnRefresh]="btnRefresh"
+          [parameters]="parameters"
+          [showSearchIcon]="showSearchIcon"
+        >
+        </app-generic-table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+  <button (click)="close(true)" type="button" class="btn btn-primary">Aceptar</button>
+</div>

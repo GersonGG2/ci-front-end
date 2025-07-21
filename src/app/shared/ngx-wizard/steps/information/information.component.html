@@ -1,0 +1,67 @@
+<div style="display: flex; justify-content: space-between; align-items: center">
+  <span
+    ><strong>INSPECCIÓN DE LA UNIDAD ({{ information?.insType }}) / FOLIO: {{ information?.inspectionFolio }}</strong></span
+  >
+  <span style="margin-left: auto"
+    ><strong>Eco: {{ information?.serialNumber }}</strong></span
+  >
+</div>
+<div class="card border">
+  <div class="card-body border-primary">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card border">
+          <div class="card-body">
+            <h4 class="card-title">Datos de la Unidad</h4>
+            <h5 class="pt-3 fw-bold">Número económico:</h5>
+            <span>{{ information?.serialNumber ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Número de serie:</h5>
+            <span>{{ information?.catItem?.vin ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Número de placa:</h5>
+            <span>{{ information?.catItem?.licensePlate ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Tipo de unidad:</h5>
+            <span>{{ information?.catItem?.itemDescription ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Modelo:</h5>
+            <span>{{ information?.operationType === operationTypes.mantenimientoExterno ? operationTypes.na : information?.catItem?.modelYear || 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Marca:</h5>
+            <span>{{ information?.operationType === operationTypes.mantenimientoExterno ? operationTypes.na : information?.catItem?.manufacturerName || 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Patio EAM:</h5>
+            <span>{{ information?.branch?.shortName ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Es unidad propia:</h5>
+            <span>{{ information?.trxType === 'I' ? 'Sí' : 'No' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border">
+          <div class="card-body">
+            <h4 class="card-title">Datos del Cliente</h4>
+            <h5 class="pt-3 fw-bold">Razón Social</h5>
+            <span>{{ information?.catItem?.customerName ?? 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Número de contrato</h5>
+            <span>{{ information?.operationType === operationTypes.mantenimientoExterno ? operationTypes.na : information?.catItem?.contractNumber || 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Contrato con VPP</h5>
+            <span>{{ information?.operationType === operationTypes.mantenimientoExterno ? operationTypes.na : information?.catItem?.contractNumber ? 'Sí' : 'No' }}</span>
+            <h5 class="pt-3 fw-bold">Fecha de inicio</h5>
+            <span>{{ formatDate(information?.entryDate) ?? 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border">
+          <div class="card-body">
+            <h4 class="card-title">Tipo de Movimiento</h4>
+            <h5 class="pt-3 fw-bold">Movimiento</h5>
+            <span>{{ !!information ? (information.movementType == 'E' ? 'ENTRADA' : 'SALIDA') : 'N/A' }}</span>
+            <h5 class="pt-3 fw-bold">Tipo de Operación</h5>
+            <span>{{ !!information ? information.operationType : 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mb-3 text-end">
+  <button type="button" class="btn btn-secondary btn-raised me-2" (click)="previous()">Regresar</button>
+  <button type="button" class="btn btn-danger btn-raised" (click)="next()">Continuar</button>
+</div>

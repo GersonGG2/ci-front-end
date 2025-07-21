@@ -1,0 +1,193 @@
+<!-- ============================================================== -->
+<!-- toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-start me-auto">
+    <!-- ============================================================== -->
+    <!-- Search -->
+    <!-- ============================================================== -->
+    <li class="nav-item search-box">
+        <a (click)="showSearch = !showSearch" class="nav-link waves-effect waves-dark" href="javascript:void(0)">
+            <div class="d-flex align-items-center">
+                <i class="mdi mdi-magnify fs-6 me-1"></i>
+                <div class="ms-1 d-none d-sm-block">
+                    <span>Search</span>
+                </div>
+            </div>
+        </a>
+        <form class="app-search position-absolute" [ngClass]="{'show-search': showSearch}">
+            <input type="text" class="form-control" placeholder="Search &amp; enter">
+            <a class="srh-btn" (click)="showSearch = !showSearch">
+                <i class="ti-close"></i>
+            </a>
+        </form>
+    </li>
+</ul>
+<!-- ============================================================== -->
+<!-- Right side toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav float-end">
+
+
+    <li class="nav-item dropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown"
+            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="flag-icon flag-icon-{{selectedLanguage.icon}}"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" ngbDropdownMenu>
+            @for(lang of languages; track lang){
+                <span class="dropdown-item" href="#" (click)="changeLanguage(lang)">
+                    <i class="flag-icon flag-icon-{{lang.icon}} me-2"></i>
+                    <span>{{lang.language}}
+                        @if(lang.type){
+                            <span>({{lang.type}})</span>
+                        }
+                    </span>
+                </span>
+            }
+        </div>
+    </li>
+
+
+    <!-- ============================================================== -->
+    <!-- Messages -->
+    <!-- ============================================================== -->
+    <li class="nav-item dropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)" id="2"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fs-7 mdi mdi-email-outline"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end mailbox" aria-labelledby="2" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-danger"></span>
+            </span>
+            <ul class="list-style-none">
+                <li>
+                    <div class="drop-title text-white bg-danger">
+                        <h4 class="mb-0 mt-1">5 New</h4>
+                        <span class="fw-light">Messages</span>
+                    </div>
+                </li>
+                <li>
+                    <ng-scrollbar class="message-center message-body" >
+                        <!-- Message -->
+                        @for(mymessage of mymessages; track mymessage){
+                            <a href="javascript:void(0)" class="message-item border-bottom d-block text-decoration-none">
+                                <span class="user-img position-relative d-inline-block">
+                                    <img src="{{mymessage.useravatar}}" alt="user" class="rounded-circle">
+                                    <span class="profile-status rounded-circle d-inline-block {{mymessage.status}} float-end"></span>
+                                </span>
+                                <span class="mail-contnet d-inline-block w-75 ps-3 align-middle">
+                                    <h5 class="message-title">{{mymessage.from}}</h5>
+                                    <span class="mail-desc fs-2 d-block text-muted text-truncate">{{mymessage.subject}}</span>
+                                    <span class="time fs-2 d-block text-muted text-truncate">{{mymessage.time}}</span>
+                                </span>
+                            </a>
+                        }
+                    </ng-scrollbar>
+                </li>
+                <li>
+                    <a class="nav-link text-center link" href="javascript:void(0);">
+                        <b>See all e-Mails</b>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- End Messages -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Comment -->
+    <!-- ============================================================== -->
+    <li class="nav-item dropdown border-end" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle waves-effect waves-dark" href="javascript:void(0)"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="mdi mdi-bell-outline fs-7"></i>
+            <span class="badge rounded-pill bg-info noti">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end mailbox" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-primary"></span>
+            </span>
+            <ul class="list-style-none">
+                <li>
+                    <div class="drop-title bg-primary text-white">
+                        <h4 class="mb-0 mt-1">4 New</h4>
+                        <span class="fw-light">Notifications</span>
+                    </div>
+                </li>
+                <li>
+                    <ng-scrollbar class="message-center notifications">
+                        <!-- Message -->
+                        @for(notification of notifications; track notification){
+                            <a href="javascript:void(0)" class="message-item border-bottom d-block text-decoration-none">
+                                <span class="btn btn-circle rounded-circle {{ notification.btn }}">
+                                    <i class="{{notification.icon}}"></i>
+                                </span>
+                                <span class="mail-contnet d-inline-block w-75 ps-3 align-middle">
+                                    <h5 class="message-title">{{notification.title}}</h5>
+                                    <span class="mail-desc fs-2 d-block text-muted text-truncate">{{notification.subject}}</span>
+                                    <span class="time fs-2 d-block text-muted text-truncate">{{notification.time}}</span>
+                                </span>
+                            </a>
+                        }
+                    </ng-scrollbar>
+                </li>
+                <li>
+                    <a class="nav-link text-center mb-1" href="javascript:void(0);">
+                        <strong>Check all notifications</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- End Comment -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+    <li class="nav-item dropdown" ngbDropdown placement="bottom-end">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
+            href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="assets/images/users/user2.jpg" alt="user" class="rounded-circle" width="40">
+            <span class="ms-1 font-medium d-none d-sm-inline-block">Jonathan Doe <i
+                    class="mdi mdi-chevron-down"></i></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end user-dd" ngbDropdownMenu>
+            <span class="with-arrow">
+                <span class="bg-primary"></span>
+            </span>
+            <div class="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
+                <div class="">
+                    <img src="assets/images/users/user2.jpg" alt="user" class="rounded-circle" width="60">
+                </div>
+                <div class="ms-2">
+                    <h4 class="mb-0">Steave Jobs</h4>
+                    <p class=" mb-0">varun&#64;gmail.com</p>
+                </div>
+            </div>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-user me-1 ms-1"></i> My Profile</a>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-wallet me-1 ms-1"></i> My Balance</a>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-email me-1 ms-1"></i> Inbox</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="ti-settings me-1 ms-1"></i> Account Setting</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="fa fa-power-off me-1 ms-1"></i> Logout</a>
+            <div class="dropdown-divider"></div>
+            <div class="p-2">
+                <a href="javascript:void(0)" class="btn btn-sm btn-success btn-rounded">View Profile</a>
+            </div>
+        </div>
+    </li>
+    <!-- ============================================================== -->
+    <!-- User profile and search -->
+    <!-- ============================================================== -->
+</ul>

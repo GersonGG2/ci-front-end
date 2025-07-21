@@ -1,0 +1,341 @@
+<div>
+  <div class="row mt-1">
+    <div class="col-6">
+      <div class="pagination-controls mt-1">
+        <label class="text-table" for="limit">Ver</label>
+        <select (change)="setLimit($event)" id="limit" class="m-2 select-table">
+          <option *ngFor="let option of sizes" [value]="option">{{ option }}</option>
+        </select>
+        <label class="text-table" for="limit">registros</label>
+      </div>
+    </div>
+    <div class="col-6 d-flex justify-content-end align-items-center mb-3">
+      @if (showFilter) {
+      <div class="input-group me-2" style="max-width: 350px">
+        <input #inputSearch type="text" class="form-control" placeholder="{{ placeholder }}"
+          (keyup)="onSearchKeyUp($event)" value="{{initSearch}}" />
+        <button class="btn btn-danger btn-input" type="button" (click)="onSearchButtonClick()" *ngIf="showSearchIcon">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="btn btn-danger btn-input" type="button" (click)="accordion.toggle('filter')" *ngIf="parameters">
+          <i class="fas fa-filter"></i>
+        </button>
+        <button class="btn btn-danger btn-input" type="button" (click)="onSearchSubmit()" *ngIf="btnRefresh">
+          <i class="fas fa-sync"></i>
+        </button>
+        <span *ngIf="inputSearch.value && inputSearch.value.length > 0 && !btnRefresh"
+
+          class="ng-clear-wrapper{{ parameters ? '-search' : '' }} {{ btnRefresh ? 'ng-clear-wrapper-search-2' : '' }}"
+          (click)="cleanSearchSubject()"
+          role="button" tabindex="0" title="Clear all">
+          <i *ngIf="clearIconClass" class="{{ clearIconClass }}"></i>
+          <ng-container *ngIf="!clearIconClass">&times;</ng-container>
+        </span>
+      </div>
+      }
+      <button type="button" class="btn btn-outline-danger me-1" style="width: 140px;" *ngIf="isAdd" (click)="onAdd()">
+        <i class="fa fa-plus"></i> Agregar
+      </button>
+      <button class="btn btn-success me-2" style="width: 145px" *ngIf="isExport" (click)="onExport()">
+        <i class="fa fa-file-excel"> </i> Exportar
+      </button>
+      <button *ngFor="let btn of buttons" class="btn btn-outline-{{btn.style}} me-1"
+        (click)="btn.action($event); $event.preventDefault()">
+        <i class="fa fa-{{btn.icon}}"> </i> {{btn.text}}
+      </button>
+
+      <ng-container *ngIf="isMenu">
+        <div ngbDropdown #dropdown="ngbDropdown" class="d-inline-block" container="body">
+          <button class="btn dropdown-toggle-icon-none d-flex align-items-center" id="dropdown" ngbDropdownToggle>
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu" aria-labelledby="dropdown" tabindex="0">
+            <a *ngFor="let option of options" ngbDropdownItem href="#"
+              (click)="option.action($event); $event.preventDefault()">
+              <i class="fas fa-{{ option.icon }}"></i> {{ option.name }}
+            </a>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+  <div ngbAccordion #accordion="ngbAccordion" class="mb-1">
+
+    @if (showFilter) {
+    <div ngbAccordionItem="filter">
+      <div ngbAccordionCollapse>
+        <div ngbAccordionBody>
+          <ng-template>
+            <div class="container">
+              <div class="container">
+                <form [formGroup]="filterForm" (ngSubmit)="onSearchSubmit($event)">
+                  <div class="row">
+                    <div class="col-11">
+                      <h4>{{title}}</h4>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn-close float-end" aria-label="Close"
+                        (click)="accordion.toggle('filter'); filterForm.reset(); onSearchSubmit()"></button>
+                    </div>
+
+                    <!-- Usamos ngFor para generar los campos dinámicamente solo para las columnas filtradas -->
+                    <div *ngFor="let field of fields" class="col-sm-12 col-md-4">
+                      <div class="mb-3">
+                        <label [for]="field.prop" class="control-label col-form-label">{{ field.name }}</label>
+
+                        <ng-select *ngIf="field.type === 'select'" formControlName="{{ field.prop }}"
+                          [ngClass]="{ 'is-valid': getClearField(field.prop) }" [fixedPlaceholder]="true"
+                          [placeholder]="'Seleccionar...'" id="{{ field.prop }}"
+                          (change)="onChange($event, field); onSearchSubmit($event)" [items]="getOptions(field)"
+                          bindLabel="text" bindValue="value">
+                        </ng-select>
+
+                        <div class="input-group position-relative" *ngIf="field.type != 'select'">
+
+                          <input *ngIf="!field.type || field.type === 'text'" class="form-control" id="{{ field.prop }}"
+                            type="text" (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            formControlName="{{ field.prop }}" placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'number'" type="number" class="form-control"
+                            id="{{ field.prop }}" type="field.type" (input)="onChange($event, field)"
+                            (keyup)="onSearchKeyUpFilter($event)" formControlName="{{ field.prop }}"
+                            placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'date'" type="date" class="form-control btn-search"
+                            id="{{ field.prop }}" (input)="onChange($event, field)"
+                            (keyup)="onSearchKeyUpFilter($event)" formControlName="{{ field.prop }}"
+                            placeholder="Ingrese {{ field.name }}" />
+
+
+                          <input *ngIf="field.type === 'checkbox'" type="checkbox" class="form-control"
+                            (change)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            id="{{ field.prop }}" formControlName="{{ field.prop }}"
+                            placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'radio'" type="radio" class="form-control" id="{{ field.prop }}"
+                            (change)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            formControlName="{{ field.prop }}" placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'textarea'" type="textarea" class="form-control"
+                            (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            id="{{ field.prop }}" formControlName="{{ field.prop }}"
+                            placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'file'" type="file" class="form-control" id="{{ field.prop }}"
+                            (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            formControlName="{{ field.prop }}" placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'password'" type="password" class="form-control"
+                            (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            id="{{ field.prop }}" formControlName="{{ field.prop }}"
+                            placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'email'" type="email" class="form-control" id="{{ field.prop }}"
+                            (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            formControlName="{{ field.prop }}" placeholder="Ingrese {{ field.name }}" />
+                          <input *ngIf="field.type === 'tel'" type="tel" class="form-control" id="{{ field.prop }}"
+                            (input)="onChange($event, field)" (keyup)="onSearchKeyUpFilter($event)"
+                            formControlName="{{ field.prop }}" placeholder="Ingrese {{ field.name }}" />
+
+                          <!-- Botón de borrado para campos de texto -->
+                          <span *ngIf="getClearField(field.prop) && field.type !== 'date'"
+                            (click)="clearField(field.prop)" role="button" tabindex="0"
+                            class="ng-clear-wrapper btn-clear-search" title="Clear all">
+                            <i *ngIf="clearIconClass" class="{{ clearIconClass }}"></i>
+                            <ng-container *ngIf="!clearIconClass">&times;</ng-container>
+                          </span>
+
+                          <!-- Botón de borrado para campos de fecha -->
+                          <span *ngIf="getClearField(field.prop) && field.type === 'date'"
+                            (click)="clearField(field.prop)" role="button" tabindex="0"
+                            class="ng-clear-wrapper-date btn-clear-date" title="Clear date">
+                            <i *ngIf="clearIconClass" class="{{ clearIconClass }}"></i>
+                            <ng-container *ngIf="!clearIconClass">&times;</ng-container>
+                          </span>
+
+                        </div>
+
+                        <div class="text-danger"> {{ getTextError(field) }} </div>
+
+                      </div>
+                    </div>
+
+                    <!-- Botón de búsqueda -->
+                    <div class="col-12 d-flex justify-content-end align-items-center mt-1">
+                      <button type="button" (click)="filterForm.reset(); onSearchSubmit()"
+                        class="btn btn-secondary mt-3  btn-filter">Restaurar</button>
+                      <button type="submit" class="btn btn-primary mt-3 ms-3 btn-filter">Buscar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    }
+  </div>
+
+
+  <div #tableContainer class="table-container">
+  </div>
+
+  <ngx-datatable #table id="{{ tableId }}" class="material smart-table" [rows]="rows" [columns]="_columns"
+    [columnMode]="'force'" [footerHeight]="0" [limit]="limit" [scrollbarH]="true" [externalPaging]="!local"
+    [count]="total" [offset]="offset" (page)="setPage($event)" (sort)="setSort($event)" [loadingIndicator]="loading"
+    [reorderable]="true" [externalSorting]="!local" [selected]="selecteds" (select)="onSelect()" [headerHeight]="headerHeight"
+    [selectionType]="selectionType" [rowHeight]="'auto'"
+    [ngClass]="{'add-btn-selection' : selector && selector === 'button' }">
+    <!-- Se generarán las columnas dinámicamente -->
+
+    <ng-container *ngIf="!refresh">
+
+      <ngx-datatable-column *ngFor="let column of _columns; let i = index" [prop]="column.prop" [name]="column.name"
+        [resizeable]="true" [flexGrow]="i" [sortable]="column.sortable == null || column.sortable"
+        [width]="column.minWidth" [cellClass]="'custom-cell'" [maxWidth]="column.maxWidth" [minWidth]="column.minWidth"
+        [frozenLeft]="column.frozenLeft" [frozenRight]="column.frozenRight">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+          <div (dblclick)="onRowDoubleClick(column, row); $event.stopPropagation()">
+
+            <!-- Crea un columna checkbox -->
+            <div *ngIf="column.checkbox; else customView " class="d-flex justify-content-center">
+              <input [disabled]="column.validate && column.validate(row)" class="custom-checkbox" type="checkbox"
+                [(ngModel)]="row.selected" (change)="onCheckbox(row)" />
+            </div>
+
+            <!-- Verificar si column.customView es una función, variacion para evitar loop infinito en una funcion -->
+            <ng-template #customView>
+              <div
+                *ngIf="(column.customView || column.customAction) && !column.component && !column.view; else customFunctionView">
+                <div *ngIf="column.customView" [innerHTML]="row[column.customView]"></div>
+                <!-- Acciones custom con regla, clase y contenido dinamico -->
+                <ng-container
+                  *ngIf="column.customAction && (!column.customAction.rule || column.customAction.rule && column.customAction.rule(row))">
+                  <p *ngIf="column.customAction.type === 'text'" [ngClass]="column.customAction.class"
+                    [innerHTML]="row[column.customAction.prop]" (click)="column.customAction.action($event, row)"></p>
+                </ng-container>
+              </div>
+            </ng-template>
+
+            <!-- Verificar si column.view es una función -->
+            <ng-template #customFunctionView>
+              <div *ngIf="typeof column.view === 'function' && !column.component; else componentView">
+                <div [innerHTML]="sanitizerHtml(column.view(value, row))"></div>
+              </div>
+            </ng-template>
+
+            <!-- Verificar si column.view es un componente -->
+            <ng-template #componentView>
+              <ng-container *ngIf="column.component; else defaultOtherView">
+                <ng-container *ngComponentOutlet="column.view; injector: createInjector(row)"></ng-container>
+              </ng-container>
+            </ng-template>
+
+            <!-- Si no es una función, verificamos si hay opciones en actions -->
+            <ng-template #defaultOtherView>
+              <div *ngIf="column.actions && column.actions.length > 0; else addView">
+                <div *ngIf="!column.lineal">
+                  <div ngbDropdown #dropdown="ngbDropdown" class="d-inline-block" container="body">
+                    <button class="btn dropdown-toggle-icon-none d-flex align-items-center" id="dropdown"
+                      ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu" aria-labelledby="dropdown"
+                      tabindex="0">
+                      <!-- Generar dinámicamente las opciones del menú -->
+                      <ng-container *ngFor="let option of column.actions">
+                        <a *ngIf="!column.validate || column.validate(option, row)" ngbDropdownItem href="#"
+                          (click)="option.action($event, row); $event.preventDefault()">
+                          <i class="fas fa-{{ option.icon }}"></i> {{ option.name }}
+                        </a>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="column.lineal">
+
+                  <div *ngIf="column.actions && column.actions.length > 0" class="d-flex justify-content-center">
+                    <ng-container *ngFor="let action of column.actions">
+
+                      <ng-container *ngIf="!action.actions || action.actions.length == 0">
+                        <button *ngIf="!action.validate || action.validate(action.prop, row)"
+                          class="btn btn-circle rounded-circle dropdown-toggle-icon-none" [ngClass]="action.color"
+                          style="width: 40px; height: 40px; border: none; margin-right: 5px;" id="dropdownMenuButton"
+                          (click)="(!action.actions || action.actions.length == 0) && action.action ? action.action($event, row) : null">
+                          <i class="fas fa-{{ action.icon }}" style="font-size: 1.2rem;"></i>
+                        </button>
+
+                        <div *ngIf="action.validate && !action.validate(action.prop, row)"
+                          (click)="column.action ? column.action($event, row) : null"
+                          style="width: 40px; height: 40px; border: none; margin-right: 5px;">
+
+                        </div>
+
+                      </ng-container>
+
+                      <ng-container *ngIf="action.actions && action.actions.length > 0">
+                        <div ngbDropdown class="d-inline-block" container="body">
+
+                          <button class="btn btn-circle rounded-circle dropdown-toggle-icon-none"
+                            [ngClass]="action.color" style="width: 40px; height: 40px; border: none; margin-right: 5px;"
+                            id="dropdownMenuButton" ngbDropdownToggle
+                            *ngIf="!action.validate || action.validate(action.prop, row)"
+                            (click)="(!action.actions || action.actions.length == 0) && action.action ? action.action($event, row) : null">
+                            <i class="fas fa-{{ action.icon }}" style="font-size: 1.2rem;"></i>
+                          </button>
+
+                          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu"
+                            aria-labelledby="dropdown" tabindex="0">
+                            <!-- Generar dinámicamente las opciones del menú -->
+                            <ng-container *ngFor="let option of action.actions">
+                              <a *ngIf="!action.validate || action.validate(option, row)" ngbDropdownItem href="#"
+                                (click)="option.action($event, row); $event.preventDefault()">
+                                <i class="fas fa-{{ option.icon }}"></i> {{ option.name }}
+                              </a>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                    </ng-container>
+                  </div>
+
+                </div>
+
+              </div>
+            </ng-template>
+
+            <ng-template #addView>
+              <div *ngIf="column.isAdd && selector && selector === 'button'; else defaultView">
+                <button *ngIf="!row.selected" class="btn btn-circle btn-add rounded-circle" (click)="onCheckbox(row)"><i
+                    class="fas fa-plus"></i></button>
+              </div>
+            </ng-template>
+
+            <!-- Si no hay ni view ni options, mostramos el defaultView -->
+            <ng-template #defaultView>
+              <div class="no-wrap">{{
+                value !== null && value !== undefined && value !== ''
+                ? (typeof column.format === 'function' ? column.format(value) : value)
+                : '---'
+                }}</div>
+            </ng-template>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ng-container>
+
+
+  </ngx-datatable>
+
+
+
+  <div class="row mt-3 d-flex justify-content-between">
+    <div class="col mt-2">
+      <label class="text-table" for="limit">Filas {{ getShowings() }}</label>
+    </div>
+    <div class="col-md">
+      <ngb-pagination class="float-end" [collectionSize]="total" [(page)]="page" [pageSize]="limit" [maxSize]="5"
+        [rotate]="true" [boundaryLinks]="true" (pageChange)="setPage($event)"
+        aria-label="Default pagination"></ngb-pagination>
+    </div>
+  </div>
+</div>

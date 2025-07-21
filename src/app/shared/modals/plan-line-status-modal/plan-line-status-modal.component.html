@@ -1,0 +1,60 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ record?.attribute1 }} / {{ record?.description }}</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="planLineStatusForm">
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Cantidad aprobada</label>
+        <div class="col-md-9">
+          <input required type="text" class="form-control" maxlength="5" formControlName="approvedQuantity" placeholder="Cantidad aprobada" />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Falla</label>
+        <div class="col-md-9">
+          <ng-select formControlName="failure" placeholder="Falla" required>
+            @for (item of failures; track item) {
+            <ng-option [value]="item.listValue">{{ item.meaning }}</ng-option>
+            }
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Motivo</label>
+        <div class="col-md-9">
+          <ng-select formControlName="approvedMotive" placeholder="Motivo" required>
+            @for (item of approvedMotives; track item) {
+            <ng-option [value]="item.listValue">{{ item.meaning }}</ng-option>
+            }
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">ESTATUS</label>
+        <div class="col-md-9">
+          <ng-select formControlName="lineStatus" placeholder="ESTATUS" required>
+            @for (item of lineStates; track item) {
+            <ng-option [value]="item.store_value">{{ item.display_value }}</ng-option>
+            }
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="row mb-3 form-group">
+        <label class="col-sm-3 col-form-label">Comentarios</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" formControlName="comments" placeholder="Comentarios" maxlength="300" rows="5"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Close')">Cerrar</button>
+    <button type="button" class="btn btn-primary" (click)="doSaveData()">Guardar</button>
+  </div>
+</ng-template>

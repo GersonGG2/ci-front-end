@@ -1,0 +1,629 @@
+/* You can add global styles to this file, and also import other style files */
+.red-text {
+  color: red;
+}
+
+.green-status {
+  background: #28a745;
+  color: white;
+  padding: 8px;
+}
+
+.pink-status {
+  background: #FF2014;
+  color: white;
+  padding: 8px;
+}
+
+.yellow-status {
+  background-color: #ffc107;
+  color: white;
+  padding: 8px;
+}
+
+.text-blue {
+  color: #212980 !important;
+}
+
+.border-blue {
+  border-color: #212980 !important;
+}
+
+.text-purple {
+  color: #8b5edd !important;
+}
+
+.border-purple {
+  border-color: #8b5edd !important;
+}
+
+.text-indigo {
+  color: #6610f2 !important;
+}
+
+.border-indigo {
+  border-color: #6610f2 !important;
+}
+
+.text-teal {
+  color: #20c997 !important;
+}
+
+.border-teal {
+  border-color: #20c997 !important;
+}
+
+.btn-filter {
+  width: 150px !important;
+}
+
+.btn-option {
+  width: 50px !important;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+  cursor: pointer !important;
+}
+
+.ngx-datatable.material.single-selection .datatable-body-row.active:hover {
+  background-color: #ced4da !important;
+}
+
+.ngx-datatable.material.single-selection .datatable-body-row.active {
+  background-color: #ced4da !important;
+}
+
+.ngx-datatable.material.single-selection .datatable-body-row.active .datatable-body-cell {
+  background-color: #ced4da !important;
+
+  .btn-add {
+    display: none;
+  }
+}
+
+
+.ngx-datatable.material.multi-click-selection .datatable-body-row.active .datatable-row-group {
+  background-color: #ced4da !important;
+
+  .btn-add {
+    display: none;
+  }
+}
+
+.ngx-datatable.material.multi-click-selection .datatable-body-row.active .datatable-row-group .datatable-body-cell {
+  background-color: #ced4da !important;
+
+  .btn-add {
+    display: none;
+  }
+}
+
+.ngx-datatable.material.multi-selection .datatable-body-row.active .datatable-row-group {
+  background-color: #ced4da !important;
+
+  .btn-add {
+    display: none;
+  }
+}
+
+.add-btn-selection.ngx-datatable.material.multi-click-selection {
+  .datatable-body-row.active {
+    .datatable-body-cell {
+      background-color: white !important;
+    }
+  }
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  cursor: pointer !important;
+}
+
+//Agrega cursor pointer a todos los renglones de la tabla
+.ngx-datatable.material .datatable-body-row {
+  cursor: pointer !important;
+}
+
+.accordion {
+  margin: 0px !important;
+}
+
+.accordion-item {
+  padding: 0px !important;
+}
+
+.page-wrapper {
+  padding-top: 0px !important;
+}
+
+.breadcrumb {
+  font-size: 16px !important;
+}
+
+.container-fluid {
+  padding-top: 10px !important;
+}
+
+.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  padding-left: auto !important;
+  padding-right: auto !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+#main-wrapper {
+  height: 100vh !important;
+  overflow: auto !important;
+}
+
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .top-navbar,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .sidebar-nav,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .scroll-sidebar,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .page-wrapper #main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .page-wrapper {
+  margin: 0px !important;
+  max-width: 100% !important;
+}
+
+.container-fluid {
+  max-width: 100% !important;
+}
+
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .top-navbar,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .sidebar-nav,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .scroll-sidebar,
+#main-wrapper[data-layout=horizontal][data-boxed-layout=boxed] .page-wrapper {
+  margin: 0px !important;
+  max-width: 100% !important;
+}
+
+.page-breadcrumb {
+  margin-left: 0px !important;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  appearance: none;
+  /* Elimina el estilo predeterminado del navegador */
+  -webkit-appearance: none;
+  /* Compatibilidad con navegadores WebKit */
+  -moz-appearance: none;
+  /* Compatibilidad con navegadores Gecko */
+  border: 2px solid #ced4da;
+  /* Borde inicial gris */
+  border-radius: 4px;
+  /* Bordes redondeados */
+  background-color: white;
+  /* Fondo blanco inicial */
+  transition: all 0.3s ease;
+  /* Transición suave para los cambios */
+  position: relative;
+  /* Necesario para posicionar el símbolo de check */
+}
+
+/* Estilo al pasar el cursor */
+.custom-checkbox:hover {
+  border-color: #6c757d;
+  /* Cambia el color del borde al pasar el cursor (gris oscuro) */
+}
+
+/* Estilo cuando está seleccionado */
+.custom-checkbox:checked {
+  background-color: #FF2014;
+  /* Fondo rojo */
+  border-color: #FF2014;
+  /* Borde rojo */
+  color: white;
+  /* Color del ícono */
+}
+
+/* Símbolo de check cuando está seleccionado */
+.custom-checkbox:checked::after {
+  content: '✔';
+  /* Símbolo de check */
+  font-size: 14px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Centra el símbolo dentro del checkbox */
+}
+
+/* Estilo para el estado :focus */
+.custom-checkbox:focus {
+  outline: none;
+  /* Elimina el contorno predeterminado */
+  border-color: #ced4da;
+  /* Asegúrate de que el borde vuelva al gris */
+}
+
+/* Estilo para el estado desmarcado */
+.custom-checkbox:not(:checked) {
+  background-color: white;
+  /* Fondo blanco */
+  border-color: #ced4da;
+  /* Borde gris */
+}
+
+.bg-black {
+  background-color: #000 !important;
+}
+
+.sidebar-nav #sidebarnav>.sidebar-item ul {
+  width: auto !important;
+}
+
+.wizard-navbar {
+  margin-top: -0px !important;
+}
+
+// Dibujale un grid a mi imagen img-container
+.img-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  /* Ajusta según sea necesario */
+}
+
+.img-container img {
+  display: block;
+  width: 100%;
+  /* Asegura que la imagen ocupe todo el ancho del contenedor */
+  height: auto;
+}
+
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(40, 1fr);
+  /* 30 columnas */
+  grid-template-rows: repeat(40, 1fr);
+  /* 30 filas */
+  pointer-events: none;
+  /* Permite que los clics pasen a través del grid */
+}
+
+.grid-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: #fff; //linear-gradient(to right, rgba(0, 0, 0, 0.2) 1px, transparent 1px),
+  //linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 1px, transparent 1px);
+  background-size: calc(100% / 40) calc(100% / 40);
+  /* Divide el tamaño en 30x30 celdas */
+  pointer-events: none;
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  object-fit: contain !important;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+}
+
+.text-table {
+  font-size: 13px !important
+}
+
+.select-table {
+  padding: 2px !important;
+  font-size: 13px !important;
+}
+
+.pagination {
+  --bs-pagination-font-size: 12px !important;
+  --bs-pagination-padding-x: 0.5rem !important;
+  --bs-pagination-padding-y: 0.4rem !important;
+}
+
+.custom-cell {
+  text-align: left !important;
+  vertical-align: middle !important;
+  font-size: 11px !important;
+}
+
+.has-error {
+  border: 1px solid red;
+  border-radius: 4px;
+}
+
+.btn-green {
+  background-color: #d6ecdb;
+  color: #05a34a;
+  cursor: pointer;
+}
+
+.btn-green:hover {
+  background-color: #05a34a;
+  color: white;
+}
+
+.btn-red {
+  background-color: #FF2014;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-red:hover {
+  background-color: #FF2014;
+  color: white;
+}
+
+.btn-yellow {
+  background-color: #ffc107;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-yellow:hover {
+  background-color: #ffc107;
+  color: white;
+}
+
+.btn-blue {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-blue:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-aqua {
+  background-color: #00bcd4;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-aqua:hover {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.has-error {
+  border: 1px solid red;
+  border-radius: 4px;
+}
+
+.readony-input {
+  background-color: #e9ecef;
+}
+
+.btn-input-clear {
+  border-radius: 0px !important;
+}
+
+.wizard-navbar .previous {
+  color: #155724;
+  /* Verde oscuro */
+}
+
+.wizard-navbar .previous .nav-link {
+  color: #155724;
+  /* Verde oscuro para el texto */
+}
+
+.wizard-navbar li .round-tabs.previous {
+  background: #28a745;
+  /* Fondo verde */
+  border: 1px solid #28a745;
+  /* Borde verde */
+  color: white;
+  /* Texto o íconos en blanco */
+}
+
+.form-control {
+  color: #000 !important;
+  border-radius: 0px !important;
+}
+
+.btn-search {
+  border-radius: 0px !important;
+  margin-left: 0px !important;
+}
+
+.ng-select.ng-select-focused:not(.ng-select-open) .ng-select-container {
+  box-shadow: none !important;
+}
+
+.input-group {
+  position: relative;
+
+  .form-control:not([type="date"]) {
+    padding-right: 30px;
+  }
+
+  .ng-clear-wrapper {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    /* Valor por defecto */
+    transform: translateY(-50%);
+    color: #999;
+    /* Color gris */
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 1;
+  }
+
+  .ng-clear-wrapper-search {
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    /* Valor por defecto */
+    transform: translateY(-50%);
+    color: #999;
+    /* Color gris */
+    cursor: pointer;
+    font-size: 19px;
+    z-index: 1;
+  }
+
+  .ng-clear-wrapper-search-2 {
+    right: 90px !important;
+    /* Valor por defecto */
+  }
+
+
+  .ng-clear-wrapper-date {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    /* Valor por defecto */
+    transform: translateY(-50%);
+    color: #999;
+    /* Color gris */
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 1;
+    background: transparent;
+  }
+
+  .btn-clear-date {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* Cambiar el color del botón al pasar el cursor */
+  .ng-clear-wrapper:hover {
+    color: #dc3545;
+    /* Rojo */
+  }
+
+  /* Cambiar el color del botón al pasar el cursor */
+  .ng-clear-wrapper-search:hover {
+    color: #dc3545;
+    /* Rojo */
+  }
+
+
+
+}
+
+.ng-dropdown-panel {
+  z-index: 1 !important;
+}
+
+
+/* Aplica el borde verde solo si el campo es válido y ha sido tocado */
+.form-control.ng-valid.ng-touched {
+  border: 1px solid #28a745 !important;
+  z-index: 1 !important;
+  /* Asegura que el borde rojo esté por encima de otros elementos */
+
+  /* Color verde */
+}
+
+/* Mantén el borde normal si el campo no ha sido tocado */
+.form-control.ng-valid.ng-untouched {
+  border: 1px solid #ced4da !important;
+  /* Color del borde predeterminado */
+}
+
+/* Aplica el borde rojo solo si el campo es inválido y ha sido tocado */
+.form-control.ng-invalid.ng-touched {
+  border: 1px solid red !important;
+  z-index: 1 !important;
+  /* Asegura que el borde rojo esté por encima de otros elementos */
+}
+
+/* Mantén el borde normal si el campo es inválido pero no ha sido tocado */
+.form-control.ng-invalid.ng-untouched {
+  border: 1px solid #ced4da !important;
+  /* Color del borde predeterminado */
+}
+
+
+
+/* Aplica el borde rojo solo si el campo es inválido y ha sido tocado */
+.ng-select.ng-invalid.ng-touched .ng-select-container {
+  border: 1px solid red !important;
+  border-radius: 0px !important;
+}
+
+/* Mantén el borde normal si el campo no ha sido tocado */
+.ng-select.ng-invalid.ng-untouched .ng-select-container {
+  border: 1px solid #ced4da !important;
+  border-radius: 0px !important;
+}
+
+/* Aplica el borde verde solo si el campo es válido y ha sido tocado */
+.ng-select.ng-valid.ng-touched .ng-select-container {
+  border: 1px solid #28a745 !important;
+  border-radius: 0px !important;
+  z-index: 1 !important;
+  /* Asegura que el borde rojo esté por encima de otros elementos */
+}
+
+/* Mantén el borde normal si el campo es válido pero no ha sido tocado */
+.ng-select.ng-valid.ng-untouched .ng-select-container {
+  border: 1px solid #ced4da !important;
+  border-radius: 0px !important;
+}
+
+.dropdown-notification {
+  width: 315px !important;
+  z-index: 99999 !important;
+}
+
+.btn-input {
+  border-radius: 0px !important;
+}
+
+.page-breadcrumb .breadcrumb .breadcrumb-item+.breadcrumb-item:before {
+  margin-top: 5px !important;
+  font-size: 10px;
+}
+
+.btn-generic-search {
+  border-radius: 0px !important;
+  border: 1px solid #ced4da !important;
+  z-index: 2 !important;
+}
+
+.ng-select.ng-select-opened .ng-select-container {
+  z-index: 3 !important;
+}
+
+.ng-dropdown-panel {
+  z-index: 3 !important;
+}
+
+.modal .ng-select.ng-select-opened .ng-select-container {
+  z-index: 3 !important;
+}
+
+.modal .ng-dropdown-panel {
+  z-index: 3 !important;
+}
+
+.TEXT-HEADER-DATE {
+  font-size: 9px !important;
+  //text-align: center !important;
+  font-weight: bold !important;
+}
+
+#image-picture {
+  padding: 15px !important;
+  height: 100% !important;
+}
+
+@import "quill/dist/quill.core.css";
+@import "quill/dist/quill.snow.css";
+@import "quill/dist/quill.bubble.css";

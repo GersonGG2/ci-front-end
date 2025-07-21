@@ -1,0 +1,161 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card card-body">
+      <app-generic-table
+        [rows]="rows"
+        [columns]="columns"
+        [total]="totalItems"
+        [page]="page"
+        (filter)="onFilter($event)"
+        [placeholder]="'Buscar por correo o nombre de usuario'"
+        [isAdd]="true"
+        (add)="openModal(userModal)"
+        [isExport]="true"
+        (export)="onExport()"
+      >
+      </app-generic-table>
+    </div>
+  </div>
+</div>
+<!-- Modal para agregar usuario,editar,copiar -->
+<ng-template #userModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="userLabel">
+      {{
+        isCopyMode
+          ? 'Copiar Usuario'
+          : isEditMode
+          ? 'Editar Usuario'
+          : 'Agregar
+      Usuario'
+      }}
+    </h5>
+    <button type="button" class="btn-close" (click)="closeBtnClick(modal)" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="CorreoElectronico" class="form-label">Correo Electrónico</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="CorreoElectronico"
+          id="CorreoElectronico"
+          placeholder="Ingrese el correo electrónico"
+        />
+        <div *ngIf="isFieldInvalid('CorreoElectronico')" class="text-danger">¡Este campo es necesario!</div>
+      </div>
+      <div class="mb-3" *ngIf="false">
+        <label for="Contraseña" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" formControlName="Contraseña" id="Contraseña" placeholder="Ingrese la contraseña" />
+      </div>
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" formControlName="Habilitado" id="Habilitado" [checked]="true" />
+          <label for="Habilitado" class="form-check-label">Habilitado</label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" formControlName="Nombre" id="Nombre" placeholder="Ingrese el nombre" />
+        <div *ngIf="isFieldInvalid('Nombre')" class="text-danger">¡Este campo es obligatorio!</div>
+      </div>
+      <div class="mb-3">
+        <label for="ApellidoPaterno" class="form-label">Apellido Paterno</label>
+        <input type="text" class="form-control" formControlName="ApellidoPaterno" id="ApellidoPaterno" placeholder="Ingrese el apellido paterno" />
+      </div>
+      <div class="mb-3">
+        <label for="ApellidoMaterno" class="form-label">Apellido Materno</label>
+        <input type="text" class="form-control" formControlName="ApellidoMaterno" id="ApellidoMaterno" placeholder="Ingrese el apellido materno" />
+      </div>
+      <div class="mb-3">
+        <label for="Telefono" class="form-label">Teléfono</label>
+        <input
+          type="text"
+          class="form-control"
+          (input)="onTelefonoInput($event)"
+          formControlName="Telefono"
+          id="Telefono"
+          placeholder="Ingrese el teléfono"
+          maxlength="10"
+        />
+        <div *ngIf="userForm.get('Telefono')?.errors?.['pattern']" class="text-danger">Solo se permiten números</div>
+        <div *ngIf="userForm.get('Telefono')?.errors?.['maxlength']" class="text-danger">El teléfono no puede tener más de 10 dígitos</div>
+      </div>
+      <div class="mb-3">
+        <label for="Menu" class="form-label">Menú</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="MenuName"
+            id="Menu"
+            placeholder="Ingrese el menú"
+            (keydown.enter)="$event.preventDefault(); openSelectMenuModal()"
+          />
+          <!-- Botón para limpiar -->
+          <button class="btn btn-outline-secondary" type="button" (click)="openSelectMenuModal()">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="btn btn-outline-secondary" type="button" (click)="userForm.get('MenuName')?.setValue('')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div *ngIf="isFieldInvalid('MenuName')" class="text-danger">Este campo es requerido.</div>
+      </div>
+      <div class="mb-3">
+        <label for="FechaInactiva" class="form-label">Fecha Inactiva</label>
+        <input type="date" class="form-control" formControlName="FechaInactiva" id="FechaInactiva" placeholder="Ingrese la fecha inactiva" />
+      </div>
+
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" formControlName="Admin" id="Admin" />
+          <label class="form-check-label" for="Admin">Admin</label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="Empleado" class="form-label">Empleado</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="EmpleadoName"
+            id="Empleado"
+            placeholder="Ingrese el empleado"
+            (keydown.enter)="$event.preventDefault(); openSelectEmployeesModal()"
+          />
+          <!-- Botón para limpiar -->
+          <button class="btn btn-outline-secondary" type="button" (click)="openSelectEmployeesModal()">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="btn btn-outline-secondary" type="button" (click)="userForm.get('EmpleadoName')?.setValue('')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div *ngIf="isFieldInvalid('EmpleadoName')" class="text-danger">Este campo es requerido.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="branchSelect">Sucursal</label>
+        <ng-select
+          formControlName="Sucursal"
+          [ngClass]="{ 'is-valid': getClearField('Sucursal'), 'is-invalid': !getClearField('Sucursal') }"
+          [fixedPlaceholder]="true"
+          [placeholder]="'Seleccione sucursal'"
+          id="Sucursal"
+          [items]="branchList"
+          bindLabel="branchName"
+          bindValue="branchId"
+        >
+        </ng-select>
+        <div *ngIf="isFieldInvalid('Sucursal')" class="text-danger">Este campo es requerido.</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeBtnClick(modal)">Cerrar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Guardar</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

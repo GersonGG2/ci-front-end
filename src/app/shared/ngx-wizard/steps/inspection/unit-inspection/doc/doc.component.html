@@ -1,0 +1,209 @@
+<div class="row card-body">
+  <!-- Primera columna con el formulario -->
+  <div class="card col-lg-8">
+    <div>
+      <h4 class="card-title">DOC - Documentos</h4>
+    </div>
+  </div>
+  <!--div class="card col-lg-4">
+    <div class="d-flex justify-content-end pl-0">
+      <button type="button" class="btn btn-danger btn-raised" (click)="savePlugins()">Guardar</button>
+    </div>
+  </div-->
+
+  <!-- Segunda columna con el formulario -->
+  <div class="col-lg-6">
+    <form [formGroup]="pluginsForm">
+      <div class="card border">
+        <div class="card-body">
+          <h4 class="card-title">COMPLEMENTOS</h4>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Placa Vin</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="vinPlate" name="vinPlate" formControlName="vinPlate" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="vinPlate">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="vinPlate" name="vinPlate" formControlName="vinPlate" value="N" class="form-check-input" />
+            <label class="form-check-label" for="vinPlate">No</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Tarjeta de circulación</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="circulationCard" name="circulationCard" formControlName="circulationCard" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="circulationCard">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="circulationCard" name="circulationCard" formControlName="circulationCard" value="N" class="form-check-input" />
+            <label class="form-check-label" for="circulationCard">No</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Holograma de verificación</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="verificationHologram" name="verificationHologram" formControlName="verificationHologram" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="verificationHologram">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="verificationHologram" name="verificationHologram" formControlName="verificationHologram" value="N" class="form-check-input" />
+            <label class="form-check-label" for="verificationHologram">No</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Dictamen de verificación</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="verificationDictum" name="verificationDictum" formControlName="verificationDictum" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="verificationDictum">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="verificationDictum" name="verificationDictum" formControlName="verificationDictum" value="N" class="form-check-input" />
+            <label class="form-check-label" for="verificationDictum">No</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Pedimento de importación</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="importRequest" name="importRequest" formControlName="importRequest" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="importRequest">Sí</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="importRequest" name="importRequest" formControlName="importRequest" value="N" class="form-check-input" />
+            <label class="form-check-label" for="importRequest">No</label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tercera columna con el formulario -->
+  <div class="col-lg-6" *ngIf="showPluginsForm">
+    <form [formGroup]="pluginsForm2">
+      <div class="card border">
+        <div class="card-body">
+          <h4 class="card-title">COMPLEMENTOS</h4>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Luces</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Luces" name="Luces" formControlName="Luces" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Luces">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Luces" name="Luces" formControlName="Luces" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Luces">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Marco</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Marco" name="Marco" formControlName="Marco" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Marco">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Marco" name="Marco" formControlName="Marco" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Marco">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Llantas</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Llantas" name="Llantas" formControlName="Llantas" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Llantas">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Llantas" name="Llantas" formControlName="Llantas" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Llantas">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Rines</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Rines" name="Rines" formControlName="Rines" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Rines">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Rines" name="Rines" formControlName="Rines" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Rines">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Suspensión</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Suspension" name="Suspension" formControlName="Suspension" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Suspension">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Suspension" name="Suspension" formControlName="Suspension" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Suspension">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Sistema de Aire</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="SistemaDeAire" name="SistemaDeAire" formControlName="SistemaDeAire" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="SistemaDeAire">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="SistemaDeAire" name="SistemaDeAire" formControlName="SistemaDeAire" value="N" class="form-check-input" />
+            <label class="form-check-label" for="SistemaDeAire">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Conexiones</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Conexiones" name="Conexiones" formControlName="Conexiones" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Conexiones">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Conexiones" name="Conexiones" formControlName="Conexiones" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Conexiones">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Patines</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Patines" name="Patines" formControlName="Patines" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Patines">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Patines" name="Patines" formControlName="Patines" value="N" class="form-check-input" />
+            <label class="form-check-label" for="Patines">Defecto</label>
+          </div>
+        </div>
+
+        <!--   ============================================================================   -->
+        <div class="card-body">
+          <h4 class="card-title">Defensa</h4>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Defensa" name="Defensa" formControlName="Defensa" value="Y" class="form-check-input" />
+            <label class="form-check-label" for="Defensa">Bueno</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input type="radio" id="Defensa" name="Defensa" formControlName="Defensa" value="N" class="form-check-input"  />
+            <label class="form-check-label" for="Defensa">Defecto</label>
+          </div>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+</div>
