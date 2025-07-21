@@ -33,6 +33,13 @@ export const Approutes: Routes = [
                 data: {
                     title: 'Usuarios',
                 }
+            },
+             {
+                path: 'roles',
+                loadComponent: () => import('./features/roles/roles.component').then(m => m.RolesComponent),
+                data: {
+                    title: 'Roles',
+                }
             }
 
         ],

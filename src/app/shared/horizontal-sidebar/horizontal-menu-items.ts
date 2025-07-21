@@ -21,5 +21,15 @@ export const ROUTES: RouteInfo[] = [
     submenu: [
     ],
   },
+  {
+    path: '/roles',
+    title: 'Roles',
+    icon: 'mdi mdi-settings',
+    class: '',
+    ddclass: '',
+    extralink: false,
+    submenu: [
+    ],
+  },
 
 ];
