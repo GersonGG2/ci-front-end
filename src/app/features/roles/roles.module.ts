@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RolesRoutingModule } from './roles-routing.module';
-import { RolesComponent } from './roles.component';
+import { RolesComponent } from './roles/roles.component';
 
 @NgModule({
   declarations: [],
@@ -12,3 +12,4 @@ import { RolesComponent } from './roles.component';
   ]
 })
 export class RolesModule { }
+
