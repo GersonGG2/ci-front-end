@@ -127,7 +127,7 @@ export const ROUTES: RouteInfo[] = [
         class: "",
         extralink: false,
         submenu: [],
-      },      
+      },
       {
         path: "/component/timepicker",
         title: "Timepicker",
@@ -135,7 +135,7 @@ export const ROUTES: RouteInfo[] = [
         class: "",
         extralink: false,
         submenu: [],
-      },      
+      },
       {
         path: "/component/toast",
         title: "Toast",
@@ -143,11 +143,11 @@ export const ROUTES: RouteInfo[] = [
         class: "",
         extralink: false,
         submenu: [],
-      },      
+      },
     ],
   },
-  
- 
+
+
   {
     path: "mlevel",
     title: "Menu Levels",

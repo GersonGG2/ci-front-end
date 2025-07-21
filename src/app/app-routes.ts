@@ -3,6 +3,7 @@ import { LoginComponent } from './features/auth0/login/login.component';
 import { FullComponent } from './layouts/full/full.component';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { AuthGuard } from './features/auth0/auth.guard';
+import { UsuariosComponent } from './features/usuarios/usuarios.component';
 
 export const Approutes: Routes = [
     { path: '', component: LoginComponent },
@@ -24,6 +25,13 @@ export const Approutes: Routes = [
                 loadComponent: () => import('./features/notifications/pages/main-page/notifications.component').then(m => m.NotificationsComponent),
                 data: {
                     title: 'Notificaciones',
+                }
+            },
+             {
+                path: 'usuarios',
+                loadComponent: () => import('./features/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+                data: {
+                    title: 'Usuarios',
                 }
             }
 

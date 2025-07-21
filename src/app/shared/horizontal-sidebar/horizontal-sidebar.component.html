@@ -10,6 +10,7 @@
             }
             @if(!sidebarnavItem.extralink;){
             <a class="sidebar-link waves-effect waves-dark"
+            [routerLink]="[sidebarnavItem.path]"
                 [routerLink]="sidebarnavItem.class === '' ? [sidebarnavItem.path] : null"
                 [ngClass]="[sidebarnavItem.class]" (mouseover)="addExpandClass(sidebarnavItem.title)"
                 [routerLinkActive]="sidebarnavItem.submenu.length != 0 ? '' : 'active'">

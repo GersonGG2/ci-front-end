@@ -12,13 +12,14 @@ export const ROUTES: RouteInfo[] = [
     submenu: [],
   },
   {
-    path: '/',
-    title: 'Configuraciones',
+    path: '/usuarios',
+    title: 'Usuarios',
     icon: 'mdi mdi-settings',
-    class: 'has-arrow',
+    class: '',
     ddclass: '',
     extralink: false,
-    submenu: [],
+    submenu: [
+    ],
   },
 
 ];
