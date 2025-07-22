@@ -32,9 +32,14 @@
         .dark-logo {
           display: none;
         }
-        .logo-icon {
-          margin-right: 5px;
-        }
+      .logo-icon img {
+  max-width: 64px;
+  max-height: 64px;
+  width: auto;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
         .sidebartoggler {
           color: $white;
         }

@@ -13,6 +13,7 @@ export class EnviromentHelper {
   public static URL_NOTIFICATION_WS = 'https://dynotifwsdev.tipmexico.com/dynotificationws';
   public static URL_PRODUCTIVITY_WS = 'https://dypdtvtwsdev.tipmexico.com/dyproductivityws';
   public static URL_REPORT_WS = 'https://dyrptwsdev.tipmexico.com/dyreportws';
+  public static URL_ITZ_WS = 'http://localhost:3000';
 
   public static readonly AUTH: AuthConfig = {
     domain: 'authdev.tipmexico.com',
@@ -28,6 +29,17 @@ export class EnviromentHelper {
 }
 //       deleteDocument: EnviromentHelper.URL_CONFIGURATION_WS + '/document/delete-document'
 export const environment = {
+  itz: {
+    usuarios: {
+      main: EnviromentHelper.URL_ITZ_WS + '/usuarios',
+      create: EnviromentHelper.URL_ITZ_WS + '/users', // POST
+      getAll: EnviromentHelper.URL_ITZ_WS + '/users', // GET con paginación y filtros
+      getById: EnviromentHelper.URL_ITZ_WS + '/users/', // GET /users/{id}
+      update: EnviromentHelper.URL_ITZ_WS + '/users/', // PATCH /users/{id}
+      delete: EnviromentHelper.URL_ITZ_WS + '/users/', // DELETE /users/{id}
+      replaceRoles: EnviromentHelper.URL_ITZ_WS + '/users/', // PATCH /users/{userId}/roles
+    },
+  },
   tip: {
     inspections: {
       main: EnviromentHelper.URL_INSPECTIONS_WS + '/inspections',

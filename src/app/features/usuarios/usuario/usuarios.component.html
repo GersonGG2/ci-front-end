@@ -1,1 +1,57 @@
-<p>usuarios works!</p>
+<div class="row">
+  <div class="col-12">
+
+    <div class="card card-body">
+      <app-generic-table [rows]="rows" [columns]="columns" [total]="totalItems" [page]="page"
+        (filter)="applyFilter($event)" [placeholder]="'Buscar'" [isAdd]="true" (add)="openUserModal()">
+      </app-generic-table>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para agregar/editar usuario -->
+<ng-template #userModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ editingUser ? 'Editar usuario' : 'Agregar usuario' }}</h5>
+    <button type="button" class="btn-close" (click)="closeUserModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3 row">
+        <label for="email" class="col-sm-4 col-form-label">Email</label>
+        <div class="col-sm-8">
+          <input formControlName="email" class="form-control" type="email" id="email" required
+            placeholder="Correo electrónico">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="nombre" class="col-sm-4 col-form-label">Nombre</label>
+        <div class="col-sm-8">
+          <input formControlName="nombre" class="form-control" id="nombre" required placeholder="Nombre(s)">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="apellidos" class="col-sm-4 col-form-label">Apellidos</label>
+        <div class="col-sm-8">
+          <input formControlName="apellidos" class="form-control" id="apellidos" required placeholder="Apellidos">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="roles" class="col-sm-4 col-form-label">Roles</label>
+        <div class="col-sm-8">
+          <ng-select [multiple]="true" formControlName="roles" [items]="rolesCatalog" bindLabel="name" bindValue="id"
+            placeholder="Seleccione roles" appendTo=".modal-content">
+          </ng-select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUserModal()">Cerrar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          {{ editingUser ? 'Actualizar' : 'Agregar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

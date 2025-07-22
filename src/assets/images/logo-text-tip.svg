@@ -1,3 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="86" height="19" viewBox="0 0 86 19">
-  <text id="Digital_Yard" data-name="Digital Yard" transform="translate(0 15)" fill="#222" font-size="16" font-family="Rubik-Medium, Rubik" font-weight="500"><tspan x="0" y="0">Digital </tspan><tspan y="0" fill="#ff2014" font-family="Rubik-Light, Rubik" font-weight="300">Yard</tspan></text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 86 19">
+  <!-- Generator: Adobe Illustrator 29.6.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 9)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #222;
+        font-family: Rubik-Medium, Rubik;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .st0, .st1 {
+        isolation: isolate;
+      }
+    </style>
+  </defs>
+  <g id="Digital_Yard" class="st1">
+    <text class="st0" transform="translate(0 15)"><tspan x="0" y="0">ITZ</tspan></text>
+  </g>
 </svg>

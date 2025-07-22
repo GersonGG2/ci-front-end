@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172.84 127.85">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        isolation: isolate;
+      }
+
+      .cls-2 {
+        fill: #222;
+        font-family: Rubik-Medium, Rubik;
+        font-size: 113.04px;
+        font-weight: 500;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g id="Digital_Yard" data-name="Digital Yard" class="cls-1">
+      <text class="cls-2" transform="translate(0 96.08)"><tspan x="0" y="0">ITZ</tspan></text>
+    </g>
+  </g>
+</svg>
