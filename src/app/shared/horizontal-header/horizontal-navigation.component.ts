@@ -227,20 +227,50 @@ export class HorizontalNavigationComponent implements AfterViewInit {
     }
   }
 
-  configUser() {
+  // configUser() {
 
-    this.user = this.authGuard.getUser();
+  //   this.user = this.authGuard.getUser();
 
-    const names = this.user?.nickname.split('.');
-    if (names.length >= 2) {
-      this.name = names[0].charAt(0).toUpperCase() + names[0].slice(1);
-      this.name += ' ' + names[1].charAt(0).toUpperCase() + names[1].slice(1);
-    }
+  //   const names = this.user?.nickname.split('.');
+  //   if (names.length >= 2) {
+  //     this.name = names[0].charAt(0).toUpperCase() + names[0].slice(1);
+  //     this.name += ' ' + names[1].charAt(0).toUpperCase() + names[1].slice(1);
+  //   }
 
-    this.email = this.user?.email;
-    this.image = this.user?.picture;
-  }
+  //   this.email = this.user?.email;
+  //   this.image = this.user?.picture;
+  // }
+configUser() {
+  // Obtener datos del usuario actual
+  this.user = this.authGuard.getUser();
 
+  // Establecer nombre como Admin
+  this.name = "Admin";
+
+  // Mantener el email original
+  this.email = this.user?.email || 'admin@sistema.com';
+
+  // Generar avatar con iniciales "AD" (de ADmin)
+  // Color de fondo dorado/amarillo para representar admin
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  canvas.width = 200;
+  canvas.height = 200;
+
+  // Fondo
+  context.fillStyle = '#ffc107'; // Color amarillo/dorado
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Texto
+  context.font = 'bold 100px Arial';
+  context.fillStyle = '#ffffff';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText('AD', canvas.width / 2, canvas.height / 2);
+
+  // Convertir a imagen
+  this.image = canvas.toDataURL('image/png');
+}
   ngAfterViewInit() { }
 
   changeLanguage(lang: any) {

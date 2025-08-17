@@ -6,7 +6,7 @@
 // ======================================================
 // Theme Global setting colors
 // ======================================================
-$themecolor: #FF2014;
+$themecolor: #1b396a;
 $themecolor-dark: #028ee1;
 $themecolor-alt: #26c6da;
 $theme-light: #fff;
@@ -16,7 +16,7 @@ $skin1: #2962ff;
 $skin2: #fe5419;
 $skin3: #00b0ff;
 $skin4: #6659f7;
-$skin5: #222222;
+$skin5: #1b396a;
 $skin6: #fff;
 
 
@@ -94,13 +94,13 @@ $blue: #137eff !default;
 $indigo: #6610f2 !default;
 $purple: #8b5edd !default;
 $pink: #e83e8c !default;
-$red: #FF2014 !default;
+$red: #1b396a !default;
 $orange: #fb8c00 !default;
 $yellow: #ffbc34 !default;
 $green: #5ac146 !default;
 $teal: #20c997 !default;
 $cyan: #4fc3f7 !default;
-$primary: #FF2014 !default;
+$primary: #1b396a !default;
 $text-muted: $gray-500 !default;
 $megna: #01c0c8 !default;
 
@@ -194,9 +194,9 @@ $enable-negative-margins:     true !default;
 // ======================================================
 // Body
 // ======================================================
-$main-body-bg: #fff !default;
-$body-bg: #ffffff;
-$body-color: #6a7a8c !default;
+$main-body-bg: #1B396A  !default;
+$body-bg: #1B396A ;
+$body-color: #2b333b !default;
 $grid-gutter-width: 20px !default;
 
 // ======================================================
@@ -264,9 +264,9 @@ $dropdown-item-padding-y: 0.65rem !default;
 $dropdown-border-color: $gray-200;
 $dropdown-divider-bg: $gray-100;
 
-// 
+//
 // Buttons
-// 
+//
 $btn-secondary-border: $gray-300;
 $btn-border-radius: 4px !default;
 $btn-border-radius-sm: 4px !default;
@@ -327,9 +327,9 @@ $form-check-input-focus-box-shadow: none !default;
 $form-range-track-bg:             $gray-300 !default;
 
 
-// 
+//
 // Border
-// 
+//
 $border-width: 1px !default;
 $border-color: rgba(0, 0, 0, 0.1) !default;
 $border-radius: 2px !default;
@@ -382,39 +382,39 @@ $grid-breakpoints: (
 $navbar-dark-color: rgba($white, 0.8) !default;
 $navbar-dark-hover-color: rgba($white, 1) !default;
 
-// 
+//
 // pagination
-// 
+//
 $pagination-bg: $white;
 $pagination-hover-bg: $gray-200;
 $pagination-color: $red !default;
 
-// 
+//
 // accordian
-// 
+//
 $accordion-padding-y:                     1rem !default;
 $accordion-padding-x:                     1rem !default;
 $accordion-bg:                            transparent !default;
 $accordion-button-active-color: $info  !default;
 
-// 
+//
 // alert
-// 
+//
 $alert-bg-scale: 0% !default;
 $alert-border-scale: 0% !default;
 $alert-color-scale: 1% !default;
 
-// 
+//
 // modal
-// 
+//
 $modal-content-bg:  $white;
 
-// 
+//
 // popover
 //
 $popover-bg: $white;
 
-// 
+//
 // toast
 //
 $toast-background-color: $white;

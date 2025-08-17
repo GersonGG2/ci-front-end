@@ -57,11 +57,11 @@ export const Approutes: Routes = [
       },
       {
         path: 'periodo',
-        loadComponent: () => import('./features/periodo/periodo/periodo.component').then(m => m.PeriodoComponent),
+        loadChildren: () => import('./features/periodo/periodo.module').then(m => m.PeriodoModule),
         data: {
           title: 'Periodo',
         }
-      },
+      }
 
     ],
   },

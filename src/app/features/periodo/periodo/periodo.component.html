@@ -1,1 +1,57 @@
-<p>periodo works!</p>
+<div class="row">
+  <div class="col-12">
+
+    <div class="card card-body">
+      <app-generic-table [rows]="rows" [columns]="columns" [total]="totalItems" [page]="page"
+        (filter)="applyFilter($event)" [placeholder]="'Buscar...'" [isAdd]="true" (add)="openPeriodoModal()">
+      </app-generic-table>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar/editar periodo -->
+<ng-template #periodoModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ editingPeriodo ? 'Editar periodo' : 'Agregar periodo' }}</h5>
+    <button type="button" class="btn-close" (click)="closePeriodoModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3 row">
+        <label for="nombre" class="col-sm-4 col-form-label">Nombre</label>
+        <div class="col-sm-8">
+          <input formControlName="nombre" class="form-control" id="nombre" required placeholder="Nombre del periodo">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="fecha_inicio" class="col-sm-4 col-form-label">Fecha inicio</label>
+        <div class="col-sm-8">
+          <input formControlName="fecha_inicio" class="form-control" id="fecha_inicio" type="date" required>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="fecha_fin" class="col-sm-4 col-form-label">Fecha fin</label>
+        <div class="col-sm-8">
+          <input formControlName="fecha_fin" class="form-control" id="fecha_fin" type="date" required>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="estado" class="col-sm-4 col-form-label">Estado</label>
+        <div class="col-sm-8">
+          <select formControlName="estado" class="form-control" id="estado">
+            <option value="activo">Activo</option>
+            <option value="cerrado">Cerrado</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closePeriodoModal()">Cerrar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          {{ editingPeriodo ? 'Actualizar' : 'Agregar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

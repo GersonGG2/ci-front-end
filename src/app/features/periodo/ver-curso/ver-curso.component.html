@@ -1,0 +1,170 @@
+<div class="container my-4">
+
+  <!-- Información del curso - Card -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Información del curso</h4>
+      <span class="text-white fw-bold">{{ curso?.estado | uppercase }}</span>
+    </div>
+    <div class="card-body" *ngIf="curso">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-title">{{ curso.nombre }}</h5>
+          <p class="text-muted">{{ curso.objetivo }}</p>
+
+          <div class="mt-4">
+            <div class="d-flex mb-2">
+              <div class="flex-shrink-0 text-primary me-3">
+                <i class="fas fa-graduation-cap fa-fw"></i>
+              </div>
+              <div class="flex-grow-1">
+                <strong>Academia:</strong> {{ curso.academia?.nombre }}
+              </div>
+            </div>
+
+            <div class="d-flex mb-2">
+              <div class="flex-shrink-0 text-primary me-3">
+                <i class="fas fa-user-tie fa-fw"></i>
+              </div>
+              <div class="flex-grow-1">
+                <strong>Instructor:</strong> {{ curso.instructor?.nombre }} {{ curso.instructor?.apellidos }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card bg-light">
+            <div class="card-body">
+              <div class="d-flex mb-2">
+                <div class="flex-shrink-0 text-primary me-3">
+                  <i class="fas fa-map-marker-alt fa-fw"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <strong>Lugar:</strong> {{ curso.lugar }} - {{ curso.aula }}
+                </div>
+              </div>
+
+              <div class="d-flex mb-2">
+                <div class="flex-shrink-0 text-primary me-3">
+                  <i class="fas fa-clock fa-fw"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <strong>Horario:</strong> {{ curso.hora_inicio | slice:0:5 }} a {{ curso.hora_fin | slice:0:5 }}
+                </div>
+              </div>
+
+              <div class="d-flex mb-2">
+                <div class="flex-shrink-0 text-primary me-3">
+                  <i class="fas fa-calendar-alt fa-fw"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <strong>Periodo:</strong> {{ curso.fecha_inicio | date:'dd/MM/yyyy' }} al {{ curso.fecha_fin |
+                  date:'dd/MM/yyyy' }}
+                </div>
+              </div>
+
+              <div class="d-flex">
+                <div class="flex-shrink-0 text-primary me-3">
+                  <i class="fas fa-hourglass-half fa-fw"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <strong>Duración:</strong> {{ curso.horas }} horas
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Docentes inscritos - Card -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary bg-gradient text-white">
+      <h4 class="mb-0">Docentes inscritos</h4>
+    </div>
+    <div class="card-body">
+      <app-generic-table [rows]="inscripciones" [columns]="columns" [total]="totalItems" [page]="page"
+        [placeholder]="'Buscar docente...'" [isAdd]="true" (add)="openInscripcionModal()">
+      </app-generic-table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de inscripción -->
+<ng-template #inscripcionModal let-modal>
+  <div class="modal-header bg-primary bg-gradient text-white">
+    <h5 class="modal-title">Agregar inscripción</h5>
+    <button type="button" class="btn-close btn-close-white" (click)="modal.dismiss()" aria-label="Close"></button>
+  </div>
+
+  <form [formGroup]="inscripcionForm" (ngSubmit)="saveInscripcion(modal)">
+    <div class="modal-body">
+      <div class="mb-3">
+        <label class="form-label">Curso</label>
+        <input class="form-control" [value]="curso?.nombre" readonly>
+        <input type="hidden" formControlName="cursoId">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Docente</label>
+        <div class="input-group">
+          <input type="text" class="form-control" formControlName="docenteNombre" placeholder="Seleccionar docente"
+            (keydown.enter)="$event.preventDefault(); openSelectDocenteModal()" readonly />
+          <button class="btn btn-outline-primary" type="button" (click)="openSelectDocenteModal()">
+            <i class="fas fa-search"></i>
+          </button>
+          <button class="btn btn-outline-secondary" type="button" (click)="clearField('docenteNombre')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <input type="hidden" formControlName="docenteId">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <select class="form-select" formControlName="estado">
+          <option *ngFor="let e of estados" [value]="e.value">{{ e.text }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">
+        <i class="fas fa-times me-1"></i> Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="inscripcionForm.invalid">
+        <i class="fas fa-save me-1"></i> Guardar
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- Modal de cambio de estado -->
+<ng-template #changeStatusModal let-modal>
+  <div class="modal-header bg-primary bg-gradient text-white">
+    <h4 class="modal-title">Cambiar estado de inscripción</h4>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="statusForm">
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select class="form-select" formControlName="estado" id="estado">
+          <option *ngFor="let option of estados" [value]="option.value">{{ option.text }}</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">
+      <i class="fas fa-times me-1"></i> Cancelar
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modal.close(statusForm.value)">
+      <i class="fas fa-save me-1"></i> Guardar
+    </button>
+  </div>
+</ng-template>

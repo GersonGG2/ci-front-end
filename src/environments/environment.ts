@@ -39,6 +39,48 @@ export const environment = {
       delete: EnviromentHelper.URL_ITZ_WS + '/users/', // DELETE /users/{id}
       replaceRoles: EnviromentHelper.URL_ITZ_WS + '/users/', // PATCH /users/{userId}/roles
     },
+    periodos: {
+      main: EnviromentHelper.URL_ITZ_WS + '/periodos',
+      create: EnviromentHelper.URL_ITZ_WS + '/periodos', // POST
+      getAll: EnviromentHelper.URL_ITZ_WS + '/periodos', // GET con filtros y paginación
+      getById: EnviromentHelper.URL_ITZ_WS + '/periodos/', // GET /periodos/{id}
+      update: EnviromentHelper.URL_ITZ_WS + '/periodos/', // PATCH /periodos/{id}
+      delete: EnviromentHelper.URL_ITZ_WS + '/periodos/', // DELETE /periodos/{id}
+      activar: EnviromentHelper.URL_ITZ_WS + '/periodos/', // PATCH /periodos/{id}/activar
+      cerrar: EnviromentHelper.URL_ITZ_WS + '/periodos/', // PATCH /periodos/{id}/cerrar
+    },
+    cursos: {
+      main: EnviromentHelper.URL_ITZ_WS + '/cursos',
+      create: EnviromentHelper.URL_ITZ_WS + '/cursos', // POST
+      getAll: EnviromentHelper.URL_ITZ_WS + '/cursos', // GET
+      getById: EnviromentHelper.URL_ITZ_WS + '/cursos/', // GET /cursos/{id}
+      update: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}
+      delete: EnviromentHelper.URL_ITZ_WS + '/cursos/', // DELETE /cursos/{id}
+      aprobar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/aprobar
+      rechazar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/rechazar
+      finalizar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/finalizar
+    },
+    academias: {
+      main: EnviromentHelper.URL_ITZ_WS + '/academias',
+      create: EnviromentHelper.URL_ITZ_WS + '/academias', // POST
+      getAll: EnviromentHelper.URL_ITZ_WS + '/academias', // GET
+      getById: EnviromentHelper.URL_ITZ_WS + '/academias/', // GET /academias/{id}
+      update: EnviromentHelper.URL_ITZ_WS + '/academias/', // PATCH /academias/{id}
+      delete: EnviromentHelper.URL_ITZ_WS + '/academias/', // DELETE /academias/{id}
+    },
+    inscripciones: {
+      main: EnviromentHelper.URL_ITZ_WS + '/inscripciones',
+      create: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // POST
+      getAll: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // GET
+      getMine: EnviromentHelper.URL_ITZ_WS + '/inscripciones/mis-inscripciones', // GET
+      getById: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // GET /inscripciones/{id}
+      update: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}
+      delete: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // DELETE /inscripciones/{id}
+      aprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/aprobar
+      reprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/reprobar
+      cancelar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/cancelar
+    },
+
   },
   tip: {
     inspections: {

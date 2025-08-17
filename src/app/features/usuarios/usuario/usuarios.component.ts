@@ -150,8 +150,10 @@ export class UsuariosComponent {
     } else {
       // Agregar
       this.form.reset();
+      // Genera un auth0_id aleatorio
+      const randomId = `auth0|${Date.now()}${Math.floor(Math.random() * 100000)}`;
       this.form.patchValue({
-        auth0_id: `auth0|${this.lastAuthId + 1}`,
+        auth0_id: randomId,
         roles: []
       });
       this.editingUser = null;

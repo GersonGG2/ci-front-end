@@ -2,14 +2,34 @@ import { RouteInfo } from './horizontal-sidebar.metadata';
 
 export const ROUTES: RouteInfo[] = [
 
+  // {
+  //   path: '/dashboard',
+  //   title: 'Dashboard',
+  //   icon: 'mdi mdi-view-dashboard', // Dashboard
+  //   class: '',
+  //   ddclass: '',
+  //   extralink: false,
+  //   submenu: [],
+  // },
   {
-    path: '/dashboard',
-    title: 'Dashboard',
-    icon: 'mdi mdi-view-dashboard', // Dashboard
+    path: '/periodo',
+    title: 'Periodo',
+    icon: 'mdi mdi-calendar-clock', // Periodo
     class: '',
     ddclass: '',
     extralink: false,
-    submenu: [],
+    submenu: [
+    ],
+  },
+  {
+    path: '/cursos',
+    title: 'Cursos',
+    icon: 'mdi mdi-book-open-page-variant', // Cursos
+    class: '',
+    ddclass: '',
+    extralink: false,
+    submenu: [
+    ],
   },
   {
     path: '/usuarios',
@@ -41,25 +61,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: [
     ],
   },
-  {
-    path: '/cursos',
-    title: 'Cursos',
-    icon: 'mdi mdi-book-open-page-variant', // Cursos
-    class: '',
-    ddclass: '',
-    extralink: false,
-    submenu: [
-    ],
-  },
-  {
-    path: '/periodo',
-    title: 'Periodo',
-    icon: 'mdi mdi-calendar-clock', // Periodo
-    class: '',
-    ddclass: '',
-    extralink: false,
-    submenu: [
-    ],
-  },
+
+
 
 ];
