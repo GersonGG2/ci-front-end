@@ -10,7 +10,7 @@
 }
 
 .pink-status {
-  background: #FF2014;
+  background: #212980;
   color: white;
   padding: 8px;
 }
@@ -209,9 +209,9 @@ input[type="checkbox"] {
 
 /* Estilo cuando está seleccionado */
 .custom-checkbox:checked {
-  background-color: #FF2014;
+  background-color: #212980;
   /* Fondo rojo */
-  border-color: #FF2014;
+  border-color: #212980;
   /* Borde rojo */
   color: white;
   /* Color del ícono */
@@ -350,13 +350,13 @@ input[type="checkbox"] {
 }
 
 .btn-red {
-  background-color: #FF2014;
+  background-color: #212980;
   color: white;
   cursor: pointer;
 }
 
 .btn-red:hover {
-  background-color: #FF2014;
+  background-color: #212980;
   color: white;
 }
 

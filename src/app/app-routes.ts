@@ -1,18 +1,19 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/auth0/login/login.component';
 import { FullComponent } from './layouts/full/full.component';
 import { BlankComponent } from './layouts/blank/blank.component';
-import { AuthGuard } from './features/auth0/auth.guard';
 import { UsuariosComponent } from './features/usuarios/usuario/usuarios.component';
+import { AuthGuard } from './features/authentication/auth.guard';
+import { LoginComponent } from './features/authentication/login/login.component';
 
 export const Approutes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', redirectTo: '/authentication/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   {
     path: '',
     component: FullComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: '/periodo', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadChildren: () =>
@@ -65,21 +66,21 @@ export const Approutes: Routes = [
 
     ],
   },
-  {
+{
     path: '',
     component: BlankComponent,
     children: [
       {
         path: 'authentication',
         loadChildren: () =>
-          import('./features/authentication/authentication.module').then(
+          import('./features/authentication/authetification.module').then(
             (m) => m.AuthenticationModule
-          ),
+          )
       },
     ],
   },
   {
     path: '**',
-    redirectTo: '/authentication/404',
+    redirectTo: '/login',
   },
 ];

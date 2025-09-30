@@ -11,7 +11,8 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToastrService } from 'ngx-toastr';
-import { AuthGuard } from 'src/app/features/auth0/auth.guard';
+import { AuthGuard } from 'src/app/features/authentication/auth.guard';
+import { AuthService } from 'src/app/features/authentication/authService.service';
 import { NotificationService } from 'src/app/features/notifications/services/notificationService.service';
 import { Alert } from 'src/app/helpers/alerts';
 
@@ -104,27 +105,34 @@ export class HorizontalNavigationComponent implements AfterViewInit {
       icon: 'de',
     },
   ];
-
-  user: any;
+  user: any = null;
   name: string = '';
-  image: string = '';
   email: string = '';
+  role: string = '';
+  image: string = 'assets/images/users/default.jpg';
 
   constructor(
     private modalService: NgbModal,
     private translate: TranslateService,
     private authGuard: AuthGuard,
     private toastr: ToastrService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService,
   ) {
     translate.setDefaultLang('en');
     this.configUser();
   }
-  ngOnInit(): void {
-    // Cargar notificaciones al iniciar
-    this.loadNotifications();
 
-
+  ngOnInit() {
+    const user = this.authService.getUser();
+    if (user) {
+      this.name = `${user.nombre} ${user.apellidos}`;
+      this.email = user.email;
+      // Si roles es un array de objetos, mapea a string antes de unir
+      this.role = Array.isArray(user.roles)
+        ? user.roles.map(r => typeof r === 'string' ? r : r.nombre).join(', ')
+        : user.roles;
+    }
   }
 
   /**
@@ -240,37 +248,37 @@ export class HorizontalNavigationComponent implements AfterViewInit {
   //   this.email = this.user?.email;
   //   this.image = this.user?.picture;
   // }
-configUser() {
-  // Obtener datos del usuario actual
-  this.user = this.authGuard.getUser();
+  configUser() {
+    // Obtener datos del usuario actual
+    this.user = this.authService.getUser();
 
-  // Establecer nombre como Admin
-  this.name = "Admin";
+    // Establecer nombre como Admin
+    this.name = "Admin";
 
-  // Mantener el email original
-  this.email = this.user?.email || 'admin@sistema.com';
+    // Mantener el email original
+    this.email = this.user?.email || 'admin@sistema.com';
 
-  // Generar avatar con iniciales "AD" (de ADmin)
-  // Color de fondo dorado/amarillo para representar admin
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-  canvas.width = 200;
-  canvas.height = 200;
+    // Generar avatar con iniciales "AD" (de ADmin)
+    // Color de fondo dorado/amarillo para representar admin
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 200;
+    canvas.height = 200;
 
-  // Fondo
-  context.fillStyle = '#ffc107'; // Color amarillo/dorado
-  context.fillRect(0, 0, canvas.width, canvas.height);
+    // Fondo
+    context.fillStyle = '#ffc107'; // Color amarillo/dorado
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Texto
-  context.font = 'bold 100px Arial';
-  context.fillStyle = '#ffffff';
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.fillText('AD', canvas.width / 2, canvas.height / 2);
+    // Texto
+    context.font = 'bold 100px Arial';
+    context.fillStyle = '#ffffff';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('AD', canvas.width / 2, canvas.height / 2);
 
-  // Convertir a imagen
-  this.image = canvas.toDataURL('image/png');
-}
+    // Convertir a imagen
+    this.image = canvas.toDataURL('image/png');
+  }
   ngAfterViewInit() { }
 
   changeLanguage(lang: any) {
@@ -284,7 +292,7 @@ configUser() {
       'Cerrar sesión',
       '¿Está seguro de que desea cerrar sesión?'
     )) {
-      this.authGuard.logout(); // Llama al método de logout
+      this.authService.logout(); // Llama al método de logout
     }
   }
 

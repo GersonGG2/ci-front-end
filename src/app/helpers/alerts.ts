@@ -9,7 +9,7 @@ export const Alert = {
       icon: 'info',
       title: title,
       html: text,
-      confirmButtonColor: '#FF2014',
+      confirmButtonColor: '#1b396a',
       confirmButtonText: 'Aceptar',
       heightAuto: false
     });
@@ -19,7 +19,7 @@ export const Alert = {
       icon: 'warning',
       title: title,
       html: text,
-      confirmButtonColor: '#FF2014',
+      confirmButtonColor: '#1b396a',
       confirmButtonText: 'Aceptar',
       heightAuto: false
     });
@@ -29,7 +29,7 @@ export const Alert = {
       icon: 'success',
       title: title,
       html: text,
-      confirmButtonColor: '#FF2014',
+      confirmButtonColor: '#1b396a',
       confirmButtonText: 'Aceptar',
       heightAuto: false
     });
@@ -39,7 +39,7 @@ export const Alert = {
       icon: 'error',
       title: title,
       html: text,
-      confirmButtonColor: '#FF2014',
+      confirmButtonColor: '#1b396a',
       confirmButtonText: 'Aceptar',
       heightAuto: false
     });
@@ -51,7 +51,7 @@ export const Alert = {
       html: text,
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonColor: '#FF2014',
+      confirmButtonColor: '#1b396a',
       confirmButtonText: buttons === 'YesNo' ? 'Sí, continuar' : 'Aceptar',
       cancelButtonText: buttons === 'YesNo' ? 'No, cancelar' : 'Cancelar',
       heightAuto: false,

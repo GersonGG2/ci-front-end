@@ -9,6 +9,7 @@ import { NgbModal, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GenericTableComponent } from "../../../component/generic-table/generictable.component";
 import { FeatherModule } from 'angular-feather';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-notifications',
@@ -88,11 +89,28 @@ export class NotificationsComponent implements OnInit {
     private modalService: NgbModal,
     private toastr: ToastrService,
     private datePipe: DatePipe,
+    private socketService: SocketService
   ) { }
 
 
   ngOnInit(): void {
     this.loadNotifications();
+
+    // Suscríbete a eventos de socket
+    this.socketService.on<any>('periodoAperturado').subscribe(data => {
+      this.toastr.info('¡Un periodo ha sido aperturado!', 'Notificación en tiempo real');
+      this.loadNotifications(); // Opcional: recarga la lista
+    });
+
+    this.socketService.on<any>('periodoCreado').subscribe(data => {
+      this.toastr.info('¡Nuevo periodo creado!', 'Notificación en tiempo real');
+      this.loadNotifications(); // Opcional: recarga la lista
+    });
+    this.socketService.on<any>('periodoAperturado').subscribe(data => {
+      console.log('Evento periodoAperturado recibido:', data);
+      this.toastr.info('¡Un periodo ha sido aperturado!', 'Notificación en tiempo real');
+      this.loadNotifications();
+    });
   }
 
   /**

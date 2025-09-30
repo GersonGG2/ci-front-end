@@ -7,6 +7,7 @@ import { FeatherModule } from 'angular-feather';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { HasPermissionDirective } from 'src/app/helpers/has-permission.directive';
+import { ROUTES } from './horizontal-menu-items';
 
 @Component({
   selector: 'app-horizontal-sidebar',
@@ -23,8 +24,41 @@ export class HorizontalSidebarComponent {
     private menuServise: HorizontalSidebarService,
     private router: Router
   ) {
+    const userString = localStorage.getItem('user');
+    let hasAdminRole = false;
+    let hasDocenteRole = false;
+    let hasInstructorRole = false;
+    let hasJefeRole = false;
+
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+
+        // Verificar los roles directamente del array de roles
+        if (user.roles && Array.isArray(user.roles)) {
+          hasAdminRole = user.roles.some(role => role.nombre === 'Admin');
+          hasDocenteRole = user.roles.some(role => role.nombre === 'Docente');
+          hasInstructorRole = user.roles.some(role => role.nombre === 'Instructor');
+          hasJefeRole = user.roles.some(role => role.nombre === 'Jefe de academia');
+        }
+      } catch (error) {
+        console.error('Error al parsear el usuario:', error);
+      }
+    }
+
+    // Filtrar los menús según los roles encontrados
+    if (hasAdminRole) {
+      // Admin ve todos los menús
+      this.sidebarnavItems = ROUTES;
+    } else if (hasDocenteRole || hasInstructorRole || hasJefeRole) {
+      // Otros roles solo ven menú de Periodo
+      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo');
+    } else {
+      // Sin roles o sesión, mostrar solo periodo por defecto
+      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo');
+    }
+
     this.menuServise.items.subscribe((menuItems) => {
-      this.sidebarnavItems = menuItems;
 
       // Active menu
       this.sidebarnavItems.filter((m) =>

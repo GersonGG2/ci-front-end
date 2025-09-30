@@ -2,8 +2,11 @@
   <div class="col-12">
 
     <div class="card card-body">
+      <div class="mb-2">
+        Lista de periodos para cursos intersemestrales.
+      </div>
       <app-generic-table [rows]="rows" [columns]="columns" [total]="totalItems" [page]="page"
-        (filter)="applyFilter($event)" [placeholder]="'Buscar...'" [isAdd]="true" (add)="openPeriodoModal()">
+        (filter)="applyFilter($event)" [placeholder]="'Buscar...'" [isAdd]="isAdmin " (add)="openPeriodoModal()">
       </app-generic-table>
 
     </div>

@@ -1,4 +1,3 @@
-import { AuthConfig } from '@auth0/auth0-angular/lib/auth.config';
 
 export class EnviromentHelper {
   public static URL_INSPECTIONS_WS = 'https://dyinspecwsdev.tipmexico.com/dyinspectionws';
@@ -15,29 +14,28 @@ export class EnviromentHelper {
   public static URL_REPORT_WS = 'https://dyrptwsdev.tipmexico.com/dyreportws';
   public static URL_ITZ_WS = 'http://localhost:3000';
 
-  public static readonly AUTH: AuthConfig = {
-    domain: 'authdev.tipmexico.com',
-    clientId: 'pfgErfzPGiZawKjC4Zfk66umXqkR0SaA',
-    authorizationParams: {
-      audience: 'dyws-tip-api',
-      organization: 'org_Tlk6tLDS4LSMxYbX',
-      redirect_uri: window.location.origin
-    }
-  };
 
   public static readonly AUTH_CALLBACK = 'http://localhost:4200/';
 }
 //       deleteDocument: EnviromentHelper.URL_CONFIGURATION_WS + '/document/delete-document'
 export const environment = {
   itz: {
+    auth: {
+      login: EnviromentHelper.URL_ITZ_WS + '/auth/login',
+      register: EnviromentHelper.URL_ITZ_WS + '/auth/register',
+      profile: EnviromentHelper.URL_ITZ_WS + '/auth/profile',
+      callback: EnviromentHelper.URL_ITZ_WS + '/auth/callback' // AÑADIR ESTA LÍNEA
+    },
     usuarios: {
       main: EnviromentHelper.URL_ITZ_WS + '/usuarios',
-      create: EnviromentHelper.URL_ITZ_WS + '/users', // POST
-      getAll: EnviromentHelper.URL_ITZ_WS + '/users', // GET con paginación y filtros
-      getById: EnviromentHelper.URL_ITZ_WS + '/users/', // GET /users/{id}
-      update: EnviromentHelper.URL_ITZ_WS + '/users/', // PATCH /users/{id}
-      delete: EnviromentHelper.URL_ITZ_WS + '/users/', // DELETE /users/{id}
-      replaceRoles: EnviromentHelper.URL_ITZ_WS + '/users/', // PATCH /users/{userId}/roles
+      create: EnviromentHelper.URL_ITZ_WS + '/users',
+      getAll: EnviromentHelper.URL_ITZ_WS + '/users',
+      getById: EnviromentHelper.URL_ITZ_WS + '/users/',
+      update: EnviromentHelper.URL_ITZ_WS + '/users/',
+      delete: EnviromentHelper.URL_ITZ_WS + '/users/',
+      replaceRoles: EnviromentHelper.URL_ITZ_WS + '/users/',
+      getByAuth0Id: EnviromentHelper.URL_ITZ_WS + '/users/auth/{auth0Id}',  // MANTENER PARA COMPATIBILIDAD
+      getByEmail: EnviromentHelper.URL_ITZ_WS + '/users/email/{email}',
     },
     periodos: {
       main: EnviromentHelper.URL_ITZ_WS + '/periodos',
@@ -59,6 +57,9 @@ export const environment = {
       aprobar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/aprobar
       rechazar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/rechazar
       finalizar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/finalizar
+      aprobarMultiples: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estado-multiples', // PATCH /cursos/aprobar-multiples
+      getCursosByUser: EnviromentHelper.URL_ITZ_WS + '/cursos/mis-cursos', // GET /cursos/mis-cursos
+      cambiarEstadoDecursoJefe: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estatus-por-filtro',
     },
     academias: {
       main: EnviromentHelper.URL_ITZ_WS + '/academias',

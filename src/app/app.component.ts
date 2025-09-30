@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { AuthGuard } from './features/auth0/auth.guard';
-import { AuthService } from '@auth0/auth0-angular';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './features/authentication/authService.service';
 
 @Component({
     selector: 'app-root',
@@ -8,19 +7,17 @@ import { AuthService } from '@auth0/auth0-angular';
     styleUrls: ['./app.component.scss'],
     standalone: false
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  loading: boolean = true;
-
+  loading: boolean = false;
   title = 'main16';
 
   constructor(public auth: AuthService) {}
 
   ngOnInit(): void {
-    // Detecta si Auth0 está cargando
-    this.auth.isLoading$.subscribe((isLoading) => {
-      this.loading = isLoading;
-    });
+    // Si quieres mostrar loading al iniciar sesión, puedes hacerlo en el login, no aquí.
+    // Aquí puedes verificar si el usuario está autenticado:
+    this.loading = !this.auth.isAuthenticated();
   }
 
 }

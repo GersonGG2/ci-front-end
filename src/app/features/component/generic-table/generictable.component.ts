@@ -428,6 +428,7 @@ export class GenericTableComponent implements OnInit, OnChanges, AfterViewInit, 
         this.search = '';
         this.inputSearch.nativeElement.value = '';
       }
+      console.log('Filtro emitido:', this.getFilter());
       this.filter.emit(this.getFilter());
     }
   }

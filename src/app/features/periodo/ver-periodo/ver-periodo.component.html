@@ -1,25 +1,29 @@
 <div class="container">
-  <div *ngIf="periodo" class="mb-4">
-    <h3>{{ periodo.nombre }}</h3>
-    <p>
-      <strong>Fecha inicio:</strong> {{ periodo.fecha_inicio }}<br>
-      <strong>Fecha fin:</strong> {{ periodo.fecha_fin }}<br>
-      <strong>Estado:</strong>
-      <span
-        [innerHTML]="periodo.estado === 'activo' ? '<span class=\'badge bg-success\'>Activo</span>' : periodo.estado === 'cerrado' ? '<span class=\'badge bg-danger\'>Cerrado</span>' : periodo.estado === 'inactivo' ? '<span class=\'badge bg-info\'>Inactivo</span>' : periodo.estado"></span>
-    </p>
+  <div *ngIf="periodo" class="card card-body">
+    <div class="cad-body">
+      <h3>{{ periodo.nombre }}</h3>
+      <p>
+        <strong>Fecha inicio:</strong> {{ periodo.fecha_inicio }}<br>
+        <strong>Fecha fin:</strong> {{ periodo.fecha_fin }}<br>
+        <strong>Estado: </strong>
+        <span
+          [innerHTML]="periodo.estado === 'activo' ? '<span class=\'badge bg-success\'>Activo</span>' : periodo.estado === 'cerrado' ? '<span class=\'badge bg-danger\'>Cerrado</span>' : periodo.estado === 'inactivo' ? '<span class=\'badge bg-info\'>Inactivo</span>' : periodo.estado"></span>
+      </p>
+    </div>
   </div>
 
   <div class="card card-body">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Cursos de este periodo</h5>
-    </div>
-
     <div class=" card-body">
       <h5>Cursos de este periodo</h5>
       <app-generic-table [rows]="cursos" [columns]="columns" [total]="totalItems" [page]="page"
-        [placeholder]="'Buscar...'" [isAdd]="true" (add)="openCursoModal()" [isMenu]="true" [options]="props">
+        [placeholder]="'Buscar...'" [isAdd]="isAdmin || isJefe" (add)="openCursoModal()" [isMenu]="isAdmin"
+        [options]="isAdmin ? props : []" (selected)="onSelectionChange($event)" (filter)="applyFilter($event)">
       </app-generic-table>
+      <div class="mt-3 text-end" *ngIf="isJefe">
+        <button class="btn btn-primary" (click)="enviarCursosNuevos()">
+          Enviar cursos
+        </button>
+      </div>
     </div>
   </div>
 
@@ -36,14 +40,14 @@
         <!-- Datos básicos -->
         <div class="row mb-3">
           <div class="col-md-12">
-            <label for="nombre" class="form-label">Nombre del curso *</label>
+            <label for="nombre" class="form-label">Nombre del curso </label>
             <input type="text" class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre del curso">
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-12">
-            <label for="objetivo" class="form-label">Objetivo *</label>
+            <label for="objetivo" class="form-label">Objetivo </label>
             <textarea class="form-control" id="objetivo" formControlName="objetivo" rows="3"
               placeholder="Objetivo del curso"></textarea>
           </div>
@@ -52,19 +56,19 @@
         <!-- Periodo, academia e instructor -->
         <div class="row mb-3">
           <div class="col-md-4">
-            <label for="periodo" class="form-label">Periodo *</label>
+            <label for="periodo" class="form-label">Periodo </label>
             <input type="text" class="form-control" id="periodo" [value]="periodo?.nombre" disabled>
             <input type="hidden" formControlName="periodoId">
           </div>
           <div class="col-md-4">
-            <label for="academiaId" class="form-label">Academia *</label>
+            <label for="academiaId" class="form-label">Academia </label>
             <select class="form-select" id="academiaId" formControlName="academiaId">
               <option value="">Seleccione...</option>
               <option *ngFor="let academia of academias" [value]="academia.id">{{ academia.nombre }}</option>
             </select>
           </div>
           <div class="col-md-4">
-            <label for="instructorId" class="form-label">Instructor *</label>
+            <label for="instructorId" class="form-label">Instructor </label>
             <select class="form-select" id="instructorId" formControlName="instructorId">
               <option value="">Seleccione...</option>
               <option *ngFor="let instructor of instructores" [value]="instructor.id">
@@ -77,12 +81,12 @@
         <!-- Lugar y aula -->
         <div class="row mb-3">
           <div class="col-md-8">
-            <label for="lugar" class="form-label">Lugar *</label>
+            <label for="lugar" class="form-label">Lugar </label>
             <input type="text" class="form-control" id="lugar" formControlName="lugar"
               placeholder="Lugar donde se impartirá">
           </div>
           <div class="col-md-4">
-            <label for="aula" class="form-label">Aula *</label>
+            <label for="aula" class="form-label">Aula </label>
             <input type="text" class="form-control" id="aula" formControlName="aula" placeholder="Aula">
           </div>
         </div>
@@ -90,23 +94,23 @@
         <!-- Fechas y horas -->
         <div class="row mb-3">
           <div class="col-md-3">
-            <label for="fecha_inicio" class="form-label">Fecha inicio *</label>
+            <label for="fecha_inicio" class="form-label">Fecha inicio </label>
             <input type="date" class="form-control" id="fecha_inicio" formControlName="fecha_inicio">
           </div>
           <div class="col-md-3">
-            <label for="fecha_fin" class="form-label">Fecha fin *</label>
+            <label for="fecha_fin" class="form-label">Fecha fin </label>
             <input type="date" class="form-control" id="fecha_fin" formControlName="fecha_fin">
           </div>
           <div class="col-md-2">
-            <label for="hora_inicio" class="form-label">Hora inicio *</label>
+            <label for="hora_inicio" class="form-label">Hora inicio </label>
             <input type="time" class="form-control" id="hora_inicio" formControlName="hora_inicio">
           </div>
           <div class="col-md-2">
-            <label for="hora_fin" class="form-label">Hora fin *</label>
+            <label for="hora_fin" class="form-label">Hora fin </label>
             <input type="time" class="form-control" id="hora_fin" formControlName="hora_fin">
           </div>
           <div class="col-md-2">
-            <label for="horas" class="form-label">Horas *</label>
+            <label for="horas" class="form-label">Horas </label>
             <input type="number" class="form-control" id="horas" formControlName="horas" min="1">
           </div>
         </div>
@@ -114,7 +118,7 @@
         <!-- Dirigido a y prerrequisitos -->
         <div class="row mb-3">
           <div class="col-md-12">
-            <label for="dirigido_a" class="form-label">Dirigido a *</label>
+            <label for="dirigido_a" class="form-label">Dirigido a </label>
             <input type="text" class="form-control" id="dirigido_a" formControlName="dirigido_a"
               placeholder="A quién va dirigido el curso">
           </div>
@@ -130,8 +134,9 @@
 
         <div class="row mb-3">
           <div class="col-md-4">
-            <label for="estado" class="form-label">Estado *</label>
-            <select class="form-select" id="estado" formControlName="estado">
+            <label for="estado" class="form-label">Estado </label>
+            <select class="form-select" id="estado" formControlName="estado" [disabled]="isJefe">
+              <option value="nuevo">Nuevo</option>
               <option value="propuesto">Propuesto</option>
               <option value="aprobado">Aprobado</option>
               <option value="rechazado">Rechazado</option>
@@ -139,7 +144,7 @@
             </select>
           </div>
           <div class="col-md-8" *ngIf="cursoForm.get('estado')?.value === 'rechazado'">
-            <label for="comentario_rechazo" class="form-label">Motivo del rechazo *</label>
+            <label for="comentario_rechazo" class="form-label">Motivo del rechazo </label>
             <textarea class="form-control" id="comentario_rechazo" formControlName="comentario_rechazo" rows="2"
               placeholder="Describe el motivo del rechazo"></textarea>
           </div>
@@ -162,6 +167,7 @@
     <div class="modal-body">
       <label for="nuevoEstado" class="form-label">Nuevo estatus</label>
       <select class="form-select" id="nuevoEstado" [(ngModel)]="nuevoEstado">
+        <option value="nuevo">Nuevo</option>
         <option value="propuesto">Propuesto</option>
         <option value="aprobado">Aprobado</option>
         <option value="rechazado">Rechazado</option>
@@ -170,7 +176,7 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
-      <button type="button" class="btn btn-primary" (click)="cambiarEstadoCurso(modal)">Guardar</button>
+      <button type="button" class="btn btn-primary" (click)="aprobarSeleccionados()">Guardar</button>
     </div>
   </ng-template>
 

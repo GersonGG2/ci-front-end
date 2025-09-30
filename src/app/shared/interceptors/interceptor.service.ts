@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { SpinnerService } from '../services/spinner.service';
-import { AuthGuard } from 'src/app/features/auth0/auth.guard';
-import { Session } from 'src/app/helpers/session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,47 +10,35 @@ import { Session } from 'src/app/helpers/session.service';
 export class InterceptorService implements HttpInterceptor {
   private activeRequests = 0;
 
-  constructor(private spinnerService: SpinnerService,
-    private auth: AuthGuard) { }
+  constructor(private spinnerService: SpinnerService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    const token = this.auth.getToken();
-    const session = Session.getSession();
-
+    // Solo añade el token si existe y la petición es a tu API
     let request = req;
-    if (token) {
+    const token = localStorage.getItem('token');
+    if (token && req.url.includes('http://localhost:3000')) {
       request = req.clone({
         setHeaders: {
-          "session": session,
           Authorization: `Bearer ${token}`
         }
       });
     }
 
-    // Excluir si la URL contiene ambos '/file/' y '/metadata'
-    const shouldExclude = false;//req.url.includes('/file/') && req.url.includes('/metadata');
-
-    if (!shouldExclude) {
-      if (this.activeRequests === 0) {
-        this.spinnerService.loadSpinner();
-      }
-      this.activeRequests++;
+    // Spinner control
+    if (this.activeRequests === 0) {
+      this.spinnerService.loadSpinner();
     }
+    this.activeRequests++;
 
     return next.handle(request).pipe(
       finalize(() => {
-        if (!shouldExclude) {
-          setTimeout(() => {
-            this.activeRequests--;
-            if (this.activeRequests === 0) {
-              this.spinnerService.stopSpinner();
-            }
-          }, 500);
-        }
+        setTimeout(() => {
+          this.activeRequests--;
+          if (this.activeRequests === 0) {
+            this.spinnerService.stopSpinner();
+          }
+        }, 500);
       })
     );
   }
-
-
 }

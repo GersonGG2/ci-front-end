@@ -2,7 +2,7 @@
 
   <!-- Información del curso - Card -->
   <div class="card shadow-sm mb-4">
-    <div class="card-header bg-primary bg-gradient text-white d-flex justify-content-between align-items-center">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <h4 class="mb-0">Información del curso</h4>
       <span class="text-white fw-bold">{{ curso?.estado | uppercase }}</span>
     </div>
@@ -81,12 +81,17 @@
 
   <!-- Docentes inscritos - Card -->
   <div class="card shadow-sm">
-    <div class="card-header bg-primary bg-gradient text-white">
+    <div class="card-header bg-primary  text-white d-flex justify-content-between align-items-center">
       <h4 class="mb-0">Docentes inscritos</h4>
+      <!-- Botón de inscripción para docentes -->
+      <button *ngIf="isDocente && !isInscrito && curso?.estado === 'aprobado'" class="btn btn-light text-primary"
+        (click)="inscribirDocente()">
+        <i class="fas fa-user-plus"></i> Inscribirme a este curso
+      </button>
     </div>
     <div class="card-body">
       <app-generic-table [rows]="inscripciones" [columns]="columns" [total]="totalItems" [page]="page"
-        [placeholder]="'Buscar docente...'" [isAdd]="true" (add)="openInscripcionModal()">
+        [placeholder]="'Buscar docente...'" [isAdd]="isAdmin" (add)="openInscripcionModal()">
       </app-generic-table>
     </div>
   </div>
@@ -94,7 +99,7 @@
 
 <!-- Modal de inscripción -->
 <ng-template #inscripcionModal let-modal>
-  <div class="modal-header bg-primary bg-gradient text-white">
+  <div class="modal-header bg-primary  text-white">
     <h5 class="modal-title">Agregar inscripción</h5>
     <button type="button" class="btn-close btn-close-white" (click)="modal.dismiss()" aria-label="Close"></button>
   </div>
@@ -143,7 +148,7 @@
 
 <!-- Modal de cambio de estado -->
 <ng-template #changeStatusModal let-modal>
-  <div class="modal-header bg-primary bg-gradient text-white">
+  <div class="modal-header bg-primary  text-white">
     <h4 class="modal-title">Cambiar estado de inscripción</h4>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>

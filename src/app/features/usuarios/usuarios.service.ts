@@ -19,6 +19,7 @@ export class UsuariosService {
     const url = `${environment.itz.usuarios.getAll}`;
     return await firstValueFrom(this.http.get(url, { params }));
   }
+
   async createUsuario(data: any): Promise<any> {
     const url = `${environment.itz.usuarios.create}`;
     return await firstValueFrom(this.http.post(url, data));
@@ -37,5 +38,10 @@ export class UsuariosService {
   async replaceRoles(id: number, data: { roleIds: number[] }): Promise<any> {
     const url = `${environment.itz.usuarios.replaceRoles}${id}/roles`;
     return await firstValueFrom(this.http.patch(url, data));
+  }
+
+  async registerUsuario(data: any): Promise<any> {
+    const url = `${environment.itz.auth.register}`;
+    return await firstValueFrom(this.http.post(url, data));
   }
 }

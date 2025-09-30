@@ -41,7 +41,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: [
     ],
   },
-  {
+ /*  {
     path: '/roles',
     title: 'Roles',
     icon: 'mdi mdi-account-key', // Roles
@@ -60,7 +60,7 @@ export const ROUTES: RouteInfo[] = [
     extralink: false,
     submenu: [
     ],
-  },
+  }, */
 
 
 

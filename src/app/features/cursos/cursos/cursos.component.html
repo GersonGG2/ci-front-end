@@ -1,1 +1,162 @@
-<p>cursos works!</p>
+<div class="container my-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary  text-white">
+            <h4 class="mb-0">Cursos</h4>
+        </div>
+        <div class="card-body">
+            <app-generic-table [rows]="cursos" [columns]="columns" [total]="totalItems" [page]="page"
+                (filter)="applyFilter($event)" [placeholder]="'Buscar curso...'" [isAdd]="true"
+                (add)="openCursoModal()">
+            </app-generic-table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar/editar curso -->
+<ng-template #cursoModal let-modal>
+    <div class="modal-header bg-primary  text-white">
+        <h5 class="modal-title">
+            {{ editingCurso ? 'Editar Curso' : 'Agregar Nuevo Curso' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeCursoModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="form">
+            <!-- Datos básicos -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="nombre" class="form-label">Nombre del curso </label>
+                    <input type="text" class="form-control" id="nombre" formControlName="nombre"
+                        placeholder="Nombre del curso">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="objetivo" class="form-label">Objetivo </label>
+                    <textarea class="form-control" id="objetivo" formControlName="objetivo" rows="3"
+                        placeholder="Objetivo del curso"></textarea>
+                </div>
+            </div>
+
+            <!-- Academia e instructor -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="periodoId" class="form-label">Periodo </label>
+                    <select class="form-select" id="periodoId" formControlName="periodoId">
+                        <option [ngValue]="null">Seleccione un periodo</option>
+                        <option *ngFor="let p of periodos" [ngValue]="p.id || p.periodoId">
+                            {{ p.nombre || p.periodoName || p.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="academiaId" class="form-label">Academia </label>
+                    <select class="form-select" id="academiaId" formControlName="academiaId">
+                        <option [ngValue]="null">Seleccione una academia</option>
+                        <option *ngFor="let a of academias" [ngValue]="a.id || a.academiaId">
+                            {{ a.nombre || a.academiaName || a.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="instructorName" class="form-label">Instructor </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" formControlName="instructorName" id="instructorName"
+                            placeholder="Seleccione un instructor"
+                            (keydown.enter)="$event.preventDefault(); openSelectInstructorModal()" readonly />
+                        <button class="btn btn-outline-secondary" type="button" (click)="openSelectInstructorModal()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" (click)="clearInstructor()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <!-- campo oculto para almacenar el id seleccionado -->
+                        <input type="hidden" formControlName="instructorId" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lugar y aula -->
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <label for="lugar" class="form-label">Lugar </label>
+                    <input type="text" class="form-control" id="lugar" formControlName="lugar"
+                        placeholder="Lugar donde se impartirá">
+                </div>
+                <div class="col-md-4">
+                    <label for="aula" class="form-label">Aula </label>
+                    <input type="text" class="form-control" id="aula" formControlName="aula" placeholder="Aula">
+                </div>
+            </div>
+
+            <!-- Fechas y horas -->
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="fecha_inicio" class="form-label">Fecha inicio </label>
+                    <input type="date" class="form-control" id="fecha_inicio" formControlName="fecha_inicio">
+                </div>
+                <div class="col-md-3">
+                    <label for="fecha_fin" class="form-label">Fecha fin </label>
+                    <input type="date" class="form-control" id="fecha_fin" formControlName="fecha_fin">
+                </div>
+                <div class="col-md-2">
+                    <label for="hora_inicio" class="form-label">Hora inicio </label>
+                    <input type="time" class="form-control" id="hora_inicio" formControlName="hora_inicio">
+                </div>
+                <div class="col-md-2">
+                    <label for="hora_fin" class="form-label">Hora fin </label>
+                    <input type="time" class="form-control" id="hora_fin" formControlName="hora_fin">
+                </div>
+                <div class="col-md-2">
+                    <label for="horas" class="form-label">Horas </label>
+                    <input type="number" class="form-control" id="horas" formControlName="horas" min="1">
+                </div>
+            </div>
+
+            <!-- Dirigido a y prerrequisitos -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="dirigido_a" class="form-label">Dirigido a </label>
+                    <input type="text" class="form-control" id="dirigido_a" formControlName="dirigido_a"
+                        placeholder="A quién va dirigido el curso">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="prerequisitos" class="form-label">Prerrequisitos</label>
+                    <input type="text" class="form-control" id="prerequisitos" formControlName="prerequisitos"
+                        placeholder="Conocimientos previos necesarios">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="estado" class="form-label">Estado </label>
+                    <select class="form-select" id="estado" formControlName="estado">
+                        <option value="propuesto">Propuesto</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="rechazado">Rechazado</option>
+                        <option value="finalizado">Finalizado</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="cerrado">Cerrado</option>
+                    </select>
+                </div>
+                <div class="col-md-8" *ngIf="form.get('estado')?.value === 'rechazado'">
+                    <label for="comentario_rechazo" class="form-label">Motivo del rechazo *</label>
+                    <textarea class="form-control" id="comentario_rechazo" formControlName="comentario_rechazo" rows="2"
+                        placeholder="Describe el motivo del rechazo"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCursoModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="form.invalid">{{ editingCurso ?
+            'Actualizar' : 'Guardar' }}</button>
+    </div>
+</ng-template>

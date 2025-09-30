@@ -1,51 +1,32 @@
 import * as CryptoJS from 'crypto-js';
 
 export class Session {
+    // ... código existente ...
 
-    private static user: any = null;
-    private static userdy: any = null;
-
-    static setViewInsp(val: string): void {
-        localStorage.setItem('editInsp', val);
+    public static setUser(user: any): void {
+        localStorage.setItem('user', JSON.stringify(user));
     }
 
-    static isViewInsp(val: string): boolean {
-        return localStorage.getItem('editInsp') === val;
+    public static getUser(): any {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
     }
 
-    static removeViewInsp(): void {
-        localStorage.removeItem('editInsp');
+    public static setToken(token: string): void {
+        localStorage.setItem('auth_token', token);
     }
 
-    static setUser(user: any): void {
-        this.user = user;
+    public static getToken(): string {
+        return localStorage.getItem('auth_token') || '';
     }
 
-    static getUser(): any {
-        return this.user ?? {}
+    public static getSession(): string {
+        return localStorage.getItem('session') || this.getToken() || '';
+    }
+    
+    public static clearAll(): void {
+        localStorage.clear();
     }
 
-    static isAdmin(): boolean {
-        return this.user && this.user.adminFlag === 'Y';
-    }
-
-    static getSession(): string {
-        if (this.user) {
-            const request = JSON.stringify({
-                admin: this.user.adminFlag === 'Y',
-                userId: this.user.userId,
-                branchId: this.user.branch ? this.user.branch.branchId : null,
-                userName: this.user.fullName,
-                userEmail: this.user.emailAddress,
-                menuId: this.user.menu ? this.user.menu.menuId : null,
-            });
-
-            const encrypted = CryptoJS.AES.encrypt(request,
-                'tipmexico.com').toString();
-
-            return encrypted;
-        }
-        return '******';
-    }
 
 }

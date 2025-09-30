@@ -5,6 +5,7 @@ import { UsuariosService } from '../usuarios.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { Alert } from 'src/app/helpers/alerts';
 
 @Component({
   selector: 'app-usuarios',
@@ -35,9 +36,9 @@ export class UsuariosComponent {
   columns = [
     { name: 'Nombre', prop: 'nombre', customView: 'nombreCompletoHtml', filter: false },
     { name: 'Email', prop: 'email', customView: 'emailHtml', filter: false },
-    { name: 'Estado', prop: 'estado', customView: 'estadoHtml', filter: false,sortable: false },
+    { name: 'Estado', prop: 'estado', customView: 'estadoHtml', filter: false, sortable: false },
     {
-      name: 'Roles', prop: 'role', customView: 'rolesHtml',sortable: false, filter: true, type: 'select', options: [
+      name: 'Roles', prop: 'role', customView: 'rolesHtml', sortable: false, filter: true, type: 'select', options: [
         { value: 'Admin', text: 'Admin' },
         { value: 'Docente', text: 'Docente' },
         { value: 'Instructor', text: 'Instructor' },
@@ -58,6 +59,8 @@ export class UsuariosComponent {
     email: ['', [Validators.required, Validators.email]],
     nombre: ['', Validators.required],
     apellidos: ['', Validators.required],
+    password: [''],
+    estado: [true],
     roles: [[]]
   });
 
@@ -105,7 +108,7 @@ export class UsuariosComponent {
       let rolesHtml = '';
       if (Array.isArray(item.roles)) {
         rolesHtml = item.roles.map(role => {
-          let roleName = role.name;
+          let roleName = role.nombre;
           let roleClass = 'bg-secondary text-white';
           if (roleName === 'Jefe de academia') {
             roleName = 'Jefe';
@@ -134,7 +137,7 @@ export class UsuariosComponent {
     });
   }
 
-  openUserModal(user?: any) {
+    openUserModal(user?: any) {
     if (user) {
       // Editar
       this.form.reset();
@@ -144,21 +147,25 @@ export class UsuariosComponent {
         email: user.email,
         nombre: user.nombre,
         apellidos: user.apellidos,
-        roles: user.roles.map((r: any) => r.id)
+        estado: user.estado,
+        roles: user.roles.map((r: any) => r.id),
+        password: ''
       });
       this.editingUser = user;
+      this.modalService.open(this.userModal, { centered: true });
     } else {
       // Agregar
       this.form.reset();
-      // Genera un auth0_id aleatorio
       const randomId = `auth0|${Date.now()}${Math.floor(Math.random() * 100000)}`;
       this.form.patchValue({
         auth0_id: randomId,
-        roles: []
+        estado: true,
+        roles: [],
+        password: ''
       });
-      this.editingUser = null;
+      this.editingUser = null; // <-- Mueve esto ANTES de abrir el modal
+      this.modalService.open(this.userModal, { centered: true });
     }
-    this.modalService.open(this.userModal, { centered: true });
   }
 
   closeUserModal() {
@@ -168,22 +175,22 @@ export class UsuariosComponent {
 
   async onSubmit() {
     if (this.form.invalid) return;
-    const { id, auth0_id, email, nombre, apellidos, roles } = this.form.value;
+    const { id, email, nombre, apellidos, roles, estado, password, auth0_id } = this.form.value;
     try {
       if (id) {
         // Editar usuario
-        await this.usuariosService.updateUsuario(id, { auth0_id, email, nombre, apellidos });
+        await this.usuariosService.updateUsuario(id, { auth0_id, email, nombre, apellidos, estado });
         await this.usuariosService.replaceRoles(id, { roleIds: roles });
         this.toastr.success('Usuario actualizado');
       } else {
-        // Agregar usuario
-        await this.usuariosService.createUsuario({ auth0_id, email, nombre, apellidos });
-        // Obtén el nuevo usuario para el id
-        const usuarios = await this.usuariosService.getAllUsuarios(this.page, this.limit, this.filters);
-        const nuevo = usuarios.data.rows.find((u: any) => u.auth0_id === auth0_id);
-        if (nuevo) {
-          await this.usuariosService.replaceRoles(nuevo.id, { roleIds: roles });
-        }
+        // Registrar usuario (nuevo endpoint y payload)
+        await this.usuariosService.registerUsuario({
+          email,
+          nombre,
+          apellidos,
+          password,
+          roles
+        });
         this.lastAuthId += 1;
         this.toastr.success('Usuario agregado');
       }
@@ -194,14 +201,29 @@ export class UsuariosComponent {
     }
   }
 
-  onDelete(row: any) {
-    if (confirm('¿Seguro que deseas eliminar este usuario?')) {
-      this.usuariosService.deleteUsuario(row.id).then(() => {
+  async onDelete(row: any) {
+    const confirmed = await Alert.question(
+      'Eliminar usuario',
+      '¿Seguro que deseas eliminar este usuario?'
+    );
+    if (!confirmed) return;
+
+    this.usuariosService.deleteUsuario(row.id)
+      .then(() => {
         this.toastr.success('Usuario eliminado');
         this.getUsuarios();
+      })
+      .catch((err) => {
+        let msg = 'Error al eliminar usuario';
+        if (err?.error?.message) {
+          msg = err.error.message;
+        } else if (err?.message) {
+          msg = err.message;
+        }
+        this.toastr.error(msg, 'Error');
       });
-    }
   }
+
 
   onEdit(user: any) {
     this.form.reset();
@@ -211,6 +233,7 @@ export class UsuariosComponent {
       email: user.email,
       nombre: user.nombre,
       apellidos: user.apellidos,
+      estado: user.estado,
       roles: user.roles.map((r: any) => r.id)
     });
     this.editingUser = user;

@@ -15,7 +15,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
-import { AuthModule } from '@auth0/auth0-angular';
 import { EnviromentHelper } from 'src/environments/environment';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -47,16 +46,17 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    AuthModule.forRoot(EnviromentHelper.AUTH),
+    // AuthModule.forRoot(EnviromentHelper.AUTH),
     NgxSpinnerModule,
     ToastrModule.forRoot()
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi()), 
-    { provide: HTTP_INTERCEPTORS, 
-      useClass: InterceptorService, 
-      multi: true,
-      
-    }]
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true
+    }
+  ]
 })
-export class AppModule {}
+export class AppModule { }

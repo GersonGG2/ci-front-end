@@ -1,20 +1,59 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../authService.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 
 @Component({
-    selector: 'app-login',
-    imports: [RouterModule, CommonModule],
-    templateUrl: './login.component.html'
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule]
 })
-export class LoginComponent {
-  constructor() {}
-
-  loginform = true;
+export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
   recoverform = false;
+  loading = false;
+  error = '';
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    // Redireccionar si ya está logueado
+    if (localStorage.getItem('token')) {
+      this.router.navigate(['/periodo']);
+    }
+
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
 
   showRecoverForm() {
-    this.loginform = !this.loginform;
     this.recoverform = !this.recoverform;
+  }
+
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    const { username, password } = this.loginForm.value;
+
+    this.authService.login(username, password).subscribe(
+      () => {
+        this.router.navigate(['/periodo']);
+      },
+      (error) => {
+        this.error = error.error?.message || 'Error de autenticación';
+        this.loading = false;
+      }
+    );
   }
 }

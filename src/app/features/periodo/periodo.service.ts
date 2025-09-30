@@ -20,9 +20,7 @@ export class PeriodosService {
 
   async createPeriodo(data: any): Promise<any> {
     const url = `${environment.itz.periodos.create}`;
-    // Agrega usuarioId: 1 temporal
-    const payload = { ...data, usuarioId: 1 };
-    return await firstValueFrom(this.http.post(url, payload));
+    return await firstValueFrom(this.http.post(url, data));
   }
 
   async updatePeriodo(id: number, data: any): Promise<any> {
@@ -107,5 +105,35 @@ export class PeriodosService {
   async updateInscripcion(data: any): Promise<any> {
     const url = `${environment.itz.inscripciones.update}${data.id}`;
     return this.http.patch(url, { estado: data.estado }).toPromise();
+  }
+
+  async getAllInstructores(page = 1, limit = 50): Promise<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('role', 'Instructor');
+    const url = environment.itz.usuarios.getAll;
+    return await firstValueFrom(this.http.get(url, { params }));
+  }
+
+  async removeInscripcion(id: number | string): Promise<any> {
+    const url = `${environment.itz.inscripciones.delete}${id}`;
+    return await firstValueFrom(this.http.delete(url));
+  }
+
+
+  async aprobarMultiplesCursos(ids: number[], estado: string): Promise<any> {
+    const url = environment.itz.cursos.aprobarMultiples;
+    return await firstValueFrom(this.http.patch(url, { ids, estado }));
+  }
+
+  async inscribirDocente(data: any): Promise<any> {
+    const url = environment.itz.inscripciones.create;
+    return await firstValueFrom(this.http.post(url, data));
+  }
+
+  async cambiarEstadoDecursoJefe(payload: any): Promise<any> {
+    const url = `${environment.itz.cursos.cambiarEstadoDecursoJefe}`;
+    return await firstValueFrom(this.http.post(url, payload));
   }
 }

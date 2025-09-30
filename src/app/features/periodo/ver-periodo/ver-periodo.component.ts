@@ -26,7 +26,7 @@ export class VerPeriodoComponent implements OnInit {
   totalItems = 0;
   page = 1;
   limit = 10;
-
+  columns: any[] = [];
   // Listas para los selectores
   academias: any[] = [];
   instructores: any[] = [];
@@ -34,32 +34,79 @@ export class VerPeriodoComponent implements OnInit {
   // Formulario para el nuevo curso
   cursoForm: FormGroup;
 
-  columns = [
-    {
-      prop: 'id', name: '', filter: false, checkbox: true, width: 30, sortable: false,
-      //selected: (rows: any) => console.log('row', rows),
-    },
-    { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
-    { name: 'Objetivo', prop: 'objetivo', filter: true },
-    { name: 'Academia', prop: 'academiaNombre', customView: 'academiaHtml', filter: true },
-    { name: 'Instructor', prop: 'instructorNombre', customView: 'instructorHtml', filter: false },
-    {
-      name: 'Estado', prop: 'estado', customView: 'estadoHtml', filter: true, sortable: false, type: 'select', options: [
-        { value: 'propuesto', text: 'Propuesto' },
-        { value: 'aprobado', text: 'Aprobado' },
-        { value: 'finalizado', text: 'Finalizado' }
-      ]
-    },
-    {
-      prop: 'action', name: 'Acción', width: 40, actions: [
-        { name: 'Ver detalle', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) },
-        { name: 'Editar', icon: 'edit', action: (value, row) => this.openCursoModal(row, 'edit') },
-        { name: 'Copiar', icon: 'copy', action: (value, row) => this.openCursoModal(row, 'copy') },
-        { name: 'Eliminar', icon: 'trash', action: (value, row) => this.doDeleteCurso(row) } // <-- agrega esto
+  isAdmin: boolean = false;
+  isJefe: boolean = false;
+  isDocente: boolean = false;
+  isInstructor: boolean = false;
 
-      ]
+  updateColumns() {
+    let defaultEstado = '';
+    if (this.isAdmin) {
+      defaultEstado = 'propuesto';
+    } else if (this.isJefe) {
+      defaultEstado = 'nuevo';
+    } else if (this.isInstructor) {
+      defaultEstado = 'aprobado';
+    } else if (this.isDocente) {
+      defaultEstado = 'aprobado';
     }
-  ];
+
+    this.columns = [
+      ...(this.isAdmin ? [{
+        prop: 'id', name: '#', filter: false, checkbox: true, width: 30, sortable: false,
+      }] : []),
+      { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
+      { name: 'Objetivo', prop: 'objetivo', filter: true },
+      {
+        name: 'Academia',
+        prop: 'academiaId',
+        customView: 'academiaHtml',
+        filter: true,
+        type: 'select',
+        options: [
+          { value: 1, text: 'Ingeniería en Sistemas Computacionales' },
+          { value: 2, text: 'Ingeniería Civil' },
+          { value: 3, text: 'Ingeniería Industrial' },
+          { value: 4, text: 'Ingeniería Electromecánica' },
+          { value: 5, text: 'Ingeniería Química' },
+          { value: 6, text: 'Ingeniería Bioquímica' },
+          { value: 7, text: 'Ingeniería en Gestión Empresarial' },
+          { value: 8, text: 'Licenciatura en Administración' },
+          { value: 9, text: 'Licenciatura en Turismo' },
+          { value: 10, text: 'Ingeniería en Ciencia de Datos' }
+        ]
+      },
+      { name: 'Instructor', prop: 'instructorNombre', customView: 'instructorHtml', filter: false },
+      {
+        name: 'Estado',
+        prop: 'estado',
+        customView: 'estadoHtml',
+        filter: true,
+        sortable: false,
+        type: 'select',
+        options: [
+          { value: 'nuevo', text: 'Nuevo' },
+          { value: 'propuesto', text: 'Propuesto' },
+          { value: 'aprobado', text: 'Aprobado' },
+          { value: 'finalizado', text: 'Finalizado' },
+          { value: 'rechazado', text: 'Rechazado' }
+        ],
+        default: defaultEstado // <--- Aquí va el default dinámico
+      },
+      ...(this.isAdmin || this.isJefe ? [{
+        prop: 'action', name: 'Acción', width: 40, actions: [
+          { name: 'Ver detalle', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) },
+          { name: 'Editar', icon: 'edit', action: (value, row) => this.openCursoModal(row, 'edit') },
+          { name: 'Copiar', icon: 'copy', action: (value, row) => this.openCursoModal(row, 'copy') },
+          { name: 'Eliminar', icon: 'trash', action: (value, row) => this.doDeleteCurso(row) }
+        ]
+      }] : [{
+        prop: 'action', name: 'Acción', width: 40, actions: [
+          { name: 'Ver detalle', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) }
+        ]
+      }])
+    ];
+  }
 
   props = [
     { prop: 'Cambiar estatus', name: 'Cambiar estatus', icon: 'sync', action: () => this.openChangeStatusModal() },
@@ -92,15 +139,18 @@ export class VerPeriodoComponent implements OnInit {
       hora_fin: ['14:00', Validators.required],
       dirigido_a: ['', Validators.required],
       prerequisitos: [''],
-      estado: ['propuesto']
+      estado: ['nuevo']
     });
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe(async params => {
       const id = params['id'];
-      this.loadPeriodo(id);
-      this.loadCursos(id);
+      // Primero carga el periodo
+      await this.loadPeriodo(id);
+      // Luego carga los cursos después de que la función anterior terminó
+      await this.loadCursos(id);
+      // Finalmente carga otros datos del formulario
       this.loadFormData();
     });
   }
@@ -133,8 +183,11 @@ export class VerPeriodoComponent implements OnInit {
         return;
       }
       this.periodo = res;
-
-      // Actualizar el formulario con el ID del periodo
+      this.isAdmin = res.isAdmin;
+      this.isJefe = !!res.isJefe;
+      this.isDocente = !!res.isDocente;
+      this.isInstructor = !!res.isInstructor;
+      this.updateColumns();
       this.cursoForm.patchValue({
         periodoId: this.periodo.id
       });
@@ -144,12 +197,49 @@ export class VerPeriodoComponent implements OnInit {
       this.toastr.error('Error al cargar datos del periodo');
     }
   }
+  // Agrega esta función en tu componente
+  private mapTableFiltersToApi(filters: any): any {
+    const apiFilters: any = {};
+
+    // Combina nombre y objetivo en searchValue
+    if (filters.nombre || filters.objetivo) {
+      apiFilters.searchValue = [filters.nombre, filters.objetivo].filter(Boolean).join(' ');
+    }
+    // Si tienes select de academia, mapea el id
+    if (filters.academiaId) {
+      apiFilters.academiaId = filters.academiaId; // O ajusta si tienes el id real
+    }
+    if (filters.estado) {
+      apiFilters.estado = filters.estado;
+    }
+    // Agrega otros filtros si los tienes
+    return apiFilters;
+  }
+
 
   async loadCursos(periodoId: string) {
     try {
-      console.log('Cargando cursos para periodoId:', periodoId);
-      const res = await this.periodosService.getAllCursos(this.page, this.limit, { periodoId });
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user.id;
 
+      let filters: any = { periodoId };
+
+      if (this.isAdmin) {
+        filters.estado = 'propuesto';
+      } else if (this.isJefe) {
+        filters.userId = userId;
+        filters.estado = 'nuevo';
+      } else if (this.isInstructor) {
+        filters.estado = 'aprobado';
+      } else if (this.isDocente) {
+        filters.estado = 'aprobado';
+      }
+
+      console.log('Filtros enviados a getAllCursos:', filters);
+
+      const res = await this.periodosService.getAllCursos(this.page, this.limit, filters);
+
+      // Procesa la respuesta y asigna datos a la tabla
       if (res && res.rows) {
         this.cursos = this.handleCursosResponse(res.rows);
         this.totalItems = res.count;
@@ -161,13 +251,51 @@ export class VerPeriodoComponent implements OnInit {
         this.cursos = [];
         this.totalItems = 0;
       }
+      this.updateColumns();
     } catch (error) {
-      console.error('Error al cargar cursos:', error);
+      console.error('Error en loadCursos:', error);
       this.cursos = [];
       this.totalItems = 0;
     }
   }
 
+  async applyFilter(filter: any = {}): Promise<void> {
+    // Mapea los filtros de la tabla a los nombres que espera el backend
+    const apiFilters = this.mapTableFiltersToApi(filter);
+    // Siempre agrega el periodoId
+    apiFilters.periodoId = this.periodo?.id;
+    // Si tu lógica de roles aplica, puedes agregar aquí userId o estado por defecto
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;
+    if (this.isJefe) {
+      apiFilters.userId = userId;
+      if (!apiFilters.estado) apiFilters.estado = 'nuevo';
+    }
+    if (this.isAdmin && !apiFilters.estado) {
+      apiFilters.estado = 'propuesto';
+    }
+    if ((this.isInstructor || this.isDocente) && !apiFilters.estado) {
+      apiFilters.estado = 'aprobado';
+    }
+
+    this.page = 1;
+    try {
+      const res = await this.periodosService.getAllCursos(this.page, this.limit, apiFilters);
+      if (res && res.rows) {
+        this.cursos = this.handleCursosResponse(res.rows);
+        this.totalItems = res.count;
+      } else if (res && res.data && res.data.rows) {
+        this.cursos = this.handleCursosResponse(res.data.rows);
+        this.totalItems = res.data.count;
+      } else {
+        this.cursos = [];
+        this.totalItems = 0;
+      }
+    } catch (error) {
+      this.cursos = [];
+      this.totalItems = 0;
+    }
+  }
   // Cargar datos necesarios para el formulario
   async loadFormData() {
     try {
@@ -176,11 +304,11 @@ export class VerPeriodoComponent implements OnInit {
       this.academias = res.data?.rows || [];
       // Aquí puedes cargar las academias e instructores de tus servicios
 
-      this.instructores = [
-        { id: 1, nombre: 'Juan Carlos', apellidos: 'García Pérez' },
-        { id: 4, nombre: 'Gerson Yahir', apellidos: 'García Gonzalez' },
-        { id: 5, nombre: 'María', apellidos: 'López Sánchez' }
-      ];
+      // Cargar instructores desde el API de usuarios con filtro de rol
+      const resInstructores = await this.periodosService.getAllInstructores();
+      // La estructura de respuesta incluye data.rows según la documentación
+      this.instructores = resInstructores.data?.rows || [];
+
     } catch (error) {
       console.error('Error al cargar datos del formulario:', error);
     }
@@ -189,15 +317,17 @@ export class VerPeriodoComponent implements OnInit {
   handleCursosResponse(response: any[]): any[] {
     return response.map(item => {
       const estadoHtml =
-        item.estado === 'propuesto'
-          ? `<span class="badge bg-warning text-dark">Propuesto</span>`
-          : item.estado === 'aprobado'
-            ? `<span class="badge bg-success text-white">Aprobado</span>`
-            : item.estado === 'finalizado'
-              ? `<span class="badge bg-info text-white">Finalizado</span>`
-              : item.estado === 'rechazado'
-                ? `<span class="badge bg-danger text-white">Rechazado</span>`
-                : `<span class="badge bg-secondary text-white">${item.estado}</span>`;
+        item.estado === 'nuevo'
+          ? `<span class="badge bg-secondary text-white">Nuevo</span>`
+          : item.estado === 'propuesto'
+            ? `<span class="badge bg-warning text-dark">Propuesto</span>`
+            : item.estado === 'aprobado'
+              ? `<span class="badge bg-success text-white">Aprobado</span>`
+              : item.estado === 'finalizado'
+                ? `<span class="badge bg-primary text-white">Finalizado</span>`
+                : item.estado === 'rechazado'
+                  ? `<span class="badge bg-danger text-white">Rechazado</span>`
+                  : `<span class="badge bg-secondary text-white">${item.estado}</span>`;
 
       // const nombreHtml = `<span>${item.nombre}</span>`;
       // const nombreHtml = `<a class="link-action text-primary" href="/periodo/detail/curso/${item.id}">${item.nombre}</a>`;
@@ -232,34 +362,41 @@ export class VerPeriodoComponent implements OnInit {
       return;
     }
     if (curso && mode === 'edit') {
-      // Editar
       this.cursoForm.reset({
         id: curso.id,
         ...curso,
         periodoId: this.periodo.id,
         fecha_inicio: curso.fecha_inicio || this.periodo.fecha_inicio,
-        fecha_fin: curso.fecha_fin || this.periodo.fecha_fin
+        fecha_fin: curso.fecha_fin || this.periodo.fecha_fin,
+        estado: this.isJefe ? 'nuevo' : curso.estado // <--- fuerza propuesto si es jefe
       });
     } else if (curso && mode === 'copy') {
-      // Copiar (sin id)
       const { id, ...rest } = curso;
       this.cursoForm.reset({
         ...rest,
         periodoId: this.periodo.id,
         fecha_inicio: curso.fecha_inicio || this.periodo.fecha_inicio,
-        fecha_fin: curso.fecha_fin || this.periodo.fecha_fin
+        fecha_fin: curso.fecha_fin || this.periodo.fecha_fin,
+        estado: this.isJefe ? 'nuevo' : rest.estado // <--- fuerza propuesto si es jefe
       });
     } else {
-      // Nuevo
       this.cursoForm.reset({
         periodoId: this.periodo.id,
-        estado: 'propuesto',
+        estado: 'nuevo',
         horas: '',
         hora_inicio: '',
         hora_fin: '',
         fecha_inicio: this.periodo.fecha_inicio,
         fecha_fin: this.periodo.fecha_fin
       });
+    }
+
+    // Si es jefe, fuerza el valor y deshabilita el control
+    if (this.isJefe) {
+      this.cursoForm.get('estado')?.setValue('nuevo');
+      this.cursoForm.get('estado')?.disable();
+    } else {
+      this.cursoForm.get('estado')?.enable();
     }
 
     this.modalService.open(this.cursoModal, {
@@ -278,11 +415,15 @@ export class VerPeriodoComponent implements OnInit {
 
     try {
       const raw = this.cursoForm.getRawValue();
+      // Obtén el usuario logueado del localStorage
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user.id;
+
       const cursoData = {
         ...raw,
         academiaId: Number(raw.academiaId),
         instructorId: Number(raw.instructorId),
-        createdBy: 1
+        createdBy: userId // <-- Ahora se envía el ID real
       };
       if (cursoData.estado === 'rechazado') {
         cursoData.comentario_rechazo = raw.comentario_rechazo;
@@ -352,6 +493,60 @@ export class VerPeriodoComponent implements OnInit {
       this.loadCursos(this.periodo.id);
     } catch (error) {
       this.toastr.error('Error al eliminar el curso');
+    }
+  }
+
+  selectedIds: number[] = [];
+
+  onSelectionChange(selectedRows: any[]) {
+    this.selectedIds = selectedRows.map(row => row.id);
+  }
+
+  async aprobarSeleccionados() {
+    if (!this.selectedIds || this.selectedIds.length === 0) {
+      this.toastr.error('Selecciona al menos un curso');
+      return;
+    }
+    try {
+      await this.periodosService.aprobarMultiplesCursos(this.selectedIds, this.nuevoEstado);
+      this.toastr.success('Cursos actualizados correctamente');
+      this.loadCursos(this.periodo.id);
+    } catch (error) {
+      this.toastr.error('Error al actualizar cursos');
+    }
+  }
+
+
+  async enviarCursosNuevos() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;
+    const periodoId = this.periodo?.id;
+
+    if (!userId || !periodoId) {
+      this.toastr.error('No se pudo obtener el usuario o periodo.');
+      return;
+    }
+
+    const confirmado = await Alert.question(
+      'Confirmación',
+      '¿Está seguro? Se enviarán todos los cursos nuevos para su posterior aprobación.'
+    );
+
+    if (!confirmado) return;
+
+    try {
+      const payload = {
+        periodoId,
+        userId,
+        estadoActual: 'nuevo',
+        nuevoEstado: 'propuesto'
+      };
+
+      await this.periodosService.cambiarEstadoDecursoJefe(payload);
+      this.toastr.success('Cursos enviados correctamente para su aprobación');
+      this.loadCursos(periodoId);
+    } catch (error) {
+      this.toastr.error('Error al enviar los cursos');
     }
   }
 }

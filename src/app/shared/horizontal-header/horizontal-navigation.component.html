@@ -251,7 +251,10 @@
                 </div>
                 <div class="ms-2">
                     <h4 class="mb-0">{{ name }}</h4>
-                    <p class=" mb-0">{{ email }}</p>
+                    <p class="mb-0">{{ email }}</p>
+                    <p class="mb-0 text-muted" *ngIf="role" style="font-size: 0.95rem; margin-top: 2px;">
+                        <span style="font-size: 0.85rem; color: #e0e0e0;">{{ role }}</span>
+                    </p>
                 </div>
             </div>
 

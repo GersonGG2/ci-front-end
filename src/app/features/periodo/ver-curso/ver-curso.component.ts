@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GenericSelectorComponent } from '../../component/generic-selector/genericselector.component';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-ver-curso',
@@ -27,6 +28,12 @@ export class VerCursoComponent implements OnInit {
   totalItems = 0;
   page = 1;
   limit = 10;
+
+  isAdmin: boolean = false;
+
+  isDocente: boolean = false;
+  isInscrito: boolean = false;
+
   columns = [
     { name: 'Docente', prop: 'docenteNombre', filter: true },
     { name: 'Email', prop: 'docenteEmail', filter: true },
@@ -39,30 +46,36 @@ export class VerCursoComponent implements OnInit {
       frozenRight: true,
       validate: (value, row) => this.filterOptions(value, row),
       actions: [
+        { name: 'Descargar constancia', icon: 'file', action: (value, row) => this.descargarConstancia(row) },
         { name: 'Cambiar estado', icon: 'edit', action: (value, row) => this.changeStatus(row) },
-        { name: 'Descargar constancia', icon: 'file', action: (value, row) => '' }
+        { name: 'Remover del curso', icon: 'trash', action: (value, row) => this.removeInscripcion(row) }
+
       ]
     }
   ];
 
   filterOptions(option, row) {
-    // Siempre mostrar opción de cambiar estado
+    // Solo mostrar "Cambiar estado" si es admin o instructor
     if (option.name === 'Cambiar estado') {
-      return true;
+      return this.isAdmin || this.curso?.isInstructor;
+    }
+    if (option.name === 'Remover del curso') {
+      return this.isAdmin || this.curso?.isInstructor;
     }
 
-    // Solo mostrar opción de descargar constancia si el estado es "aprobado"
+    // Solo mostrar "Descargar constancia" si el estado es "aprobado"
     if (option.name === 'Descargar constancia') {
       return row.estado === 'aprobado';
     }
 
     return false;
   }
+
   estados = [
     { value: 'inscrito', text: 'Inscrito' },
     { value: 'aprobado', text: 'Aprobado' },
     { value: 'reprobado', text: 'Reprobado' },
-    { value: 'cancelado', text: 'Cancelado' }
+    // { value: 'cancelado', text: 'Cancelado' }
   ];
 
   docentes: any[] = [];
@@ -96,10 +109,65 @@ export class VerCursoComponent implements OnInit {
   async ngOnInit() {
     const id = this.route.snapshot.params['id'];
     this.curso = await this.periodosService.getCursoById(id);
+    this.isAdmin = this.curso?.isAdmin ?? false;
+    this.isDocente = this.curso?.isDocente ?? false;
     this.inscripcionForm.patchValue({ cursoId: this.curso.id });
 
     await this.loadInscripciones(id);
+
+    if (this.isDocente) {
+      this.checkInscripcion();
+    }
+
   }
+
+  // Método para verificar si el docente ya está inscrito
+  async checkInscripcion() {
+    try {
+      // Asumimos que el servicio getAllInscripciones ya devuelve las inscripciones del usuario actual
+      // si es un docente (según el token de autenticación)
+      const misInscripciones = await this.periodosService.getAllInscripciones({
+        cursoId: this.curso.id,
+        miInscripcion: true
+      });
+
+      // Si hay alguna inscripción, el docente ya está inscrito
+      this.isInscrito = misInscripciones.rows && misInscripciones.rows.length > 0;
+    } catch (error) {
+      console.error('Error al verificar inscripción:', error);
+      this.isInscrito = false;
+    }
+  }
+
+  async inscribirDocente() {
+    try {
+      // Recupera el userId del localStorage
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const docenteId = user.id;
+
+      if (!docenteId) {
+        this.toastr.error('No se pudo obtener el usuario actual.');
+        return;
+      }
+
+      const data = {
+        cursoId: this.curso.id,
+        docenteId: docenteId,
+        estado: 'inscrito'
+      };
+
+      await this.periodosService.inscribirDocente(data);
+      this.toastr.success('Te has inscrito correctamente al curso');
+      this.isInscrito = true;
+
+      // Recargar la lista de inscripciones
+      await this.loadInscripciones(this.curso.id);
+    } catch (error) {
+      console.error('Error al inscribirse:', error);
+      this.toastr.error('Error al inscribirse al curso');
+    }
+  }
+
   async loadInscripciones(cursoId: string) {
     try {
       const res = await this.periodosService.getAllInscripciones({ cursoId });
@@ -182,6 +250,7 @@ export class VerCursoComponent implements OnInit {
       this.toastr.error('Error al agregar inscripción');
     }
   }
+
   clearField(fieldProp: string): void {
     this.inscripcionForm.patchValue({ [fieldProp]: null });
 
@@ -211,7 +280,6 @@ export class VerCursoComponent implements OnInit {
 
   async openSelectDocenteModal(): Promise<void> {
     await this.loadDocentes();
-    // Si solo hay una coincidencia, seleccionarla automáticamente
     if (this.docenteList.length === 1) {
       this.onDocenteSelected([this.docenteList[0]]);
       return;
@@ -225,6 +293,20 @@ export class VerCursoComponent implements OnInit {
     modalRef.componentInstance.title = 'Elija Docente';
     modalRef.componentInstance.showSearchIcon = true;
     modalRef.componentInstance.btnRefresh = true;
+
+    // Suscríbete al evento filter para paginador y búsqueda
+    modalRef.componentInstance.filter.subscribe(async (event: any) => {
+      // event puede tener { page, searchValue }
+      await this.loadDocentes({
+        page: event.page || 1,
+        limit: 10,
+        searchValue: event.searchValue || ''
+      });
+      // Actualiza los datos del modal
+      modalRef.componentInstance.rows = this.docenteList;
+      modalRef.componentInstance.total = this.totalItemsDocente;
+      modalRef.componentInstance.page = event.page || 1;
+    });
 
     modalRef.componentInstance.selected.subscribe((selected: any) => {
       this.onDocenteSelected(selected);
@@ -279,5 +361,25 @@ export class VerCursoComponent implements OnInit {
       }
     }
   }
+  async removeInscripcion(row: any) {
+    if (!row?.id) return;
+    if (confirm(`¿Seguro que deseas remover a ${row.docenteNombre} del curso?`)) {
+      try {
+        await this.periodosService.removeInscripcion(row.id);
+        this.toastr.success('Docente removido del curso');
+        await this.loadInscripciones(this.curso.id);
+      } catch (error) {
+        this.toastr.error('Error al remover inscripción');
+      }
+    }
+  }
 
+
+  descargarConstancia(row: any) {
+    const doc = new jsPDF();
+    const nombre = row.docenteNombre || 'Usuario';
+    doc.text(`Constancia de participación`, 20, 20);
+    doc.text(`Nombre: ${nombre}`, 20, 40);
+    doc.save(`constancia_${nombre.replace(/\s+/g, '_')}.pdf`);
+  }
 }

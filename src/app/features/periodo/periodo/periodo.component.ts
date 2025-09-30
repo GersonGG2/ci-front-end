@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PeriodosService } from '../periodo.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { PeriodosSocketService } from '../periodos-socket.service';
 
 @Component({
   selector: 'app-periodo',
@@ -15,14 +16,23 @@ import { Router } from '@angular/router';
 })
 export class PeriodoComponent {
   @ViewChild('periodoModal') periodoModal: any;
-
+  socketSub: any;
   constructor(
     private periodosService: PeriodosService,
     private toastr: ToastrService,
     private fb: FormBuilder,
     private modalService: NgbModal,
-    private router: Router
-  ) { }
+    private router: Router,
+    private periodosSocket: PeriodosSocketService
+  ) {
+    this.form = this.fb.group({
+      id: [null],
+      nombre: ['', Validators.required],
+      fecha_inicio: ['', Validators.required],
+      fecha_fin: ['', Validators.required],
+      estado: ['activo', Validators.required]
+    });
+  }
 
   rows: any[] = [];
   totalItems: number = 0;
@@ -31,42 +41,54 @@ export class PeriodoComponent {
   filters: any = {};
   editingPeriodo: any = null;
 
-  columns = [
-    { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
-    { name: 'Fecha inicio', prop: 'fecha_inicio', customView: 'fechaInicioHtml', filter: true },
-    { name: 'Fecha fin', prop: 'fecha_fin', customView: 'fechaFinHtml', filter: true },
-    {
-      name: 'Estado', prop: 'estado', filter: true, customView: 'estadoHtml', type: 'select', options: [
-        { value: 'activo', text: 'Activo' },
-        { value: 'cerrado', text: 'Cerrado' },
-        { value: 'inactivo', text: 'Inactivo' }
-      ]
-    },
-    // { name: 'Usuario', prop: 'usuarioNombre', filter: false },
-    {
-      prop: 'action', name: 'Acción', width: 40, actions: [
-        { name: 'Editar', icon: 'edit', action: (value, row) => this.onEdit(row) },
-        { name: 'Eliminar', icon: 'trash', action: (value, row) => this.onDelete(row) }
-      ]
-    }
-  ];
-
-  form: FormGroup = this.fb.group({
-    id: [null],
-    nombre: ['', Validators.required],
-    fecha_inicio: ['', Validators.required],
-    fecha_fin: ['', Validators.required],
-    estado: ['activo', Validators.required]
-  });
+  isAdmin: boolean = false;
+  columns: any[] = [];
+  form: FormGroup;
 
   ngOnInit() {
     this.getPeriodos();
+    this.socketSub = this.periodosSocket.onPeriodoAperturado().subscribe((periodo) => {
+      this.toastr.warning(
+        `Se ha aperturado el periodo: "${periodo.nombre}".`,
+        'Nuevo periodo aperturado'
+      );
+      this.getPeriodos();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.socketSub) {
+      this.socketSub.unsubscribe();
+    }
+  }
+  buildColumns() {
+    this.columns = [
+      { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
+      { name: 'Fecha inicio', prop: 'fecha_inicio', customView: 'fechaInicioHtml', filter: true },
+      { name: 'Fecha fin', prop: 'fecha_fin', customView: 'fechaFinHtml', filter: true },
+      {
+        name: 'Estado', prop: 'estado', filter: true, customView: 'estadoHtml', type: 'select', options: [
+          { value: 'activo', text: 'Activo' },
+          { value: 'cerrado', text: 'Cerrado' },
+          { value: 'inactivo', text: 'Inactivo' }
+        ]
+      },
+      // { name: 'Usuario', prop: 'usuarioNombre', filter: false },
+      ...(this.isAdmin ? [{
+        prop: 'action', name: 'Acción', width: 40, actions: [
+          { name: 'Editar', icon: 'edit', action: (value, row) => this.onEdit(row) },
+          { name: 'Eliminar', icon: 'trash', action: (value, row) => this.onDelete(row) }
+        ]
+      }] : [])
+    ];
   }
 
   async getPeriodos() {
     let result = await this.periodosService.getAllPeriodos(this.page, this.limit, this.filters);
     this.rows = this.handleResponse(result.data.rows);
     this.totalItems = result.data.count;
+    this.isAdmin = result.isAdmin;
+    this.buildColumns();
   }
 
   async applyFilter(filter: any = {}): Promise<void> {
@@ -156,7 +178,12 @@ export class PeriodoComponent {
         await this.periodosService.updatePeriodo(id, { nombre, fecha_inicio, fecha_fin, estado });
         this.toastr.success('Periodo actualizado');
       } else {
-        await this.periodosService.createPeriodo({ nombre, fecha_inicio, fecha_fin, estado });
+        // SIEMPRE obtener el usuario logueado aquí
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const usuarioId = user.id;
+
+        // NO uses ningún usuarioId del formulario ni del objeto periodo
+        await this.periodosService.createPeriodo({ nombre, fecha_inicio, fecha_fin, estado, usuarioId });
         this.toastr.success('Periodo agregado');
       }
       this.closePeriodoModal();
