@@ -63,11 +63,11 @@ export class PeriodoComponent {
   }
   buildColumns() {
     this.columns = [
-      { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
-      { name: 'Fecha inicio', prop: 'fecha_inicio', customView: 'fechaInicioHtml', filter: true },
-      { name: 'Fecha fin', prop: 'fecha_fin', customView: 'fechaFinHtml', filter: true },
+      { name: 'Nombre', prop: 'periodo.nombre', customView: 'nombreHtml', filter: true },
+      { name: 'Fecha inicio', prop: 'periodo.fecha_inicio', customView: 'fechaInicioHtml', filter: true, type: 'date' },
+      { name: 'Fecha fin', prop: 'periodo.fecha_fin', customView: 'fechaFinHtml', filter: true, type: 'date' },
       {
-        name: 'Estado', prop: 'estado', filter: true, customView: 'estadoHtml', type: 'select', options: [
+        name: 'Estado', prop: 'periodo.estado', filter: true, customView: 'estadoHtml', type: 'select', options: [
           { value: 'activo', text: 'Activo' },
           { value: 'cerrado', text: 'Cerrado' },
           { value: 'inactivo', text: 'Inactivo' }
