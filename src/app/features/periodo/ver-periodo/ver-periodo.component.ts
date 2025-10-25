@@ -201,6 +201,14 @@ export class VerPeriodoComponent implements OnInit {
   private mapTableFiltersToApi(filters: any): any {
     const apiFilters: any = {};
 
+    if (filters.searchValue) {
+      apiFilters.searchValue = filters.searchValue;
+    } else if (filters.search) {
+      apiFilters.searchValue = filters.search;
+    } else if (filters.nombre || filters.objetivo) {
+      apiFilters.searchValue = [filters.nombre, filters.objetivo].filter(Boolean).join(' ');
+    }
+
     // Combina nombre y objetivo en searchValue
     if (filters.nombre || filters.objetivo) {
       apiFilters.searchValue = [filters.nombre, filters.objetivo].filter(Boolean).join(' ');
@@ -271,9 +279,9 @@ export class VerPeriodoComponent implements OnInit {
       apiFilters.userId = userId;
       if (!apiFilters.estado) apiFilters.estado = 'nuevo';
     }
-    if (this.isAdmin && !apiFilters.estado) {
-      apiFilters.estado = 'propuesto';
-    }
+    // if (this.isAdmin && !apiFilters.estado) {
+    //   apiFilters.estado = 'propuesto';
+    // }
     if ((this.isInstructor || this.isDocente) && !apiFilters.estado) {
       apiFilters.estado = 'aprobado';
     }
