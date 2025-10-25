@@ -36,7 +36,7 @@ export class UsuariosComponent {
   columns = [
     { name: 'Nombre', prop: 'nombre', customView: 'nombreCompletoHtml', filter: false },
     { name: 'Email', prop: 'email', customView: 'emailHtml', filter: false },
-    { name: 'Estado', prop: 'estado', customView: 'estadoHtml', filter: false, sortable: false },
+    { name: 'Estado', prop: 'estado', customView: 'estadoHtml', filter: false, },
     {
       name: 'Roles', prop: 'role', customView: 'rolesHtml', sortable: false, filter: true, type: 'select', options: [
         { value: 'Admin', text: 'Admin' },
@@ -137,7 +137,7 @@ export class UsuariosComponent {
     });
   }
 
-    openUserModal(user?: any) {
+  openUserModal(user?: any) {
     if (user) {
       // Editar
       this.form.reset();
@@ -179,7 +179,11 @@ export class UsuariosComponent {
     try {
       if (id) {
         // Editar usuario
-        await this.usuariosService.updateUsuario(id, { auth0_id, email, nombre, apellidos, estado });
+        const payload: any = { auth0_id, email, nombre, apellidos, estado };
+        if (password && password.trim().length > 0) {
+          payload.password = password;
+        }
+        await this.usuariosService.updateUsuario(id, payload);
         await this.usuariosService.replaceRoles(id, { roleIds: roles });
         this.toastr.success('Usuario actualizado');
       } else {
