@@ -139,8 +139,9 @@ export class VerPeriodoComponent implements OnInit {
       hora_fin: ['14:00', Validators.required],
       dirigido_a: ['', Validators.required],
       prerequisitos: [''],
-      estado: ['nuevo']
-    });
+      estado: ['nuevo'],
+      tipo: ['', Validators.required]
+    }); 
   }
 
   ngOnInit() {
@@ -395,7 +396,8 @@ export class VerPeriodoComponent implements OnInit {
         hora_inicio: '',
         hora_fin: '',
         fecha_inicio: this.periodo.fecha_inicio,
-        fecha_fin: this.periodo.fecha_fin
+        fecha_fin: this.periodo.fecha_fin,
+        tipo: ''
       });
     }
 

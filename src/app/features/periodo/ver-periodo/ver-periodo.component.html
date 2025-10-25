@@ -146,6 +146,14 @@
               <option value="finalizado">Finalizado</option>
             </select>
           </div>
+          <div class="col-md-4">
+            <label for="tipo" class="form-label">Tipo FD/AP</label>
+            <select class="form-select" id="tipo" formControlName="tipo" required>
+              <option value="" disabled>Seleccione el tipo FD/AP...</option>
+              <option value="FD">Tipo FD</option>
+              <option value="AP">Tipo AP</option>
+            </select>
+          </div>
           <div class="col-md-8" *ngIf="cursoForm.get('estado')?.value === 'rechazado'">
             <label for="comentario_rechazo" class="form-label">Motivo del rechazo </label>
             <textarea class="form-control" id="comentario_rechazo" formControlName="comentario_rechazo" rows="2"
