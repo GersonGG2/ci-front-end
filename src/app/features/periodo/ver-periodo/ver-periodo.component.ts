@@ -78,6 +78,16 @@ export class VerPeriodoComponent implements OnInit {
       },
       { name: 'Instructor', prop: 'instructorNombre', customView: 'instructorHtml', filter: false },
       {
+        name: 'Tipo FD/AP',
+        prop: 'tipo',
+        filter: true,
+        type: 'select',
+        options: [
+          { value: 'FD', text: 'Tipo FD' },
+          { value: 'AP', text: 'Tipo AP' }
+        ]
+      },
+      {
         name: 'Estado',
         prop: 'estado',
         customView: 'estadoHtml',
@@ -141,7 +151,7 @@ export class VerPeriodoComponent implements OnInit {
       prerequisitos: [''],
       estado: ['nuevo'],
       tipo: ['', Validators.required]
-    }); 
+    });
   }
 
   ngOnInit() {
@@ -220,6 +230,9 @@ export class VerPeriodoComponent implements OnInit {
     }
     if (filters.estado) {
       apiFilters.estado = filters.estado;
+    }
+    if (filters.tipo) {
+      apiFilters.tipo = filters.tipo; // <-- mapea el filtro de tipo
     }
     // Agrega otros filtros si los tienes
     return apiFilters;
