@@ -57,9 +57,10 @@ export const environment = {
       aprobar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/aprobar
       rechazar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/rechazar
       finalizar: EnviromentHelper.URL_ITZ_WS + '/cursos/', // PATCH /cursos/{id}/finalizar
-      aprobarMultiples: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estado-multiples', // PATCH /cursos/aprobar-multiples
+      aprobarMultiples: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estatus', // PATCH /cursos/aprobar-multiples
       getCursosByUser: EnviromentHelper.URL_ITZ_WS + '/cursos/mis-cursos', // GET /cursos/mis-cursos
       cambiarEstadoDecursoJefe: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estatus-por-filtro',
+      eliminarMultiples: EnviromentHelper.URL_ITZ_WS + '/cursos/eliminar-multiples',
     },
     academias: {
       main: EnviromentHelper.URL_ITZ_WS + '/academias',

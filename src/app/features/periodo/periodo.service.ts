@@ -127,9 +127,9 @@ export class PeriodosService {
   }
 
 
-  async aprobarMultiplesCursos(ids: number[], estado: string): Promise<any> {
+  async aprobarMultiplesCursos(cursosIds: number[], nuevoEstado: string): Promise<any> {
     const url = environment.itz.cursos.aprobarMultiples;
-    return await firstValueFrom(this.http.patch(url, { ids, estado }));
+    return await firstValueFrom(this.http.post(url, { cursosIds, nuevoEstado }));
   }
 
   async inscribirDocente(data: any): Promise<any> {
@@ -140,5 +140,12 @@ export class PeriodosService {
   async cambiarEstadoDecursoJefe(payload: any): Promise<any> {
     const url = `${environment.itz.cursos.cambiarEstadoDecursoJefe}`;
     return await firstValueFrom(this.http.post(url, payload));
+  }
+
+  async eliminarMultiplesCursos(cursosIds: number[]): Promise<any> {
+    const url = environment.itz.cursos.eliminarMultiples;
+    return await firstValueFrom(
+      this.http.post(url, { cursosIds })
+    );
   }
 }

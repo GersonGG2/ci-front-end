@@ -21,6 +21,7 @@ export class VerPeriodoComponent implements OnInit {
   @ViewChild('cursoModal') cursoModal: any;
   @ViewChild('changeStatusModal') changeStatusModal: any;
   @ViewChild('deleteCursoModal') deleteCursoModal: any;
+  @ViewChild(GenericTableComponent) genericTable: GenericTableComponent;
 
   periodo: any = null;
   cursos: any[] = [];
@@ -379,7 +380,7 @@ export class VerPeriodoComponent implements OnInit {
   }
 
   formMode: 'add' | 'edit' | 'copy' = 'add';
-
+  private initialFormValue: any;
   // Método para abrir el modal
   openCursoModal(curso?: any, mode: 'add' | 'edit' | 'copy' = 'add') {
     this.formMode = mode;
@@ -439,8 +440,22 @@ export class VerPeriodoComponent implements OnInit {
       size: 'lg',
       backdrop: 'static'
     });
+    this.initialFormValue = this.cursoForm.getRawValue();
   }
 
+  hasFormChanges(): boolean {
+    return JSON.stringify(this.cursoForm.getRawValue()) !== JSON.stringify(this.initialFormValue);
+  }
+  async onCloseCursoModal(modal: any) {
+    if (this.hasFormChanges()) {
+      const confirmado = await Alert.question(
+        'Confirmación',
+        'Tienes cambios sin guardar. ¿Seguro que quieres salir? Los datos se perderán.'
+      );
+      if (!confirmado) return;
+    }
+    modal.dismiss();
+  }
   // Método para guardar el curso
   async saveCurso() {
     if (this.cursoForm.invalid) {
@@ -485,8 +500,11 @@ export class VerPeriodoComponent implements OnInit {
   }
 
   openChangeStatusModal(row?: any) {
-    // Aquí abre tu modal para cambiar el estatus
-    // Puedes guardar el curso seleccionado en una variable y mostrar el modal
+    // Si no hay cursos seleccionados, muestra el toast y no abre el modal
+    if (!this.selectedIds || this.selectedIds.length === 0) {
+      this.toastr.error('Debes seleccionar al menos un curso para cambiar el estatus.');
+      return;
+    }
     this.selectedCurso = row;
     this.modalService.open(this.changeStatusModal, {
       centered: true,
@@ -495,14 +513,33 @@ export class VerPeriodoComponent implements OnInit {
     });
   }
 
-  openDeleteCursoModal(row?: any) {
-    // Aquí abre tu modal de confirmación para eliminar
-    this.selectedCurso = row;
-    this.modalService.open(this.deleteCursoModal, {
-      centered: true,
-      size: 'md',
-      backdrop: 'static'
-    });
+  async openDeleteCursoModal() {
+    if (!this.selectedIds || this.selectedIds.length === 0) {
+      this.toastr.error('Selecciona al menos un curso para eliminar');
+      return;
+    }
+    const confirmado = await Alert.question(
+      'Confirmación',
+      '¿Estás seguro de que desea eliminar los cursos seleccionados?'
+    );
+    if (confirmado) {
+      await this.eliminarSeleccionados();
+    }
+  }
+
+  async eliminarSeleccionados() {
+    if (!this.selectedIds || this.selectedIds.length === 0) {
+      this.toastr.error('Selecciona al menos un curso para eliminar');
+      return;
+    }
+    try {
+      await this.periodosService.eliminarMultiplesCursos(this.selectedIds);
+      this.toastr.success('Cursos eliminados correctamente');
+      await this.loadCursos(this.periodo.id);
+      if (this.genericTable) this.genericTable.clearSelection();
+    } catch (error) {
+      this.toastr.error('Error al eliminar cursos');
+    }
   }
 
   nuevoEstado: string = 'propuesto';
@@ -538,7 +575,7 @@ export class VerPeriodoComponent implements OnInit {
     this.selectedIds = selectedRows.map(row => row.id);
   }
 
-  async aprobarSeleccionados() {
+  async aprobarSeleccionados(modal?: any) {
     if (!this.selectedIds || this.selectedIds.length === 0) {
       this.toastr.error('Selecciona al menos un curso');
       return;
@@ -546,12 +583,13 @@ export class VerPeriodoComponent implements OnInit {
     try {
       await this.periodosService.aprobarMultiplesCursos(this.selectedIds, this.nuevoEstado);
       this.toastr.success('Cursos actualizados correctamente');
-      this.loadCursos(this.periodo.id);
+      if (modal) modal.dismiss();
+      await this.loadCursos(this.periodo.id);
+      if (this.genericTable) this.genericTable.clearSelection();
     } catch (error) {
       this.toastr.error('Error al actualizar cursos');
     }
   }
-
 
   async enviarCursosNuevos() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');

@@ -36,7 +36,7 @@
       <h5 class="modal-title">
         {{ formMode === 'add' ? 'Agregar Nuevo Curso' : formMode === 'edit' ? 'Editar Curso' : 'Copiar Curso' }}
       </h5>
-      <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+      <button type="button" class="btn-close" (click)="onCloseCursoModal(modal)" aria-label="Close"></button>
     </div>
     <div class="modal-body">
       <form [formGroup]="cursoForm">
@@ -188,9 +188,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
-      <button type="button" class="btn btn-primary" (click)="saveCurso()"
-        [disabled]="cursoForm.invalid">Guardar</button>
+      <button type="button" class="btn btn-secondary" (click)="onCloseCursoModal(modal)">Cancelar</button> <button
+        type="button" class="btn btn-primary" (click)="saveCurso()" [disabled]="cursoForm.invalid">Guardar</button>
     </div>
   </ng-template>
 
@@ -211,21 +210,8 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
-      <button type="button" class="btn btn-primary" (click)="aprobarSeleccionados()">Guardar</button>
+      <button type="button" class="btn btn-primary" (click)="aprobarSeleccionados(modal)">Guardar</button>
     </div>
   </ng-template>
 
-  <ng-template #deleteCursoModal let-modal>
-    <div class="modal-header">
-      <h5 class="modal-title">Confirmar eliminación</h5>
-      <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      ¿Estás seguro de que deseas eliminar este curso?
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
-      <button type="button" class="btn btn-danger" (click)="confirmDeleteCurso(modal)">Eliminar</button>
-    </div>
-  </ng-template>
 </div>
