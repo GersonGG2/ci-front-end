@@ -58,26 +58,50 @@
 
         <!-- Periodo, academia e instructor -->
         <div class="row mb-3">
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label for="periodo" class="form-label">Periodo </label>
             <input type="text" class="form-control" id="periodo" [value]="periodo?.nombre" disabled>
             <input type="hidden" formControlName="periodoId">
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label for="academiaId" class="form-label">Academia </label>
             <select class="form-select" id="academiaId" formControlName="academiaId">
-              <option value="">Seleccione...</option>
+              <option value="" disabled selected>Seleccione academia...</option>
               <option *ngFor="let academia of academias" [value]="academia.id">{{ academia.nombre }}</option>
             </select>
           </div>
-          <div class="col-md-4">
-            <label for="instructorId" class="form-label">Instructor </label>
-            <select class="form-select" id="instructorId" formControlName="instructorId">
-              <option value="">Seleccione...</option>
-              <option *ngFor="let instructor of instructores" [value]="instructor.id">
-                {{ instructor.nombre }} {{ instructor.apellidos }}
-              </option>
-            </select>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-6">
+            <label for="instructorName" class="form-label">Primer instructor</label>
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" formControlName="instructorName" id="instructorName"
+                placeholder="Seleccione un instructor"
+                (keydown.enter)="$event.preventDefault(); openSelectInstructorModal('uno')" readonly />
+              <button class="btn btn-outline-secondary" type="button" (click)="openSelectInstructorModal('uno')">
+                <i class="fas fa-search"></i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button" (click)="clearInstructor('uno')">
+                <i class="fas fa-times"></i>
+              </button>
+              <input type="hidden" formControlName="instructorId" />
+            </div>
+          </div>
+          <div class="col-6">
+            <label for="instructorDosName" class="form-label">Segundo instructor</label>
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" formControlName="instructorDosName" id="instructorDosName"
+                placeholder="Seleccione un segundo instructor"
+                (keydown.enter)="$event.preventDefault(); openSelectInstructorModal('dos')" readonly />
+              <button class="btn btn-outline-secondary" type="button" (click)="openSelectInstructorModal('dos')">
+                <i class="fas fa-search"></i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button" (click)="clearInstructor('dos')">
+                <i class="fas fa-times"></i>
+              </button>
+              <input type="hidden" formControlName="instructorDosId" />
+            </div>
           </div>
         </div>
 

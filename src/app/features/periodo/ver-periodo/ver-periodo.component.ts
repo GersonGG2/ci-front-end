@@ -8,6 +8,7 @@ import { GenericTableComponent } from "../../component/generic-table/generictabl
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Alert } from 'src/app/helpers/alerts';
+import { GenericSelectorComponent } from '../../component/generic-selector/genericselector.component';
 
 @Component({
   selector: 'app-ver-periodo',
@@ -139,7 +140,10 @@ export class VerPeriodoComponent implements OnInit {
       objetivo: ['', Validators.required],
       periodoId: [{ value: '', disabled: true }, Validators.required],
       academiaId: ['', Validators.required],
+      instructorName: ['', Validators.required],
       instructorId: ['', Validators.required],
+      instructorDosName: [''],
+      instructorDosId: [null],
       lugar: ['', Validators.required],
       aula: ['', Validators.required],
       horas: [30, [Validators.required, Validators.min(1)]],
@@ -359,7 +363,7 @@ export class VerPeriodoComponent implements OnInit {
         ? `<span>${item.academia.nombre}</span>`
         : `<span class="text-muted">Sin academia</span>`;
       const instructorHtml = item.instructor
-        ? `<span>${item.instructor.nombre} ${item.instructor.apellidos}</span>`
+        ? `<span>${item.instructor.nombre} ${item.instructor.apellidos}</span><br/><span>${item.instructorDos ? (item.instructorDos.nombre + ' ' + item.instructorDos.apellidos) : ''}</span>`
         : `<span class="text-muted">Sin instructor</span>`;
 
       return {
@@ -390,7 +394,9 @@ export class VerPeriodoComponent implements OnInit {
         periodoId: this.periodo.id,
         fecha_inicio: curso.fecha_inicio || this.periodo.fecha_inicio,
         fecha_fin: curso.fecha_fin || this.periodo.fecha_fin,
-        estado: this.isJefe ? 'nuevo' : curso.estado // <--- fuerza propuesto si es jefe
+        estado: this.isJefe ? 'nuevo' : curso.estado, // <--- fuerza propuesto si es jefe
+        instructorName: `${curso.instructor?.nombre || ''} ${curso.instructor?.apellidos || ''}`,
+        instructorId: curso.instructorId || ''
       });
     } else if (curso && mode === 'copy') {
       const { id, ...rest } = curso;
@@ -399,7 +405,10 @@ export class VerPeriodoComponent implements OnInit {
         periodoId: this.periodo.id,
         fecha_inicio: curso.fecha_inicio || this.periodo.fecha_inicio,
         fecha_fin: curso.fecha_fin || this.periodo.fecha_fin,
-        estado: this.isJefe ? 'nuevo' : rest.estado // <--- fuerza propuesto si es jefe
+        estado: this.isJefe ? 'nuevo' : rest.estado, // <--- fuerza propuesto si es jefe
+        instructorName: `${curso.instructor?.nombre || ''} ${curso.instructor?.apellidos || ''}`,
+        instructorId: curso.instructorId || ''
+
       });
     } else {
       this.cursoForm.reset({
@@ -410,7 +419,10 @@ export class VerPeriodoComponent implements OnInit {
         hora_fin: '',
         fecha_inicio: this.periodo.fecha_inicio,
         fecha_fin: this.periodo.fecha_fin,
-        tipo: ''
+        tipo: '',
+        instructorName: '',
+        instructorId: '',
+        academiaId: '',
       });
     }
 
@@ -446,6 +458,7 @@ export class VerPeriodoComponent implements OnInit {
         ...raw,
         academiaId: Number(raw.academiaId),
         instructorId: Number(raw.instructorId),
+        instructorDosId: raw.instructorDosId ? Number(raw.instructorDosId) : null,
         createdBy: userId // <-- Ahora se envía el ID real
       };
       if (cursoData.estado === 'rechazado') {
@@ -570,6 +583,109 @@ export class VerPeriodoComponent implements OnInit {
       this.loadCursos(periodoId);
     } catch (error) {
       this.toastr.error('Error al enviar los cursos');
+    }
+  }
+
+
+  /* Selector generico para instructor */
+
+  instructorPage = 1;
+  totalInstructores = 0;
+  selectedInstructor: any = { id: 0, nombre: '', apellidos: '' }; Í
+  columns_instructor = [
+    { name: 'ID', prop: 'id', width: 60 },
+    { name: 'Nombre', prop: 'nombre' },
+    { name: 'Apellidos', prop: 'apellidos' },
+    { name: 'Email', prop: 'email' }
+  ];
+
+  async loadInstructores(filter: any = {}): Promise<void> {
+    try {
+      const searchValue = filter.searchValue || '';
+      const res = await this.periodosService.getAllInstructores(this.instructorPage, 10, searchValue);
+      this.instructores = res.data?.rows || res.rows || [];
+      this.totalInstructores = res.data?.count || res.count || 0;
+    } catch (error) {
+      console.error('Error al cargar instructores:', error);
+      this.toastr.error('Error al cargar la lista de instructores');
+      this.instructores = [];
+      this.totalInstructores = 0;
+    }
+  }
+
+  async openSelectInstructorModal(tipo: 'uno' | 'dos'): Promise<void> {
+    const nameControl = tipo === 'uno' ? 'instructorName' : 'instructorDosName';
+    const idControl = tipo === 'uno' ? 'instructorId' : 'instructorDosId';
+    const search = this.cursoForm.get(nameControl)?.value || '';
+    const filter = { searchValue: search };
+
+    await this.loadInstructores(filter);
+
+    const modalRef = this.modalService.open(GenericSelectorComponent, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg'
+    });
+
+    modalRef.componentInstance.rows = this.instructores;
+    modalRef.componentInstance.columns = this.columns_instructor;
+    modalRef.componentInstance.total = this.totalInstructores;
+    modalRef.componentInstance.page = this.instructorPage;
+    modalRef.componentInstance.selector = 'single';
+    modalRef.componentInstance.title = tipo === 'uno' ? 'Seleccionar Primer Instructor' : 'Seleccionar Segundo Instructor';
+    modalRef.componentInstance.showSearchIcon = true;
+    modalRef.componentInstance.btnRefresh = true;
+    modalRef.componentInstance.initSearch = filter.searchValue;
+
+    modalRef.componentInstance.filter.subscribe(async (newFilter: any) => {
+      await this.loadInstructores(newFilter);
+      modalRef.componentInstance.rows = this.instructores;
+      modalRef.componentInstance.total = this.totalInstructores;
+    });
+
+    modalRef.componentInstance.selected.subscribe((selected: any) => {
+      this.onInstructorSelected(selected, tipo);
+    });
+  }
+
+  // Método para manejar la selección de un instructor
+  onInstructorSelected(instructores: any, tipo: 'uno' | 'dos' = 'uno'): void {
+    if (instructores && instructores.length > 0) {
+      const instructor = instructores[0];
+      if (tipo === 'uno') {
+        this.selectedInstructor = {
+          id: instructor.id,
+          nombre: instructor.nombre,
+          apellidos: instructor.apellidos
+        };
+        this.cursoForm.patchValue({
+          instructorName: `${instructor.nombre} ${instructor.apellidos}`,
+          instructorId: instructor.id
+        });
+      } else {
+        this.cursoForm.patchValue({
+          instructorDosName: `${instructor.nombre} ${instructor.apellidos}`,
+          instructorDosId: instructor.id
+        });
+      }
+    }
+  }
+
+  // Método para limpiar el instructor seleccionado
+  clearInstructor(tipo: 'uno' | 'dos' = 'uno'): void {
+    if (tipo === 'uno') {
+      this.selectedInstructor = { id: 0, nombre: '', apellidos: '' };
+      this.cursoForm.patchValue({
+        instructorName: '',
+        instructorId: ''
+      });
+      this.cursoForm.get('instructorId')?.markAsTouched();
+    } else {
+      this.cursoForm.patchValue({
+        instructorDosName: '',
+        instructorDosId: null
+      });
+      this.cursoForm.get('instructorDosId')?.markAsTouched();
     }
   }
 }

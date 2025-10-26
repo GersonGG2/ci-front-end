@@ -107,11 +107,16 @@ export class PeriodosService {
     return this.http.patch(url, { estado: data.estado }).toPromise();
   }
 
-  async getAllInstructores(page = 1, limit = 50): Promise<any> {
+  async getAllInstructores(page = 1, limit = 50, searchValue: string = ''): Promise<any> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString())
-      .set('role', 'Instructor');
+      .set('limit', limit.toString());
+
+    // Agregar filtro de búsqueda si viene
+    if (searchValue) {
+      params = params.set('searchValue', searchValue);
+    }
+
     const url = environment.itz.usuarios.getAll;
     return await firstValueFrom(this.http.get(url, { params }));
   }
