@@ -21,13 +21,13 @@ export const Approutes: Routes = [
             (m) => m.DashboardModule
           ),
       },
-      {
+     /*  {
         path: 'notifications',
         loadComponent: () => import('./features/notifications/pages/main-page/notifications.component').then(m => m.NotificationsComponent),
         data: {
           title: 'Notificaciones',
         }
-      },
+      }, */
       {
         path: 'usuarios',
         loadComponent: () => import('./features/usuarios/usuario/usuarios.component').then(m => m.UsuariosComponent),

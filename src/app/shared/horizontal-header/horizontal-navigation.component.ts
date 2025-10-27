@@ -13,7 +13,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToastrService } from 'ngx-toastr';
 import { AuthGuard } from 'src/app/features/authentication/auth.guard';
 import { AuthService } from 'src/app/features/authentication/authService.service';
-import { NotificationService } from 'src/app/features/notifications/services/notificationService.service';
+// import { NotificationService } from 'src/app/features/notifications/services/notificationService.service';
 import { Alert } from 'src/app/helpers/alerts';
 
 declare var $: any;
@@ -116,7 +116,7 @@ export class HorizontalNavigationComponent implements AfterViewInit {
     private translate: TranslateService,
     private authGuard: AuthGuard,
     private toastr: ToastrService,
-    private notificationService: NotificationService,
+    // private notificationService: NotificationService,
     private authService: AuthService,
   ) {
     translate.setDefaultLang('en');
@@ -138,7 +138,7 @@ export class HorizontalNavigationComponent implements AfterViewInit {
   /**
    * Carga las notificaciones desde la API
    */
-  async loadNotifications(): Promise<void> {
+ /*  async loadNotifications(): Promise<void> {
     try {
       this.loading = true;
 
@@ -195,11 +195,11 @@ export class HorizontalNavigationComponent implements AfterViewInit {
     } finally {
       this.loading = false;
     }
-  }
+  } */
   /**
    * Marca una notificación como leída
    */
-  async markAsRead(id: number, event: Event): Promise<void> {
+ /*  async markAsRead(id: number, event: Event): Promise<void> {
     try {
       event.preventDefault(); // Evitar navegación
       event.stopPropagation(); // Detener propagación
@@ -233,7 +233,7 @@ export class HorizontalNavigationComponent implements AfterViewInit {
       console.error('Error al marcar como no leída:', error);
       this.toastr.error('Error al marcar como no leída', 'Error');
     }
-  }
+  } */
 
   // configUser() {
 

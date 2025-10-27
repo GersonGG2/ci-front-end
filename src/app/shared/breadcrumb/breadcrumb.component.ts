@@ -12,19 +12,9 @@ import { CommonModule } from '@angular/common';
 import { BreadcrumbService } from '../services/breadcrumb.service';
 
 const paths = [
-  'misc-receipts/detail',
-  'receipt-reissue/detail',
-  'receipts/detail',
-  'zones/edit-zone',
-  'receipts/detail',
-  'incoming-inspections/edit',
-  'quality-release/edit',
-  'quality-release/edit',
-  'work-orders/detail',
-  'additional-approval/detail',
-  'dispatch-of-materials/detail',
-  'input-output/input',
-  'input-output/output',
+
+  'periodo/cursos',
+  'periodo/cursos/docentes',
 ];
 
 @Component({

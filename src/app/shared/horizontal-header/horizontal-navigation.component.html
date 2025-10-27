@@ -191,11 +191,11 @@
                         <!-- Lista de notificaciones con botones de acción -->
                         <div *ngFor="let notification of notifications" class="position-relative">
                             <!-- Botón para marcar como leído - Corregido margen y padding -->
-                            <button class="btn btn-sm btn-light position-absolute end-0 me-3 mt-3"
+                         <!--    <button class="btn btn-sm btn-light position-absolute end-0 me-3 mt-3"
                                 style="z-index: 5; padding: 0.25rem 0.5rem;"
                                 (click)="markAsRead(notification.id, $event)">
                                 <i class="mdi mdi-check"></i>
-                            </button>
+                            </button> -->
 
                             <!-- Notificación con padding adecuado -->
                             <a [routerLink]="['/notifications']"
