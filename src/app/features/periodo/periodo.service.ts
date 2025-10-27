@@ -148,4 +148,40 @@ export class PeriodosService {
       this.http.post(url, { cursosIds })
     );
   }
+
+  // Exportar cursos filtrados a PDF
+  async exportarCursosPdf(filters: any = {}): Promise<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) params = params.set(key, filters[key]);
+    });
+    const url = environment.itz.cursos.exportarPdf;
+    return await firstValueFrom(
+      this.http.get(url, { params, responseType: 'blob' })
+    );
+  }
+
+  // Exportar cursos filtrados a Excel
+  async exportarCursosExcel(filters: any = {}): Promise<Blob> {
+    let params = new HttpParams();
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) params = params.set(key, filters[key]);
+    });
+    const url = environment.itz.cursos.exportarExcel;
+    return await firstValueFrom(
+      this.http.get(url, { params, responseType: 'blob' })
+    );
+  }
+
+  // Importar cursos desde un archivo Excel
+  async importarCursosExcel(file: File): Promise<any> {
+    const url = environment.itz.cursos.importarExcel;
+    const formData = new FormData();
+    formData.append('file', file);
+    return await firstValueFrom(
+      this.http.post(url, formData)
+    );
+  }
+
+
 }

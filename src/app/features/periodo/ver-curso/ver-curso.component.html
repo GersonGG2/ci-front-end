@@ -8,32 +8,45 @@
     </div>
     <div class="card-body" *ngIf="curso">
       <div class="row">
-        <div class="col-md-6">
-          <h5 class="card-title">{{ curso.nombre }}</h5>
-          <p class="text-muted">{{ curso.objetivo }}</p>
-
-          <div class="mt-4">
-            <div class="d-flex mb-2">
-              <div class="flex-shrink-0 text-primary me-3">
-                <i class="fas fa-graduation-cap fa-fw"></i>
+        <!-- Sección académica -->
+        <div class="col-md-7">
+          <div class="card mb-3">
+            <div class="card-body">
+              <!-- Nombre del curso en grande -->
+              <h2 class="fw-bold mb-3 text-primary">{{ curso.nombre }}</h2>
+              <div class="mb-2">
+                <strong>Competencias a desarrollar:</strong>
+                <div class="text-muted" style="white-space: pre-line;">{{ curso.objetivo }}</div>
               </div>
-              <div class="flex-grow-1">
+              <div class="mb-2">
+                <strong>Tipo:</strong>
+                <span class="badge bg-secondary text-light ms-1">{{ curso.tipo ? curso.tipo : 'No especificado'
+                  }}</span>
+              </div>
+              <div class="mb-2">
+                <strong>Dirigido a:</strong> {{ curso.dirigido_a }}
+              </div>
+              <div class="mb-3">
+                <strong>Observaciones:</strong>
+                <div class="text-muted" style="white-space: pre-line;">{{ curso.prerequisitos }}</div>
+              </div>
+              <div class="mb-2">
                 <strong>Academia:</strong> {{ curso.academia?.nombre }}
               </div>
-            </div>
-
-            <div class="d-flex mb-2">
-              <div class="flex-shrink-0 text-primary me-3">
-                <i class="fas fa-user-tie fa-fw"></i>
-              </div>
-              <div class="flex-grow-1">
+              <div class="mb-2">
                 <strong>Instructor:</strong> {{ curso.instructor?.nombre }} {{ curso.instructor?.apellidos }}
+                <span class="text-muted">({{ curso.instructor?.email }})</span>
+              </div>
+              <div class="mb-2" *ngIf="curso.instructorDos">
+                <strong>Instructor dos:</strong> {{ curso.instructorDos?.nombre }} {{ curso.instructorDos?.apellidos }}
+                <span class="text-muted">({{ curso.instructorDos?.email }})</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-md-6">
+        <!-- Sección logística -->
+        <div class="col-md-5">
           <div class="card bg-light">
             <div class="card-body">
               <div class="d-flex mb-2">
@@ -44,7 +57,6 @@
                   <strong>Lugar:</strong> {{ curso.lugar }} - {{ curso.aula }}
                 </div>
               </div>
-
               <div class="d-flex mb-2">
                 <div class="flex-shrink-0 text-primary me-3">
                   <i class="fas fa-clock fa-fw"></i>
@@ -53,7 +65,6 @@
                   <strong>Horario:</strong> {{ curso.hora_inicio | slice:0:5 }} a {{ curso.hora_fin | slice:0:5 }}
                 </div>
               </div>
-
               <div class="d-flex mb-2">
                 <div class="flex-shrink-0 text-primary me-3">
                   <i class="fas fa-calendar-alt fa-fw"></i>
@@ -63,8 +74,7 @@
                   date:'dd/MM/yyyy' }}
                 </div>
               </div>
-
-              <div class="d-flex">
+              <div class="d-flex mb-2">
                 <div class="flex-shrink-0 text-primary me-3">
                   <i class="fas fa-hourglass-half fa-fw"></i>
                 </div>

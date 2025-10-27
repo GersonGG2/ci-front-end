@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -122,7 +122,11 @@ export class VerPeriodoComponent implements OnInit {
 
   props = [
     { prop: 'Cambiar estatus', name: 'Cambiar estatus', icon: 'sync', action: () => this.openChangeStatusModal() },
-    { prop: 'Eliminar', name: 'Eliminar', icon: 'trash', action: () => this.openDeleteCursoModal() }
+    { prop: 'Eliminar', name: 'Eliminar', icon: 'trash', action: () => this.openDeleteCursoModal() },
+    { prop: 'Descargar PDF', name: 'Descargar PDF', icon: 'file-pdf', action: () => this.exportarCursosPdf() },
+    { prop: 'Exportar Excel', name: 'Exportar Excel', icon: 'file-excel', action: () => this.exportarCursosExcel() },
+    { prop: 'Importar Excel', name: 'Importar Excel', icon: 'file-import', action: () => this.openImportExcelModal() }
+
   ]
 
 
@@ -726,4 +730,97 @@ export class VerPeriodoComponent implements OnInit {
       this.cursoForm.get('instructorDosId')?.markAsTouched();
     }
   }
+
+
+  async exportarCursosPdf() {
+    try {
+      const filters = this.mapTableFiltersToApi(this.genericTable?.getFilter?.() || {});
+      filters.periodoId = this.periodo?.id;
+
+      const blob = await this.periodosService.exportarCursosPdf(filters);
+      const url = window.URL.createObjectURL(blob);
+
+      // Usa solo el nombre del periodo, sin "cursos" y sin guiones bajos
+      const nombrePeriodo = (this.periodo?.nombre || 'PERIODO').toUpperCase().replace(/_/g, '').replace(/\s+/g, ' ');
+      const fileName = `${nombrePeriodo}.pdf`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      this.toastr.success(`Se ha descargado correctamente el archivo ${fileName}`, 'Éxito');
+    } catch (error) {
+      this.toastr.error('Error al exportar cursos a PDF', 'Error');
+    }
+  }
+
+  async exportarCursosExcel() {
+    try {
+      const filters = this.mapTableFiltersToApi(this.genericTable?.getFilter?.() || {});
+      filters.periodoId = this.periodo?.id;
+
+      const blob = await this.periodosService.exportarCursosExcel(filters);
+      const url = window.URL.createObjectURL(blob);
+
+      // Usa solo el nombre del periodo, sin "cursos" y sin guiones bajos
+      const nombrePeriodo = (this.periodo?.nombre || 'PERIODO').toUpperCase().replace(/_/g, '').replace(/\s+/g, ' ');
+      const fileName = `${nombrePeriodo}.xlsx`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      this.toastr.success(`Se ha descargado correctamente el archivo ${fileName}`, 'Éxito');
+    } catch (error) {
+      this.toastr.error('Error al exportar cursos a Excel', 'Error');
+    }
+  }
+  @ViewChild('importExcelModal') importExcelModal: any;
+  @ViewChild('excelInput') excelInput!: ElementRef<HTMLInputElement>;
+  selectedExcelFile: File | null = null;
+  
+  openImportExcelModal() {
+    this.selectedExcelFile = null;
+    if (this.excelInput) this.excelInput.nativeElement.value = '';
+    this.modalService.open(this.importExcelModal, {
+      centered: true,
+      size: 'md',
+      backdrop: 'static'
+    });
+  }
+
+  onExcelFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file && file.name.endsWith('.xlsx')) {
+      this.selectedExcelFile = file;
+    } else {
+      this.selectedExcelFile = null;
+      this.toastr.error('Solo se permiten archivos Excel (.xlsx)', 'Error');
+    }
+  }
+
+  async confirmarImportarExcel(modal: any) {
+    if (!this.selectedExcelFile) {
+      this.toastr.error('Selecciona un archivo Excel válido.', 'Error');
+      return;
+    }
+    try {
+      await this.periodosService.importarCursosExcel(this.selectedExcelFile);
+      this.toastr.success('Importación exitosa.', 'Éxito');
+      await this.loadCursos(this.periodo.id);
+      modal.dismiss();
+    } catch (error) {
+      this.toastr.error('Error al importar el archivo Excel.', 'Error');
+      modal.dismiss();
+    }
+  }
+
 }

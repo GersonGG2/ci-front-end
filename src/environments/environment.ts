@@ -61,6 +61,9 @@ export const environment = {
       getCursosByUser: EnviromentHelper.URL_ITZ_WS + '/cursos/mis-cursos', // GET /cursos/mis-cursos
       cambiarEstadoDecursoJefe: EnviromentHelper.URL_ITZ_WS + '/cursos/cambiar-estatus-por-filtro',
       eliminarMultiples: EnviromentHelper.URL_ITZ_WS + '/cursos/eliminar-multiples',
+      exportarPdf: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-pdf', // GET /cursos/exportar-pdf
+      exportarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-excel', // GET /cursos/exportar-excel
+      importarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/importar-excel', // POST /cursos/importar-excel
     },
     academias: {
       main: EnviromentHelper.URL_ITZ_WS + '/academias',

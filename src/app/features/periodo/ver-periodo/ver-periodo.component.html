@@ -214,4 +214,24 @@
     </div>
   </ng-template>
 
+
 </div>
+
+<ng-template #importExcelModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Importar Cursos desde Excel</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <p>Selecciona un archivo Excel (.xlsx) con el formato correcto para importar cursos.</p>
+    <input #excelInput type="file" accept=".xlsx" (change)="onExcelFileSelected($event)" class="form-control" />
+    <small class="text-muted">Solo se permiten archivos con extensión .xlsx</small>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+    <button type="button" class="btn btn-success" [disabled]="!selectedExcelFile"
+      (click)="confirmarImportarExcel(modal)">
+      Importar
+    </button>
+  </div>
+</ng-template>

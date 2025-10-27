@@ -193,12 +193,21 @@ export class PeriodoComponent {
     }
   }
 
-  onDelete(row: any) {
-    if (confirm('¿Seguro que deseas eliminar este periodo?')) {
-      this.periodosService.deletePeriodo(row.id).then(() => {
-        this.toastr.success('Periodo eliminado');
-        this.getPeriodos();
-      });
+  async onDelete(row: any) {
+    if (row.estado === 'activo') {
+      this.toastr.error('No puedes eliminar un periodo con estado "Activo".');
+      return;
+    }
+    // Usando window.confirm como alerta genérica
+    const confirmado = window.confirm('¿Estás seguro que deseas eliminar este periodo? Esta acción no se puede deshacer.');
+    if (!confirmado) return;
+  
+    try {
+      await this.periodosService.deletePeriodo(row.id);
+      this.toastr.success('Periodo eliminado');
+      this.getPeriodos();
+    } catch (error) {
+      this.toastr.error('Error al eliminar el periodo');
     }
   }
 
