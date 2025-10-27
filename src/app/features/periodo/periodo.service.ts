@@ -95,7 +95,6 @@ export class PeriodosService {
     let params = new HttpParams()
       .set('page', page)
       .set('limit', limit)
-      .set('role', 'Docente');
     if (searchValue) params = params.set('searchValue', searchValue);
     const url = environment.itz.usuarios.getAll;
     return await firstValueFrom(this.http.get(url, { params }));

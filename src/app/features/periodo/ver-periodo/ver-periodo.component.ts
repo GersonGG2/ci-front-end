@@ -125,8 +125,7 @@ export class VerPeriodoComponent implements OnInit {
     { prop: 'Eliminar', name: 'Eliminar', icon: 'trash', action: () => this.openDeleteCursoModal() },
     { prop: 'Descargar PDF', name: 'Descargar PDF', icon: 'file-pdf', action: () => this.exportarCursosPdf() },
     { prop: 'Exportar Excel', name: 'Exportar Excel', icon: 'file-excel', action: () => this.exportarCursosExcel() },
-    { prop: 'Importar Excel', name: 'Importar Excel', icon: 'file-import', action: () => this.openImportExcelModal() }
-
+    { prop: 'Importar Excel', name: 'Importar Excel', icon: 'file-excel', action: () => this.openImportExcelModal() }
   ]
 
 
@@ -786,7 +785,7 @@ export class VerPeriodoComponent implements OnInit {
   @ViewChild('importExcelModal') importExcelModal: any;
   @ViewChild('excelInput') excelInput!: ElementRef<HTMLInputElement>;
   selectedExcelFile: File | null = null;
-  
+
   openImportExcelModal() {
     this.selectedExcelFile = null;
     if (this.excelInput) this.excelInput.nativeElement.value = '';
