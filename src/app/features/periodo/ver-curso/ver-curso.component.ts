@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PeriodosService } from '../periodo.service';
 import { GenericTableComponent } from "../../component/generic-table/generictable.component";
 import { CommonModule } from '@angular/common';
@@ -37,7 +37,6 @@ export class VerCursoComponent implements OnInit {
   columns = [
     { name: 'Docente', prop: 'docenteNombre', filter: true },
     { name: 'Email', prop: 'docenteEmail', filter: true },
-    // { name: 'Estado docente', prop: 'docenteEstadoHtml', customView: 'docenteEstadoHtml', filter: false },
     { name: 'Estado inscripción', prop: 'estadoHtml', customView: 'estadoHtml', filter: true },
     { name: 'Fecha inscripción', prop: 'fechaInscripcion', filter: false },
     {
@@ -49,25 +48,20 @@ export class VerCursoComponent implements OnInit {
         { name: 'Descargar constancia', icon: 'file', action: (value, row) => this.descargarConstancia(row) },
         { name: 'Cambiar estado', icon: 'edit', action: (value, row) => this.changeStatus(row) },
         { name: 'Remover del curso', icon: 'trash', action: (value, row) => this.removeInscripcion(row) }
-
       ]
     }
   ];
 
   filterOptions(option, row) {
-    // Solo mostrar "Cambiar estado" si es admin o instructor
     if (option.name === 'Cambiar estado') {
       return this.isAdmin || this.curso?.isInstructor;
     }
     if (option.name === 'Remover del curso') {
       return this.isAdmin || this.curso?.isInstructor;
     }
-
-    // Solo mostrar "Descargar constancia" si el estado es "aprobado"
     if (option.name === 'Descargar constancia') {
       return row.estado === 'aprobado';
     }
-
     return false;
   }
 
@@ -75,7 +69,6 @@ export class VerCursoComponent implements OnInit {
     { value: 'inscrito', text: 'Inscrito' },
     { value: 'aprobado', text: 'Aprobado' },
     { value: 'reprobado', text: 'Reprobado' },
-    // { value: 'cancelado', text: 'Cancelado' }
   ];
 
   docentes: any[] = [];
@@ -92,6 +85,7 @@ export class VerCursoComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private periodosService: PeriodosService,
     private fb: FormBuilder,
     private modalService: NgbModal,
@@ -100,25 +94,34 @@ export class VerCursoComponent implements OnInit {
     this.inscripcionForm = this.fb.group({
       cursoId: [{ value: '', disabled: true }, Validators.required],
       docenteId: ['', Validators.required],
-      docenteNombre: [{ value: '' }], // Añade este campo
+      docenteNombre: [{ value: '' }],
       estado: ['inscrito', Validators.required]
     });
   }
 
-
   async ngOnInit() {
-    const id = this.route.snapshot.params['id'];
-    this.curso = await this.periodosService.getCursoById(id);
+   /*  console.log('🎯 VerCursoComponent ngOnInit');
+    console.log('📍 URL actual:', this.router.url);
+    console.log('🔧 Parámetros de ruta:', this.route.snapshot.params);
+ */
+    const periodoId = this.route.snapshot.params['periodoId'];
+    const cursoId = this.route.snapshot.params['id'];
+
+   /*  console.log('📦 periodoId:', periodoId);
+    console.log('📦 cursoId:', cursoId); */
+
+    this.curso = await this.periodosService.getCursoById(cursoId);
+    // console.log('📚 Curso cargado:', this.curso);
+
     this.isAdmin = this.curso?.isAdmin ?? false;
     this.isDocente = this.curso?.isDocente ?? false;
     this.inscripcionForm.patchValue({ cursoId: this.curso.id });
 
-    await this.loadInscripciones(id);
+    await this.loadInscripciones(cursoId);
 
     if (this.isDocente) {
       this.checkInscripcion();
     }
-
   }
 
   // Método para verificar si el docente ya está inscrito

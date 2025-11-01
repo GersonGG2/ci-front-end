@@ -200,7 +200,16 @@ export class CursosComponent implements OnInit {
   }
 
   onView(curso: any) {
-    this.router.navigate(['/periodo/cursos/docentes', curso.id]);
+    /* console.log('🔍 onView llamado con curso:', curso);
+    console.log('🔍 ID del curso:', curso.id);
+    console.log('🔍 Navegando a:', ['/cursos/docentes', curso.id]);
+ */   
+      this.router.navigate(['/cursos/docentes', curso.id]).then(success => {
+     /*  console.log('✅ Navegación exitosa:', success);
+      console.log('📍 URL actual:', this.router.url); */
+    }).catch(error => {
+      //console.error('❌ Error en navegación:', error);
+    });
   }
 
   async loadFormData() {
@@ -317,7 +326,14 @@ export class CursosComponent implements OnInit {
         default:
           estadoHtml = `<span class="badge bg-light text-dark">${item.estado}</span>`;
       }
-      const nombreHtml = `<a class="link-action text-primary href-/periodo/cursos/docentes/${item.id}">${item.nombre}</a>`;
+      const nombreHtml = `<a class="link-action text-primary href-/cursos/docentes/${item.id}">${item.nombre}</a>`;
+
+     /*  console.log('🔗 Generando link para curso:', {
+        id: item.id,
+        nombre: item.nombre,
+        href: `/cursos/docentes/${item.id}`
+      }); */
+
       return {
         ...item,
         nombreHtml: nombreHtml,

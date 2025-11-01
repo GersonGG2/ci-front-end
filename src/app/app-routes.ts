@@ -21,13 +21,6 @@ export const Approutes: Routes = [
             (m) => m.DashboardModule
           ),
       },
-     /*  {
-        path: 'notifications',
-        loadComponent: () => import('./features/notifications/pages/main-page/notifications.component').then(m => m.NotificationsComponent),
-        data: {
-          title: 'Notificaciones',
-        }
-      }, */
       {
         path: 'usuarios',
         loadComponent: () => import('./features/usuarios/usuario/usuarios.component').then(m => m.UsuariosComponent),
@@ -51,7 +44,7 @@ export const Approutes: Routes = [
       },
       {
         path: 'cursos',
-        loadComponent: () => import('./features/cursos/cursos/cursos.component').then(m => m.CursosComponent),
+        loadChildren: () => import('./features/cursos/cursos.module').then(m => m.CursosModule),
         data: {
           title: 'Cursos',
         }
@@ -66,7 +59,7 @@ export const Approutes: Routes = [
 
     ],
   },
-{
+  {
     path: '',
     component: BlankComponent,
     children: [
