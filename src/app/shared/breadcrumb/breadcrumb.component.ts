@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { BreadcrumbService } from '../services/breadcrumb.service';
 
 const paths = [
+  'periodo/cursos/docentes',
   'periodo/cursos',
 ];
 
@@ -45,16 +46,23 @@ export class BreadcrumbComponent implements OnInit {
           return route;
         })
       )
-      .pipe(filter((route) => route.outlet === 'primary'))
       .pipe(mergeMap((route) => route.data))
       .subscribe((event) => {
         this.titleService.setTitle("DY - " + event['title']);
 
-        const id = this.getAllRouteParams()['id'] || '';
-        if (id) {
+        const params = this.getAllRouteParams();
+        const id = params['id'] || '';
+        const periodoId = params['periodoId'] || '';
+
+        if (id || periodoId) {
           const urls = event['urls'] || [];
           urls.forEach((url) => {
-            if (url.title.includes('{1}')) url.title = id.toString();
+            if (url.title && url.title.includes('{1}')) {
+              url.title = id.toString();
+            }
+            if (url.url && url.url.includes('{periodoId}')) {
+              url.url = url.url.replace('{periodoId}', periodoId);
+            }
           });
         }
 

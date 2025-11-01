@@ -30,14 +30,14 @@ const routes: Routes = [
   },
 
   {
-    path: 'cursos/docentes/:id',
+    path: 'cursos/:periodoId/docentes/:id',
     component: VerCursoComponent,
     data: {
       title: 'Ver Curso',
       urls: [
         { title: 'Inicio', url: '/' },
         { title: 'Periodo', url: '/periodo' },
-        { title: 'Cursos', url: '/periodo/cursos' },
+        { title: 'Cursos', url: '/periodo/cursos/{periodoId}' },
         { title: 'Detalle' }
       ]
     }

@@ -57,7 +57,12 @@ export class VerPeriodoComponent implements OnInit {
       ...(this.isAdmin ? [{
         prop: 'id', name: '#', filter: false, checkbox: true, width: 30, sortable: false,
       }] : []),
-      { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', filter: true },
+      {
+        name: 'Nombre',
+        prop: 'nombre',
+        customView: 'nombreHtml',
+        filter: true
+      },
       { name: 'Objetivo', prop: 'objetivo', filter: true },
       {
         name: 'Academia',
@@ -175,9 +180,9 @@ export class VerPeriodoComponent implements OnInit {
   }
 
   verCurso(row: any) {
-    this.router.navigate(['/periodo/cursos/docentes', row.id]);
+    this.router.navigate(['/periodo/cursos', this.periodo.id, 'docentes', row.id]);
   }
-  
+
 
   async doDeleteCurso(row: any): Promise<void> {
     if (await Alert.question('Confirmación', '¿Estás seguro de que desea eliminar este curso?')) {
@@ -362,7 +367,7 @@ export class VerPeriodoComponent implements OnInit {
 
       // const nombreHtml = `<span>${item.nombre}</span>`;
       // const nombreHtml = `<a class="link-action text-primary" href="/periodo/detail/curso/${item.id}">${item.nombre}</a>`;
-      const nombreHtml = `<a class="link-action text-primary href-/periodo/cursos/docentes/${item.id}">${item.nombre}</a>`;
+      const nombreHtml = `<a class="link-action text-primary href-/periodo/cursos/${this.periodo.id}/docentes/${item.id}">${item.nombre}</a>`;
 
       const academiaHtml = item.academia
         ? `<span>${item.academia.nombre}</span>`
@@ -500,7 +505,7 @@ export class VerPeriodoComponent implements OnInit {
   }
 
   verDetalleCurso(curso: any) {
-    this.router.navigate(['/periodo/cursos/docentes', curso.id]);
+    this.router.navigate(['/periodo/cursos', this.periodo.id, 'docentes', curso.id]);
   }
 
   openChangeStatusModal(row?: any) {
