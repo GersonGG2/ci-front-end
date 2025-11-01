@@ -7,6 +7,7 @@ import { CursosService } from '../cursos.service';
 import { CommonModule } from '@angular/common';
 import { GenericSelectorComponent } from '../../component/generic-selector/genericselector.component';
 import { PeriodosService } from '../../periodo/periodo.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cursos',
@@ -24,28 +25,125 @@ export class CursosComponent implements OnInit {
   limit = 10;
   filters: any = {};
   editingCurso: any = null;
-
+  isAdmin: boolean = false;
   // Listas para los selectores
   academias: any[] = [];
   instructores: any[] = [];
   periodos: any[] = [];
+  activeTabId = 'cursos';
 
   columns = [
-    { name: 'Nombre', prop: 'nombre', filter: true },
-    { name: 'Academia', prop: 'academiaNombre', filter: true },
-    { name: 'Instructor', prop: 'instructorNombre', filter: true },
-    { name: 'Periodo', prop: 'periodoNombre', filter: true },
-    { name: 'Lugar', prop: 'lugar', filter: true },
-    { name: 'Aula', prop: 'aula', filter: true },
-    { name: 'Fecha inicio', prop: 'fecha_inicio', filter: true },
-    { name: 'Fecha fin', prop: 'fecha_fin', filter: true },
+    // ============================ FILTROS ============================
+    { name: 'Nombre', prop: 'searchValue', filter: true, col: false },
+    {
+      name: 'Periodo',
+      prop: 'periodoId',
+      filter: true,
+      col: false,
+      type: 'select',
+      options: []
+    },
+    // {
+    //   name: 'Academia',
+    //   prop: 'academiaId',
+    //   customView: 'academiaHtml',
+    //   filter: true,
+    //   type: 'select',
+    //   options: [
+    //     { value: 1, text: 'Ingeniería en Sistemas Computacionales' },
+    //     { value: 2, text: 'Ingeniería Civil' },
+    //     { value: 3, text: 'Ingeniería Industrial' },
+    //     { value: 4, text: 'Ingeniería Electromecánica' },
+    //     { value: 5, text: 'Ingeniería Química' },
+    //     { value: 6, text: 'Ingeniería Bioquímica' },
+    //     { value: 7, text: 'Ingeniería en Gestión Empresarial' },
+    //     { value: 8, text: 'Licenciatura en Administración' },
+    //     { value: 9, text: 'Licenciatura en Turismo' },
+    //     { value: 10, text: 'Ingeniería en Ciencia de Datos' }
+    //   ]
+    // },
+    {
+      name: 'Estado',
+      prop: 'estado',
+      filter: true,
+      col: false,
+      type: 'select',
+      options: [
+        { value: 'aprobado', text: 'Aprobado' },
+        { value: 'finalizado', text: 'Finalizado' }
+      ]
+    },
+
+    // ======================= COLUMNAS DE LA TABLA =======================
+    { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', width: 300 },
+    { name: 'Periodo', prop: 'periodoNombre', width: 200 },
+    { name: 'Academia', prop: 'academiaNombre' },
+    { name: 'Instructor', prop: 'instructorNombre' },
+    { name: 'Instructor Dos', prop: 'instructorDosNombre' },
+    { name: 'Lugar', prop: 'lugar', width: 200 },
+    { name: 'Aula', prop: 'aula' },
+    { name: 'Horas', prop: 'horas' },
+    { name: 'Estado', prop: 'estado', customView: 'estadoHtml' },
+    { name: 'Fecha inicio', prop: 'fecha_inicio' },
+    { name: 'Fecha fin', prop: 'fecha_fin' },
     {
       prop: 'action', name: 'Acción', width: 40, actions: [
-        { name: 'Editar', icon: 'edit', action: (value, row) => this.onEdit(row) },
-        { name: 'Eliminar', icon: 'trash', action: (value, row) => this.onDelete(row) }
+        { name: 'Ver curso', icon: 'eye', action: (value, row) => this.onView(row) },
+        /*   { name: 'Editar', icon: 'edit', action: (value, row) => this.onEdit(row) },
+          { name: 'Eliminar', icon: 'trash', action: (value, row) => this.onDelete(row) } */
       ]
     }
   ];
+
+  /* Inscripciones */
+  asignacionesCurso: any[] = [];
+  totalAsignaciones = 0;
+  asignacionesPage = 1;
+  instructorFilters: any = {};
+
+  columnsAsignaciones = [
+    // ============================ FILTROS ============================
+    { name: 'Nombre', prop: 'searchValue', filter: true, col: false },
+    {
+      name: 'Periodo',
+      prop: 'periodoId',
+      filter: true,
+      col: false,
+      type: 'select',
+      options: []
+    },
+    {
+      name: 'Estado',
+      prop: 'estado',
+      filter: true,
+      col: false,
+      type: 'select',
+      options: [
+        { value: 'aprobado', text: 'Aprobado' },
+        { value: 'finalizado', text: 'Finalizado' }
+      ]
+    },
+
+    // ======================= COLUMNAS DE LA TABLA =======================
+    { name: 'Nombre', prop: 'nombre', customView: 'nombreHtml', width: 300 },
+    { name: 'Periodo', prop: 'periodoNombre', width: 200 },
+    { name: 'Academia', prop: 'academiaNombre' },
+    { name: 'Instructor', prop: 'instructorNombre' },
+    { name: 'Instructor Dos', prop: 'instructorDosNombre' },
+    { name: 'Lugar', prop: 'lugar', width: 200 },
+    { name: 'Aula', prop: 'aula' },
+    { name: 'Horas', prop: 'horas' },
+    { name: 'Estado', prop: 'estado', customView: 'estadoHtml' },
+    { name: 'Fecha inicio', prop: 'fecha_inicio' },
+    { name: 'Fecha fin', prop: 'fecha_fin' },
+    {
+      prop: 'action', name: 'Acción', width: 40, actions: [
+        { name: 'Ver curso', icon: 'eye', action: (value, row) => this.onView(row) },
+      ]
+    }
+  ];
+
+
 
   form: FormGroup = this.fb.group({
     id: [null],
@@ -73,13 +171,13 @@ export class CursosComponent implements OnInit {
     private toastr: ToastrService,
     private fb: FormBuilder,
     private modalService: NgbModal,
-    private periodosService: PeriodosService
+    private periodosService: PeriodosService,
+    private router: Router
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getCursos();
     this.loadFormData();
-
     // Agregar validación condicional para comentario_rechazo
     this.form.get('estado')?.valueChanges.subscribe(estado => {
       const comentarioRechazoControl = this.form.get('comentario_rechazo');
@@ -90,6 +188,19 @@ export class CursosComponent implements OnInit {
       }
       comentarioRechazoControl?.updateValueAndValidity();
     });
+  }
+
+  setActiveTab(tabId: string) {
+    this.activeTabId = tabId;
+    if (tabId === 'asignaciones') {
+      this.loadCursosDeInstructor();
+    } else if (tabId === 'cursos') {
+      this.getCursos();
+    }
+  }
+
+  onView(curso: any) {
+    this.router.navigate(['/periodo/cursos/docentes', curso.id]);
   }
 
   async loadFormData() {
@@ -113,6 +224,14 @@ export class CursosComponent implements OnInit {
         }
       });
 
+      const periodoFilter = this.columns.find(c => c.prop === 'periodoId');
+      if (periodoFilter) {
+        periodoFilter.options = this.periodos.map(p => ({ value: p.id, text: p.nombre }));
+      }
+      const periodoFilterAsignaciones = this.columnsAsignaciones.find(c => c.prop === 'periodoId');
+      if (periodoFilterAsignaciones) {
+        periodoFilterAsignaciones.options = this.periodos.map(p => ({ value: p.id, text: p.nombre }));
+      }
     } catch (error) {
       console.error('Error al cargar datos del formulario:', error);
       this.toastr.error('Error al cargar datos necesarios para el formulario');
@@ -121,8 +240,10 @@ export class CursosComponent implements OnInit {
 
   async getCursos() {
     try {
-      const result = await this.cursosService.getAllCursos(this.page, this.limit, this.filters);
-      console.log('Resultado:', result);
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user.id;
+      const result = await this.cursosService.getAllCourseByUser(userId, this.page, this.limit, this.filters);
+
       if (result && Array.isArray(result.rows)) {
         this.cursos = this.handleResponse(result.rows);
         this.totalItems = result.count;
@@ -133,12 +254,33 @@ export class CursosComponent implements OnInit {
       console.error('Error al obtener cursos:', error);
     }
   }
+  async loadCursosDeInstructor() {
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const instructorId = user.id;
+      const result = await this.cursosService.getCursosByInstructor(instructorId, this.asignacionesPage, this.limit, this.instructorFilters);
+
+      if (result && Array.isArray(result.rows)) {
+        this.asignacionesCurso = this.handleResponse(result.rows);
+        this.totalAsignaciones = result.count;
+      } else {
+        console.error('Estructura de respuesta inesperada:', result);
+        this.asignacionesCurso = [];
+        this.totalAsignaciones = 0;
+      }
+    } catch (error) {
+      console.error('Error al cargar cursos del instructor:', error);
+      this.toastr.error('Error al cargar los cursos donde es instructor');
+    }
+  }
 
   async applyFilter(filter: any = {}): Promise<void> {
     this.filters = filter;
     this.page = 1;
     try {
-      const response = await this.cursosService.getAllCursos(this.page, this.limit, filter);
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user.id;
+      const response = await this.cursosService.getAllCourseByUser(userId, this.page, this.limit, filter);
 
       if (response && Array.isArray(response.rows)) {
         this.cursos = this.handleResponse(response.rows);
@@ -150,16 +292,44 @@ export class CursosComponent implements OnInit {
       console.error('Error al aplicar filtros:', error);
     }
   }
+  async applyInstructorFilter(filter: any = {}): Promise<void> {
+    this.instructorFilters = filter;
+    this.asignacionesPage = 1;
+    await this.loadCursosDeInstructor();
+  }
 
   handleResponse(response): any[] {
-    return response.map((item) => ({
-      ...item,
-      academiaNombre: item.academia?.nombre || '',
-      instructorNombre: item.instructor ? `${item.instructor.nombre} ${item.instructor.apellidos}` : '',
-      periodoNombre: item.periodo?.nombre || '',
-      fecha_inicio: item.fecha_inicio ? new Date(item.fecha_inicio).toLocaleDateString() : '',
-      fecha_fin: item.fecha_fin ? new Date(item.fecha_fin).toLocaleDateString() : ''
-    }));
+    return response.map((item) => {
+      let estadoHtml = '';
+      switch (item.estado) {
+        case 'propuesto':
+          estadoHtml = `<span class="badge bg-primary">${item.estado}</span>`;
+          break;
+        case 'aprobado':
+          estadoHtml = `<span class="badge bg-success">${item.estado}</span>`;
+          break;
+        case 'rechazado':
+          estadoHtml = `<span class="badge bg-danger">${item.estado}</span>`;
+          break;
+        case 'finalizado':
+          estadoHtml = `<span class="badge bg-secondary">${item.estado}</span>`;
+          break;
+        default:
+          estadoHtml = `<span class="badge bg-light text-dark">${item.estado}</span>`;
+      }
+      const nombreHtml = `<a class="link-action text-primary href-/periodo/cursos/docentes/${item.id}">${item.nombre}</a>`;
+      return {
+        ...item,
+        nombreHtml: nombreHtml,
+        academiaNombre: item.academia?.nombre || '',
+        instructorNombre: item.instructor ? `${item.instructor.nombre} ${item.instructor.apellidos}` : '',
+        instructorDosNombre: item.instructorDos ? `${item.instructorDos.nombre} ${item.instructorDos.apellidos}` : '',
+        periodoNombre: item.periodo?.nombre || '',
+        fecha_inicio: item.fecha_inicio ? new Date(item.fecha_inicio).toLocaleDateString() : '',
+        fecha_fin: item.fecha_fin ? new Date(item.fecha_fin).toLocaleDateString() : '',
+        estadoHtml: estadoHtml
+      };
+    });
   }
 
   openCursoModal(curso?: any) {
@@ -332,4 +502,7 @@ export class CursosComponent implements OnInit {
     });
     this.form.get('instructorId')?.markAsTouched();
   }
+
+
+
 }

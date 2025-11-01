@@ -23,7 +23,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: '/cursos',
-    title: 'Cursos',
+    title: 'Mis Cursos',
     icon: 'mdi mdi-book-open-page-variant', // Cursos
     class: '',
     ddclass: '',

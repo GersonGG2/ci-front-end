@@ -52,10 +52,10 @@ export class HorizontalSidebarComponent {
       this.sidebarnavItems = ROUTES;
     } else if (hasDocenteRole || hasInstructorRole || hasJefeRole) {
       // Otros roles solo ven menú de Periodo
-      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo');
+      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo' || r.path === '/cursos');
     } else {
       // Sin roles o sesión, mostrar solo periodo por defecto
-      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo');
+      this.sidebarnavItems = ROUTES.filter(r => r.path === '/periodo' || r.path === '/cursos');
     }
 
     this.menuServise.items.subscribe((menuItems) => {

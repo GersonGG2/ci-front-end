@@ -51,6 +51,7 @@ export const environment = {
       exportarPdf: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-pdf', // GET /cursos/exportar-pdf
       exportarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-excel', // GET /cursos/exportar-excel
       importarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/importar-excel', // POST /cursos/importar-excel
+      getByInstructorId: EnviromentHelper.URL_ITZ_WS + '/cursos/instructor/'// GET /cursos/instructor/{instructorId}
     },
     academias: {
       main: EnviromentHelper.URL_ITZ_WS + '/academias',
@@ -61,7 +62,7 @@ export const environment = {
       delete: EnviromentHelper.URL_ITZ_WS + '/academias/', // DELETE /academias/{id}
     },
     inscripciones: {
-      main: EnviromentHelper.URL_ITZ_WS + '/inscripciones',
+      main: EnviromentHelper.URL_ITZ_WS + '/inscripciones/',
       create: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // POST
       getAll: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // GET
       getMine: EnviromentHelper.URL_ITZ_WS + '/inscripciones/mis-inscripciones', // GET

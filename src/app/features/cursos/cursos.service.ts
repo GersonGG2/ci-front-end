@@ -19,6 +19,45 @@ export class CursosService {
     const url = `${environment.itz.cursos.getAll}`;
     return await firstValueFrom(this.http.get(url, { params }));
   }
+  async getAllCourseByUser(
+    userId: string | number,
+    page: number = 1,
+    limit: number = 10,
+    filters: any = {}
+  ): Promise<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    const url = `${environment.itz.cursos.main}/usuario/${userId}`;
+    return await firstValueFrom(this.http.get(url, { params }));
+  }
+
+  async getCursosByInstructor(
+    instructorId: string | number,
+    page: number = 1,
+    limit: number = 10,
+    filters: any = {}
+  ): Promise<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    const url = `${environment.itz.cursos.getByInstructorId}${instructorId}`;
+    return await firstValueFrom(this.http.get(url, { params }));
+  }
 
   async createCurso(data: any): Promise<any> {
     const url = `${environment.itz.cursos.create}`;
@@ -64,5 +103,10 @@ export class CursosService {
 
     const url = environment.itz.usuarios.getAll;
     return await firstValueFrom(this.http.get(url, { params }));
+  }
+
+  async getCursoById(id: string | number): Promise<any> {
+    const url = `${environment.itz.inscripciones.main}${id}`;
+    return await firstValueFrom(this.http.get(url));
   }
 }

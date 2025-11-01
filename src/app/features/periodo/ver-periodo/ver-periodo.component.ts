@@ -177,6 +177,7 @@ export class VerPeriodoComponent implements OnInit {
   verCurso(row: any) {
     this.router.navigate(['/periodo/cursos/docentes', row.id]);
   }
+  
 
   async doDeleteCurso(row: any): Promise<void> {
     if (await Alert.question('Confirmación', '¿Estás seguro de que desea eliminar este curso?')) {

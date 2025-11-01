@@ -12,9 +12,7 @@ import { CommonModule } from '@angular/common';
 import { BreadcrumbService } from '../services/breadcrumb.service';
 
 const paths = [
-
   'periodo/cursos',
-  'periodo/cursos/docentes',
 ];
 
 @Component({
