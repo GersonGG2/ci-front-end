@@ -43,7 +43,7 @@ export class VerPeriodoComponent implements OnInit {
 
   updateColumns() {
     let defaultEstado = '';
-    if (this.isAdmin) {
+    if (this.isAdmin || this.isJefe) {
       defaultEstado = 'propuesto';
     } else if (this.isJefe) {
       defaultEstado = 'nuevo';
@@ -54,8 +54,8 @@ export class VerPeriodoComponent implements OnInit {
     }
 
     this.columns = [
-      ...(this.isAdmin ? [{
-        prop: 'id', name: '#', filter: false, checkbox: true, width: 30, sortable: false,
+      ...(this.isAdmin || this.isJefe ? [{
+        prop: 'id', name: '#', filter: false, checkbox: true, width: 5, sortable: false,
       }] : []),
       {
         name: 'Nombre',
@@ -112,14 +112,14 @@ export class VerPeriodoComponent implements OnInit {
       },
       ...(this.isAdmin || this.isJefe ? [{
         prop: 'action', name: 'Acción', width: 40, actions: [
-          { name: 'Ver detalle', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) },
+          { name: 'Ver Curso', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) },
           { name: 'Editar', icon: 'edit', action: (value, row) => this.openCursoModal(row, 'edit') },
           { name: 'Copiar', icon: 'copy', action: (value, row) => this.openCursoModal(row, 'copy') },
           { name: 'Eliminar', icon: 'trash', action: (value, row) => this.doDeleteCurso(row) }
         ]
       }] : [{
         prop: 'action', name: 'Acción', width: 40, actions: [
-          { name: 'Ver detalle', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) }
+          { name: 'Ver Curso', icon: 'eye', action: (value, row) => this.verDetalleCurso(row) }
         ]
       }])
     ];
@@ -167,14 +167,12 @@ export class VerPeriodoComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.route.params.subscribe(async params => {
       const id = params['id'];
-      // Primero carga el periodo
       await this.loadPeriodo(id);
-      // Luego carga los cursos después de que la función anterior terminó
-      await this.loadCursos(id);
-      // Finalmente carga otros datos del formulario
+      await this.loadCursos(id); // Los roles se actualizan aquí
+      // updateColumns ya se llama dentro de loadCursos
       this.loadFormData();
     });
   }
@@ -212,6 +210,13 @@ export class VerPeriodoComponent implements OnInit {
       this.isJefe = !!res.isJefe;
       this.isDocente = !!res.isDocente;
       this.isInstructor = !!res.isInstructor;
+      //  Agrega este console.log para debug
+      console.log('Roles cargados:', {
+        isAdmin: this.isAdmin,
+        isJefe: this.isJefe,
+        isDocente: this.isDocente,
+        isInstructor: this.isInstructor
+      });
       this.updateColumns();
       this.cursoForm.patchValue({
         periodoId: this.periodo.id
@@ -275,6 +280,23 @@ export class VerPeriodoComponent implements OnInit {
 
       const res = await this.periodosService.getAllCursos(this.page, this.limit, filters);
 
+      if (res) {
+        this.isAdmin = res.isAdmin ?? false;
+        this.isJefe = res.isJefe ?? false;
+        this.isDocente = res.isDocente ?? false;
+        this.isInstructor = res.isInstructor ?? false;
+
+        console.log('Roles actualizados desde getAllCursos:', {
+          isAdmin: this.isAdmin,
+          isJefe: this.isJefe,
+          isDocente: this.isDocente,
+          isInstructor: this.isInstructor
+        });
+
+        // Actualiza las columnas después de obtener los roles
+        this.updateColumns();
+      }
+
       // Procesa la respuesta y asigna datos a la tabla
       if (res && res.rows) {
         this.cursos = this.handleCursosResponse(res.rows);
@@ -287,7 +309,6 @@ export class VerPeriodoComponent implements OnInit {
         this.cursos = [];
         this.totalItems = 0;
       }
-      this.updateColumns();
     } catch (error) {
       console.error('Error en loadCursos:', error);
       this.cursos = [];
@@ -638,7 +659,7 @@ export class VerPeriodoComponent implements OnInit {
 
   instructorPage = 1;
   totalInstructores = 0;
-  selectedInstructor: any = { id: 0, nombre: '', apellidos: '' }; Í
+  selectedInstructor: any = { id: 0, nombre: '', apellidos: '' };
   columns_instructor = [
     { name: 'ID', prop: 'id', width: 60 },
     { name: 'Nombre', prop: 'nombre' },

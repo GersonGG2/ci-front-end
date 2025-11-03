@@ -188,19 +188,12 @@
                             <p class="mb-0 mt-2">No hay notificaciones</p>
                         </div>
 
-                        <!-- Lista de notificaciones con botones de acción -->
+                        <!-- 🔥 Lista de notificaciones de periodos -->
                         <div *ngFor="let notification of notifications" class="position-relative">
-                            <!-- Botón para marcar como leído - Corregido margen y padding -->
-                         <!--    <button class="btn btn-sm btn-light position-absolute end-0 me-3 mt-3"
-                                style="z-index: 5; padding: 0.25rem 0.5rem;"
-                                (click)="markAsRead(notification.id, $event)">
-                                <i class="mdi mdi-check"></i>
-                            </button> -->
-
                             <!-- Notificación con padding adecuado -->
-                            <a [routerLink]="['/notifications']"
+                            <a href="javascript:void(0)"
                                 class="message-item border-bottom d-block text-decoration-none px-3 py-3"
-                                (click)="dropdown.close()">
+                                (click)="onNotificationClick(notification); dropdown.close()">
                                 <div class="d-flex">
                                     <span class="btn btn-circle rounded-circle {{ notification.btn }} me-3">
                                         <i class="{{notification.icon}}"></i>
@@ -217,12 +210,17 @@
                     </div>
                 </li>
 
-                <!-- Enlace solo si hay notificaciones -->
+                <!-- 🔥 Botón para marcar todas como leídas -->
                 <li *ngIf="notifications.length > 0">
-                    <a class="nav-link text-center py-2" [routerLink]="['/notifications']" (click)="dropdown.close()">
-                        <strong>Ver todas las notificaciones</strong>
-                        <i class="fa fa-angle-right" style="margin-left: 10px;"></i>
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                        <button class="btn btn-sm btn-link text-muted" (click)="markAllAsRead(); dropdown.close()">
+                            <i class="mdi mdi-check-all me-1"></i>Marcar todas como leídas
+                        </button>
+                        <a class="btn btn-sm btn-link" [routerLink]="['/periodos']" (click)="dropdown.close()">
+                            <strong>Ver periodos</strong>
+                            <i class="fa fa-angle-right ms-1"></i>
+                        </a>
+                    </div>
                 </li>
             </ul>
         </div>

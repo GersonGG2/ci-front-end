@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GenericSelectorComponent } from '../../component/generic-selector/genericselector.component';
 import jsPDF from 'jspdf';
+import { Alert } from 'src/app/helpers/alerts';
 
 @Component({
   selector: 'app-ver-curso',
@@ -30,9 +31,11 @@ export class VerCursoComponent implements OnInit {
   limit = 10;
 
   isAdmin: boolean = false;
-
+  isJefe: boolean = false;
   isDocente: boolean = false;
   isInscrito: boolean = false;
+  isInstructorDelCurso: boolean = false;
+  currentUserId: number = 0;
 
   columns = [
     { name: 'Docente', prop: 'docenteNombre', filter: true },
@@ -54,14 +57,73 @@ export class VerCursoComponent implements OnInit {
 
   filterOptions(option, row) {
     if (option.name === 'Cambiar estado') {
-      return this.isAdmin || this.curso?.isInstructor;
+      // ✅ Solo pueden cambiar estado:
+      // 1. Admin
+      // 2. Jefe
+      // 3. Instructor del curso (y NO estar inscrito como participante)
+
+      if (this.isAdmin || this.isJefe) {
+        return true;
+      }
+
+      // 🔥 Verificar si es instructor del curso Y NO está inscrito
+      if (this.isInstructorDelCurso && !this.isInscrito) {
+        return true;
+      }
+
+      return false;
     }
+
     if (option.name === 'Remover del curso') {
-      return this.isAdmin || this.curso?.isInstructor;
+      // Obtener el docenteId de la fila actual
+      const inscripcion = this.inscripciones.find(i => i.id === row.id);
+      const docenteIdRow = inscripcion?.docenteId || row.docenteId;
+
+      // ❌ Nadie puede removerse a sí mismo
+      if (docenteIdRow === this.currentUserId) {
+        return false;
+      }
+
+      // ✅ Solo pueden remover:
+      // 1. Admin
+      // 2. Jefe
+      // 3. Instructor del curso (y NO estar inscrito como participante)
+
+      if (this.isAdmin || this.isJefe) {
+        return true;
+      }
+
+      // 🔥 Verificar si es instructor del curso Y NO está inscrito
+      if (this.isInstructorDelCurso && !this.isInscrito) {
+        return true;
+      }
+
+      return false;
     }
+
     if (option.name === 'Descargar constancia') {
-      return row.estado === 'aprobado';
+      // Si el usuario está inscrito, solo puede ver la constancia si está aprobado
+      if (this.isInscrito) {
+        // Verificar si es su propia inscripción
+        const inscripcion = this.inscripciones.find(i => i.id === row.id);
+        const docenteIdRow = inscripcion?.docenteId || row.docenteId;
+
+        // Solo puede descargar su propia constancia si está aprobado
+        if (docenteIdRow === this.currentUserId) {
+          return row.estado === 'aprobado';
+        }
+        // No puede ver constancias de otros
+        return false;
+      }
+
+      // ✅ Admin, Jefe o Instructor pueden descargar constancias aprobadas
+      if (this.isAdmin || this.isJefe || this.isInstructorDelCurso) {
+        return row.estado === 'aprobado';
+      }
+
+      return false;
     }
+
     return false;
   }
 
@@ -100,56 +162,122 @@ export class VerCursoComponent implements OnInit {
   }
 
   async ngOnInit() {
-   /*  console.log('🎯 VerCursoComponent ngOnInit');
-    console.log('📍 URL actual:', this.router.url);
-    console.log('🔧 Parámetros de ruta:', this.route.snapshot.params);
- */
     const periodoId = this.route.snapshot.params['periodoId'];
     const cursoId = this.route.snapshot.params['id'];
 
-   /*  console.log('📦 periodoId:', periodoId);
-    console.log('📦 cursoId:', cursoId); */
+    // 🔥 Obtener el ID del usuario logueado AL INICIO
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.currentUserId = user.id;
 
     this.curso = await this.periodosService.getCursoById(cursoId);
-    // console.log('📚 Curso cargado:', this.curso);
 
     this.isAdmin = this.curso?.isAdmin ?? false;
+    this.isJefe = this.curso?.isJefe ?? false;
     this.isDocente = this.curso?.isDocente ?? false;
+
+    // 👇 Validar si el usuario es instructor del curso
+    this.isInstructorDelCurso =
+      this.curso?.instructorId === this.currentUserId ||
+      this.curso?.instructorDosId === this.currentUserId;
+
+    console.log('🔍 Validaciones de usuario:', {
+      currentUserId: this.currentUserId,
+      instructorId: this.curso?.instructorId,
+      instructorDosId: this.curso?.instructorDosId,
+      isInstructorDelCurso: this.isInstructorDelCurso,
+      isAdmin: this.isAdmin,
+      isJefe: this.isJefe,
+      isDocente: this.isDocente
+    });
+
     this.inscripcionForm.patchValue({ cursoId: this.curso.id });
+
+    // 🔥 Verificar inscripción para TODOS los usuarios
+    await this.checkInscripcion();
 
     await this.loadInscripciones(cursoId);
 
-    if (this.isDocente) {
-      this.checkInscripcion();
-    }
+    console.log('✅ Estado final - isInscrito:', this.isInscrito, 'isInstructorDelCurso:', this.isInstructorDelCurso);
   }
 
   // Método para verificar si el docente ya está inscrito
   async checkInscripcion() {
     try {
-      // Asumimos que el servicio getAllInscripciones ya devuelve las inscripciones del usuario actual
-      // si es un docente (según el token de autenticación)
-      const misInscripciones = await this.periodosService.getAllInscripciones({
-        cursoId: this.curso.id,
-        miInscripcion: true
-      });
+      console.log('🔍 Verificando inscripción para curso:', this.curso.id);
 
-      // Si hay alguna inscripción, el docente ya está inscrito
-      this.isInscrito = misInscripciones.rows && misInscripciones.rows.length > 0;
+      // Obtener el ID del usuario actual del localStorage
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const currentUserId = user.id;
+      console.log('👤 ID del usuario actual:', currentUserId);
+
+      if (!currentUserId) {
+        console.error('❌ No se encontró el ID del usuario');
+        this.isInscrito = false;
+        return;
+      }
+
+      // Llamar al nuevo endpoint de verificación
+      const result = await this.periodosService.verificarInscripcion(this.curso.id, currentUserId);
+
+      console.log('📋 Resultado de verificación:', result);
+
+      // Verificar si está inscrito según la respuesta del backend
+      if (result.inscrito === true) {
+        // Si inscrito es true, verificar que el usuario coincida
+        if (result.inscripcion) {
+          // Verificar que el docenteId de la inscripción coincida con el usuario actual
+          this.isInscrito = result.inscripcion.docenteId === currentUserId;
+          console.log('✅ Inscripción encontrada para el usuario actual');
+        } else {
+          this.isInscrito = true;
+          console.log('✅ Usuario inscrito (sin detalles de inscripción)');
+        }
+      } else if (result.inscrito === false) {
+        // Si inscrito es false, puede haber un objeto con inscripción de otro usuario
+        if (result.inscripcion && result.inscripcion.docenteId === currentUserId) {
+          // Si hay inscripción y coincide el docenteId, está inscrito
+          this.isInscrito = true;
+          console.log('✅ Inscripción encontrada en objeto anidado');
+        } else {
+          // No está inscrito
+          this.isInscrito = false;
+          console.log('❌ Usuario NO inscrito');
+        }
+      } else {
+        // Valor inesperado
+        this.isInscrito = false;
+        console.log('⚠️ Valor inesperado de inscrito:', result.inscrito);
+      }
+
+      console.log('✅ Estado final isInscrito:', this.isInscrito);
     } catch (error) {
-      console.error('Error al verificar inscripción:', error);
+      console.error('❌ Error al verificar inscripción:', error);
       this.isInscrito = false;
     }
   }
 
   async inscribirDocente() {
     try {
+      // 🔥 Agregar confirmación antes de inscribirse
+      const confirmado = await Alert.question(
+        'Confirmar inscripción',
+        '¿Está seguro que desea inscribirse a este curso?'
+      );
+
+      if (!confirmado) return;
+
       // Recupera el userId del localStorage
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const docenteId = user.id;
 
       if (!docenteId) {
         this.toastr.error('No se pudo obtener el usuario actual.');
+        return;
+      }
+
+      // Validar si el usuario es instructor o instructorDos del curso
+      if (this.curso?.instructorId === docenteId || this.curso?.instructorDosId === docenteId) {
+        this.toastr.warning('Como instructor del curso, no puedes inscribirte como participante.');
         return;
       }
 
@@ -211,6 +339,7 @@ export class VerCursoComponent implements OnInit {
 
       return {
         id: item.id,
+        docenteId: item.docenteId,
         docenteNombre: item.docente ? `${item.docente.nombre} ${item.docente.apellidos}` : '',
         docenteEmail: item.docente?.email || '',
         docenteEstadoHtml,
@@ -333,6 +462,12 @@ export class VerCursoComponent implements OnInit {
   }
 
   async changeStatus(row: any) {
+    // 🔥 Validación adicional antes de cambiar estado
+    if (!this.isAdmin && !this.isJefe && !(this.isInstructorDelCurso && !this.isInscrito)) {
+      this.toastr.warning('No tienes permisos para cambiar el estado de inscripciones');
+      return;
+    }
+
     // Crear formulario para cambiar estado
     this.statusForm = this.fb.group({
       estado: [row.estado, Validators.required]
@@ -346,34 +481,57 @@ export class VerCursoComponent implements OnInit {
 
     try {
       const result = await modalRef.result;
-      if (result) {
+
+      if (result && result.estado) {
         await this.periodosService.updateInscripcion({
           id: row.id,
           estado: result.estado
         });
 
         this.toastr.success('Estado de inscripción actualizado');
-        // Recargar inscripciones
         await this.loadInscripciones(this.curso.id);
       }
     } catch (error) {
-      console.error('Error al cambiar el estado:', error);
-      // No mostrar error si el usuario simplemente cerró el modal
-      if (error !== 'dismissed') {
+      if (error !== 'dismissed' && error !== 0 && error !== 1 && error !== 'cancel') {
+        console.error('Error al cambiar el estado:', error);
         this.toastr.error('Error al cambiar el estado');
       }
     }
   }
+
   async removeInscripcion(row: any) {
     if (!row?.id) return;
-    if (confirm(`¿Seguro que deseas remover a ${row.docenteNombre} del curso?`)) {
-      try {
-        await this.periodosService.removeInscripcion(row.id);
-        this.toastr.success('Docente removido del curso');
-        await this.loadInscripciones(this.curso.id);
-      } catch (error) {
-        this.toastr.error('Error al remover inscripción');
-      }
+
+    // 🔥 Validación adicional antes de remover
+    if (!this.isAdmin && !this.isJefe && !(this.isInstructorDelCurso && !this.isInscrito)) {
+      this.toastr.warning('No tienes permisos para remover inscripciones');
+      return;
+    }
+
+    // ❌ Validar que no se remueva a sí mismo
+    const inscripcion = this.inscripciones.find(i => i.id === row.id);
+    const docenteIdRow = inscripcion?.docenteId || row.docenteId;
+
+    if (docenteIdRow === this.currentUserId) {
+      this.toastr.warning('No puedes removerte a ti mismo del curso');
+      return;
+    }
+
+    // 🔥 Usar Alert genérica para confirmación
+    const confirmado = await Alert.question(
+      'Confirmar eliminación',
+      `¿Seguro que deseas remover a ${row.docenteNombre} del curso?`
+    );
+
+    if (!confirmado) return;
+
+    try {
+      await this.periodosService.removeInscripcion(row.id);
+      this.toastr.success('Docente removido del curso');
+      await this.loadInscripciones(this.curso.id);
+    } catch (error) {
+      console.error('Error al remover inscripción:', error);
+      this.toastr.error('Error al remover inscripción');
     }
   }
 

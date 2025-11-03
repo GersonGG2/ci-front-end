@@ -72,6 +72,7 @@ export const environment = {
       aprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/aprobar
       reprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/reprobar
       cancelar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/cancelar
+      verificar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/verificar/',// GET /inscripciones/verificar/{cursoId}/{userId}
     },
 
   },

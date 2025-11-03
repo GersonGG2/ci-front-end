@@ -182,5 +182,16 @@ export class PeriodosService {
     );
   }
 
+  async verificarInscripcion(cursoId: number | string, userId: number | string): Promise<any> {
+    try {
+      const url = `${environment.itz.inscripciones.verificar}${cursoId}/${userId}`;
+      const response = await firstValueFrom(this.http.get(url));
+      return response;
+    } catch (error) {
+      console.error('Error al verificar inscripción:', error);
+      throw error;
+    }
+  }
+
 
 }

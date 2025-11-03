@@ -6,6 +6,7 @@ import { PeriodosService } from '../periodo.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { PeriodosSocketService } from '../periodos-socket.service';
+import { Alert } from 'src/app/helpers/alerts';
 
 @Component({
   selector: 'app-periodo',
@@ -17,7 +18,9 @@ import { PeriodosSocketService } from '../periodos-socket.service';
 export class PeriodoComponent {
   @ViewChild('periodoModal') periodoModal: any;
   socketSub: any;
+  private modalRef: any = null;
   constructor(
+
     private periodosService: PeriodosService,
     private toastr: ToastrService,
     private fb: FormBuilder,
@@ -162,44 +165,91 @@ export class PeriodoComponent {
       this.form.patchValue({ estado: 'activo' });
       this.editingPeriodo = null;
     }
-    this.modalService.open(this.periodoModal, { centered: true });
+    // 🔥 Abrir modal con configuración para evitar cierre al hacer clic afuera
+    this.modalRef = this.modalService.open(this.periodoModal, {
+      centered: true,
+      backdrop: 'static', // 👈 Evita cerrar al hacer clic afuera
+      keyboard: false      // 👈 Evita cerrar con tecla ESC
+    });
   }
 
-  closePeriodoModal() {
+  // 🔥 Verificar si hay datos en el formulario
+  private hasFormData(): boolean {
+    const formValues = this.form.value;
+
+    // Si es edición, siempre tiene datos
+    if (this.editingPeriodo) {
+      return true;
+    }
+
+    // Para nuevo registro, verificar si hay datos en campos (excepto 'activo' que es el default)
+    return !!(
+      formValues.nombre ||
+      formValues.fecha_inicio ||
+      formValues.fecha_fin ||
+      (formValues.estado && formValues.estado !== 'activo')
+    );
+  }
+
+  // 🔥 Cerrar modal con validación
+  async closePeriodoModal() {
+    // Si hay datos en el formulario, mostrar alerta de confirmación
+    if (this.hasFormData()) {
+      const confirmar = await Alert.question(
+        'Cancelar operación',
+        '¿Está seguro que desea cerrar? Los datos no guardados se perderán.'
+      );
+
+      if (!confirmar) {
+        return; // No cerrar el modal
+      }
+    }
+
+    // Cerrar modal y limpiar
     this.modalService.dismissAll();
+    this.modalRef = null;
     this.editingPeriodo = null;
+    this.form.reset();
   }
 
-  async onSubmit() {
+
+   async onSubmit() {
     if (this.form.invalid) return;
     const { id, nombre, fecha_inicio, fecha_fin, estado } = this.form.value;
     try {
       if (id) {
         await this.periodosService.updatePeriodo(id, { nombre, fecha_inicio, fecha_fin, estado });
-        this.toastr.success('Periodo actualizado');
+        this.toastr.success('Periodo actualizado exitosamente');
       } else {
-        // SIEMPRE obtener el usuario logueado aquí
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const usuarioId = user.id;
-
-        // NO uses ningún usuarioId del formulario ni del objeto periodo
         await this.periodosService.createPeriodo({ nombre, fecha_inicio, fecha_fin, estado, usuarioId });
-        this.toastr.success('Periodo agregado');
+        this.toastr.success('Periodo agregado exitosamente');
       }
-      this.closePeriodoModal();
+
+      // 🔥 Cerrar sin validación después de guardar exitosamente
+      this.modalService.dismissAll();
+      this.modalRef = null;
+      this.editingPeriodo = null;
+      this.form.reset();
+
       this.getPeriodos();
     } catch (err) {
       this.toastr.error('Error al guardar periodo');
     }
   }
 
-  async onDelete(row: any) {
+async onDelete(row: any) {
     if (row.estado === 'activo') {
       this.toastr.error('No puedes eliminar un periodo con estado "Activo".');
       return;
     }
-    // Usando window.confirm como alerta genérica
-    const confirmado = window.confirm('¿Estás seguro que deseas eliminar este periodo? Esta acción no se puede deshacer.');
+    
+    const confirmado = await Alert.question(
+      'Eliminar periodo',
+      '¿Estás seguro que deseas eliminar este periodo? Esta acción no se puede deshacer.'
+    );
+    
     if (!confirmado) return;
   
     try {

@@ -109,4 +109,7 @@ export class CursosService {
     const url = `${environment.itz.inscripciones.main}${id}`;
     return await firstValueFrom(this.http.get(url));
   }
+
+
+
 }

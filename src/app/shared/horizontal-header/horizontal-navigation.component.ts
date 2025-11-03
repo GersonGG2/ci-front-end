@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, EventEmitter, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, AfterViewInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import {
   NgbAccordionModule,
   NgbCarouselModule,
@@ -13,8 +13,9 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ToastrService } from 'ngx-toastr';
 import { AuthGuard } from 'src/app/features/authentication/auth.guard';
 import { AuthService } from 'src/app/features/authentication/authService.service';
-// import { NotificationService } from 'src/app/features/notifications/services/notificationService.service';
+import { PeriodosSocketService } from 'src/app/features/periodo/periodos-socket.service';
 import { Alert } from 'src/app/helpers/alerts';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 
@@ -31,9 +32,8 @@ declare var $: any;
   ],
   templateUrl: './horizontal-navigation.component.html'
 })
-export class HorizontalNavigationComponent implements AfterViewInit {
+export class HorizontalNavigationComponent implements AfterViewInit, OnDestroy {
   @Output() toggleSidebar = new EventEmitter<void>();
-
 
   public showSearch = false;
   public isCollapsed = false;
@@ -42,6 +42,10 @@ export class HorizontalNavigationComponent implements AfterViewInit {
 
   notifications: any[] = [];
   unreadCount: number = 0;
+
+  // 🔥 Suscripciones a WebSocket
+  private periodoAperturadoSub: Subscription;
+  private periodoCerradoSub: Subscription;
 
   // This is for Mymessages
   mymessages: any[] = [
@@ -116,8 +120,9 @@ export class HorizontalNavigationComponent implements AfterViewInit {
     private translate: TranslateService,
     private authGuard: AuthGuard,
     private toastr: ToastrService,
-    // private notificationService: NotificationService,
     private authService: AuthService,
+    private periodosSocketService: PeriodosSocketService,
+    private router: Router
   ) {
     translate.setDefaultLang('en');
     this.configUser();
@@ -133,152 +138,142 @@ export class HorizontalNavigationComponent implements AfterViewInit {
         ? user.roles.map(r => typeof r === 'string' ? r : r.nombre).join(', ')
         : user.roles;
     }
+
+    // 🔥 Inicializar notificaciones de periodos
+    this.initPeriodosNotifications();
   }
 
-  /**
-   * Carga las notificaciones desde la API
-   */
- /*  async loadNotifications(): Promise<void> {
-    try {
-      this.loading = true;
+  // 🔥 Inicializar escucha de notificaciones de periodos
+  initPeriodosNotifications(): void {
+    // Escuchar cuando se apertura un periodo
+    this.periodoAperturadoSub = this.periodosSocketService.onPeriodoAperturado().subscribe({
+      next: (data) => {
+        console.log('📢 Periodo aperturado:', data);
+        
+        // Agregar notificación a la lista
+        const notification = {
+          id: `periodo-${data.id}-${Date.now()}`,
+          btn: 'btn-success',
+          icon: 'ti-calendar',
+          title: 'Periodo Aperturado',
+          subject: `El periodo "${data.nombre}" ha sido aperturado`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          link: '/periodos',
+          type: 'success',
+          periodoId: data.id
+        };
 
-      // Filtrar por notificaciones sin leer y limitar a 5
-      const filters = {
-        limit: 5,
-        status: 'unread',
-      };
+        this.notifications.unshift(notification);
+        this.unreadCount++;
 
-      const response = await this.notificationService.getNotifications(filters);
-
-      if (response && response.data && response.data.rows) {
-        this.notifications = response.data.rows.map(notification => {
-          // Mapeo de prioridad a clase de botón
-          const btnMap = {
-            'info': 'btn-info',
-            'success': 'btn-success',
-            'warning': 'btn-warning',
-            'error': 'btn-danger'
-          };
-          // Mapeo de estado a icono
-          const iconMap = {
-            'read': 'icon-check',
-            'unread': 'icon-bell'
-          };
-
-          // Formatear fecha para que sea legible
-          const createdDate = new Date(notification.createdAt);
-          const formattedDate = createdDate.toLocaleDateString() + ' ' +
-            createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-          return {
-            id: notification.id,
-            btn: btnMap[notification.type] || 'btn-primary',
-            icon: iconMap[notification.status] || 'icon-bell',
-            title: notification.module,
-            subject: notification.message,
-            time: formattedDate,
-            link: notification.link || '/notifications',
-            type: notification.type,
-            status: notification.status
-          };
-        });
-
-        // Contar notificaciones sin leer (solo las que tienen status: 'unread')
-        this.unreadCount = response.data.count;
-      } else {
-        this.notifications = [];
-        this.unreadCount = 0;
+        // Mostrar toast
+        this.toastr.success(
+          `El periodo "${data.nombre}" ha sido aperturado`,
+          'Nuevo Periodo Disponible',
+          { timeOut: 5000 }
+        );
+      },
+      error: (error) => {
+        console.error('Error al escuchar periodo aperturado:', error);
       }
-    } catch (error) {
-      console.error('Error al cargar notificaciones:', error);
-      this.toastr.error('Error al cargar notificaciones', 'Error');
-    } finally {
-      this.loading = false;
-    }
-  } */
-  /**
-   * Marca una notificación como leída
-   */
- /*  async markAsRead(id: number, event: Event): Promise<void> {
-    try {
-      event.preventDefault(); // Evitar navegación
-      event.stopPropagation(); // Detener propagación
+    });
 
-      // Usar el nuevo método específico
-      await this.notificationService.markNotificationReadStatus(id, true);
+    // Escuchar cuando se cierra un periodo
+    this.periodoCerradoSub = this.periodosSocketService.onPeriodoCerrado().subscribe({
+      next: (data) => {
+        console.log('📢 Periodo cerrado:', data);
+        
+        // Agregar notificación a la lista
+        const notification = {
+          id: `periodo-${data.id}-${Date.now()}`,
+          btn: 'btn-warning',
+          icon: 'ti-lock',
+          title: 'Periodo Cerrado',
+          subject: `El periodo "${data.nombre}" ha sido cerrado`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          link: '/periodos',
+          type: 'warning',
+          periodoId: data.id
+        };
 
-      // Actualizar la lista localmente
-      this.notifications = this.notifications.filter(n => n.id !== id);
-      this.unreadCount = Math.max(0, this.unreadCount - 1);
+        this.notifications.unshift(notification);
+        this.unreadCount++;
 
-      this.toastr.success('Notificación marcada como leída', 'Éxito');
-    } catch (error) {
-      console.error('Error al marcar como leída:', error);
-      this.toastr.error('Error al marcar como leída', 'Error');
-    }
+        // Mostrar toast
+        this.toastr.warning(
+          `El periodo "${data.nombre}" ha sido cerrado`,
+          'Periodo Finalizado',
+          { timeOut: 5000 }
+        );
+      },
+      error: (error) => {
+        console.error('Error al escuchar periodo cerrado:', error);
+      }
+    });
   }
 
-  async markAsUnread(id: number, event: Event): Promise<void> {
-    try {
-      event.preventDefault(); // Evitar navegación
-      event.stopPropagation(); // Detener propagación
+  // 🔥 Navegar a periodos cuando se haga click en una notificación
+  onNotificationClick(notification: any): void {
+    console.log('🔔 Notificación clickeada:', notification);
+    
+    // Marcar como leída (remover de la lista)
+    this.notifications = this.notifications.filter(n => n.id !== notification.id);
+    this.unreadCount = Math.max(0, this.unreadCount - 1);
 
-      await this.notificationService.markNotificationReadStatus(id, false);
+    // Navegar a la lista de periodos
+    this.router.navigate(['/periodos']);
+  }
 
-      // Recargar notificaciones para mostrar la que acaba de marcarse como no leída
-      await this.loadNotifications();
+  // 🔥 Marcar todas las notificaciones como leídas
+  markAllAsRead(): void {
+    this.notifications = [];
+    this.unreadCount = 0;
+    this.toastr.info('Todas las notificaciones han sido marcadas como leídas', 'Notificaciones');
+  }
 
-      this.toastr.success('Notificación marcada como no leída', 'Éxito');
-    } catch (error) {
-      console.error('Error al marcar como no leída:', error);
-      this.toastr.error('Error al marcar como no leída', 'Error');
-    }
-  } */
-
-  // configUser() {
-
-  //   this.user = this.authGuard.getUser();
-
-  //   const names = this.user?.nickname.split('.');
-  //   if (names.length >= 2) {
-  //     this.name = names[0].charAt(0).toUpperCase() + names[0].slice(1);
-  //     this.name += ' ' + names[1].charAt(0).toUpperCase() + names[1].slice(1);
-  //   }
-
-  //   this.email = this.user?.email;
-  //   this.image = this.user?.picture;
-  // }
   configUser() {
     // Obtener datos del usuario actual
     this.user = this.authService.getUser();
 
-    // Establecer nombre como Admin
-    this.name = "Admin";
+    // Establecer nombre completo del usuario
+    this.name = this.user?.nombre && this.user?.apellidos
+      ? `${this.user.nombre} ${this.user.apellidos}`
+      : 'Usuario';
 
     // Mantener el email original
-    this.email = this.user?.email || 'admin@sistema.com';
+    this.email = this.user?.email || 'usuario@sistema.com';
 
-    // Generar avatar con iniciales "AD" (de ADmin)
-    // Color de fondo dorado/amarillo para representar admin
+    // 🔥 Generar iniciales dinámicamente
+    let initials = 'US'; // Por defecto
+    if (this.user?.nombre && this.user?.apellidos) {
+      const firstInitial = this.user.nombre.charAt(0).toUpperCase();
+      const lastInitial = this.user.apellidos.charAt(0).toUpperCase();
+      initials = firstInitial + lastInitial;
+    }
+
+    // Generar avatar con iniciales del usuario
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     canvas.width = 200;
     canvas.height = 200;
 
-    // Fondo
-    context.fillStyle = '#ffc107'; // Color amarillo/dorado
+    // Fondo (color aleatorio basado en el nombre para que sea único)
+    const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997'];
+    const colorIndex = (this.user?.nombre?.length || 0) % colors.length;
+    context.fillStyle = colors[colorIndex];
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Texto
+    // Texto con iniciales
     context.font = 'bold 100px Arial';
     context.fillStyle = '#ffffff';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('AD', canvas.width / 2, canvas.height / 2);
+    context.fillText(initials, canvas.width / 2, canvas.height / 2);
 
     // Convertir a imagen
     this.image = canvas.toDataURL('image/png');
   }
+
   ngAfterViewInit() { }
 
   changeLanguage(lang: any) {
@@ -287,12 +282,11 @@ export class HorizontalNavigationComponent implements AfterViewInit {
   }
 
   async onLogout() {
-
     if (await Alert.question(
       'Cerrar sesión',
       '¿Está seguro de que desea cerrar sesión?'
     )) {
-      this.authService.logout(); // Llama al método de logout
+      this.authService.logout();
     }
   }
 
@@ -305,4 +299,15 @@ export class HorizontalNavigationComponent implements AfterViewInit {
     }
   }
 
+  // 🔥 Limpiar suscripciones al destruir el componente
+  ngOnDestroy(): void {
+    if (this.periodoAperturadoSub) {
+      this.periodoAperturadoSub.unsubscribe();
+    }
+    if (this.periodoCerradoSub) {
+      this.periodoCerradoSub.unsubscribe();
+    }
+    // Desconectar socket
+    this.periodosSocketService.disconnect();
+  }
 }

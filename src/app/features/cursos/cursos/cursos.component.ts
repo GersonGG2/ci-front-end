@@ -427,7 +427,7 @@ export class CursosComponent implements OnInit {
 
   instructorPage = 1;
   totalInstructores = 0;
-  selectedInstructor: any = { id: 0, nombre: '', apellidos: '' }; Í
+  selectedInstructor: any = { id: 0, nombre: '', apellidos: '' }; 
   columns_instructor = [
     { name: 'ID', prop: 'id', width: 60 },
     { name: 'Nombre', prop: 'nombre' },

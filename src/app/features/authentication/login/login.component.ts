@@ -15,12 +15,13 @@ export class LoginComponent implements OnInit {
   recoverform = false;
   loading = false;
   error = '';
+  submitted = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Redireccionar si ya está logueado
@@ -29,9 +30,13 @@ export class LoginComponent implements OnInit {
     }
 
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
     });
+  }
+
+  get f() {
+    return this.loginForm.controls;
   }
 
   showRecoverForm() {
@@ -39,6 +44,8 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
+
     if (this.loginForm.invalid) {
       return;
     }
