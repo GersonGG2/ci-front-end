@@ -1,9 +1,9 @@
 
 export class EnviromentHelper {
-  public static URL_ITZ_WS = 'http://localhost:3000';
-
-
-  public static readonly AUTH_CALLBACK = 'http://localhost:4200/';
+  /*   public static URL_ITZ_WS = 'http://localhost:3000'; */
+  /*   public static readonly AUTH_CALLBACK = 'http://localhost:4200/'; */
+  public static URL_ITZ_WS = 'https://sgci-itz.onrender.com';
+  public static readonly AUTH_CALLBACK = 'https://sgci-itz.onrender.com';
 }
 export const environment = {
   itz: {
@@ -11,7 +11,7 @@ export const environment = {
       login: EnviromentHelper.URL_ITZ_WS + '/auth/login',
       register: EnviromentHelper.URL_ITZ_WS + '/auth/register',
       profile: EnviromentHelper.URL_ITZ_WS + '/auth/profile',
-      callback: EnviromentHelper.URL_ITZ_WS + '/auth/callback' 
+      callback: EnviromentHelper.URL_ITZ_WS + '/auth/callback'
     },
     usuarios: {
       main: EnviromentHelper.URL_ITZ_WS + '/usuarios',

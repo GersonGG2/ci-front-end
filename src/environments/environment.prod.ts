@@ -1,9 +1,9 @@
 
 export class EnviromentHelper {
-  public static URL_ITZ_WS = 'http://localhost:3000';
-
-
-  public static readonly AUTH_CALLBACK = 'http://localhost:4200/';
+  /*   public static URL_ITZ_WS = 'http://localhost:3000'; */
+  /*   public static readonly AUTH_CALLBACK = 'http://localhost:4200/'; */
+  public static URL_ITZ_WS = 'https://sgci-itz.onrender.com';
+  public static readonly AUTH_CALLBACK = 'https://sgci-itz.onrender.com';
 }
 export const environment = {
   itz: {
@@ -11,7 +11,7 @@ export const environment = {
       login: EnviromentHelper.URL_ITZ_WS + '/auth/login',
       register: EnviromentHelper.URL_ITZ_WS + '/auth/register',
       profile: EnviromentHelper.URL_ITZ_WS + '/auth/profile',
-      callback: EnviromentHelper.URL_ITZ_WS + '/auth/callback' 
+      callback: EnviromentHelper.URL_ITZ_WS + '/auth/callback'
     },
     usuarios: {
       main: EnviromentHelper.URL_ITZ_WS + '/usuarios',
@@ -51,6 +51,7 @@ export const environment = {
       exportarPdf: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-pdf', // GET /cursos/exportar-pdf
       exportarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/exportar-excel', // GET /cursos/exportar-excel
       importarExcel: EnviromentHelper.URL_ITZ_WS + '/cursos/importar-excel', // POST /cursos/importar-excel
+      getByInstructorId: EnviromentHelper.URL_ITZ_WS + '/cursos/instructor/'// GET /cursos/instructor/{instructorId}
     },
     academias: {
       main: EnviromentHelper.URL_ITZ_WS + '/academias',
@@ -61,7 +62,7 @@ export const environment = {
       delete: EnviromentHelper.URL_ITZ_WS + '/academias/', // DELETE /academias/{id}
     },
     inscripciones: {
-      main: EnviromentHelper.URL_ITZ_WS + '/inscripciones',
+      main: EnviromentHelper.URL_ITZ_WS + '/inscripciones/',
       create: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // POST
       getAll: EnviromentHelper.URL_ITZ_WS + '/inscripciones', // GET
       getMine: EnviromentHelper.URL_ITZ_WS + '/inscripciones/mis-inscripciones', // GET
@@ -71,6 +72,7 @@ export const environment = {
       aprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/aprobar
       reprobar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/reprobar
       cancelar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/', // PATCH /inscripciones/{id}/cancelar
+      verificar: EnviromentHelper.URL_ITZ_WS + '/inscripciones/verificar/',// GET /inscripciones/verificar/{cursoId}/{userId}
     },
 
   },

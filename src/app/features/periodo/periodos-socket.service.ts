@@ -7,7 +7,7 @@ export class PeriodosSocketService {
   private socket: Socket;
 
   constructor() {
-    this.socket = io('http://localhost:3000'); // Cambia la URL si tu backend está en otro host
+    this.socket = io('https://sgci-itz.onrender.com'); // Cambia la URL si tu backend está en otro host
   }
 
   // Escuchar cuando se apertura un periodo

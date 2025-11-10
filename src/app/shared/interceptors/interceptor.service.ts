@@ -16,7 +16,7 @@ export class InterceptorService implements HttpInterceptor {
     // Solo añade el token si existe y la petición es a tu API
     let request = req;
     const token = localStorage.getItem('token');
-    if (token && req.url.includes('http://localhost:3000')) {
+    if (token && req.url.includes('https://sgci-itz.onrender.com')) {
       request = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
