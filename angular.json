@@ -30,6 +30,7 @@
               "base": "dist/sgci-itz-web"
             },
             "index": "src/index.html",
+            "baseHref": "/",
             "polyfills": [
               "zone.js"
             ],
