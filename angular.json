@@ -27,7 +27,7 @@
               "c3"
             ],
             "outputPath": {
-              "base": "dist/dyappweb"
+              "base": "dist/sgci-itz-web"
             },
             "index": "src/index.html",
             "polyfills": [
